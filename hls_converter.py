@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 import subprocess
 import threading
@@ -8,6 +9,7 @@ from tkinter import ttk
 import queue
 import time
 import re
+from datetime import datetime
 
 # ----------------------------
 # Retro theme
@@ -23,6 +25,7 @@ FONT_SMALL = ("Courier New", 9)
 
 # Parse: time=00:00:12.34 (from ffmpeg -stats output)
 _FFMPEG_TIME_RE = re.compile(r"time=(\d+):(\d+):(\d+(?:\.\d+)?)")
+HISTORY_FILE = "output_history.json"
 
 # ----------------------------
 # Helpers
@@ -84,6 +87,20 @@ def format_seconds(s: float) -> str:
 
 def safe_mkdir(path: str):
     os.makedirs(path, exist_ok=True)
+
+def load_history():
+    try:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def save_history(history):
+    try:
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(history, f, indent=2)
+    except Exception:
+        pass
 
 def write_log(output_dir: str, name: str, text: str):
     log_path = os.path.join(output_dir, name)
@@ -193,7 +210,7 @@ class RetroHlsApp:
         self.root = root
         self.root.title("Enlight — Retro HLS Renderer")
         self.root.configure(bg=RETRO_BG)
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         self.file_path = None
         self.output_dir = None
@@ -202,6 +219,14 @@ class RetroHlsApp:
         self.is_running = False
         self.per_quality_progress = {}
         self.current_selected = []
+        self.render_queue = []
+        self.output_base_dir = os.path.join(os.getcwd(), "hls_outputs")
+        self.history = load_history()
+        self.current_job_percent = 0.0
+        self.jobs_total = 0
+        self.jobs_done = 0
+        self.last_output_dir = None
+        self.history_order = []
 
         self.quality_vars = {
             "1080p": tk.BooleanVar(value=False),
@@ -216,34 +241,43 @@ class RetroHlsApp:
         header = tk.Frame(self.root, bg=RETRO_BG)
         header.pack(fill="x", padx=12, pady=(12, 6))
 
-        tk.Label(header, text="ENLIGHT — HLS RENDERER", fg=RETRO_ACCENT, bg=RETRO_BG, font=FONT_TITLE).pack(anchor="w")
-        tk.Label(header, text="MP4 → Adaptive HLS (Retro mode)", fg=RETRO_MUTED, bg=RETRO_BG, font=FONT_SMALL).pack(anchor="w", pady=(2, 0))
+        tk.Label(header, text="ENLIGHT RETRO HLS RENDERER", fg=RETRO_ACCENT, bg=RETRO_BG, font=FONT_TITLE).pack(anchor="w")
+        tk.Label(header, text="MP4 Adaptive HLS (Retro mode)", fg=RETRO_MUTED, bg=RETRO_BG, font=FONT_SMALL).pack(anchor="w", pady=(2, 0))
 
-        file_panel = tk.Frame(self.root, bg=RETRO_PANEL, bd=1, relief="solid")
-        file_panel.pack(fill="x", padx=12, pady=8)
+        main = tk.Frame(self.root, bg=RETRO_BG)
+        main.pack(fill="both", expand=True, padx=12, pady=(0, 6))
 
-        tk.Label(file_panel, text="SELECTED VIDEO", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
-        self.file_label = tk.Label(file_panel, text="(none)", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=520, justify="left")
+        left_col = tk.Frame(main, bg=RETRO_BG)
+        left_col.pack(side="left", fill="both", expand=True, padx=(0, 6))
+
+        right_col = tk.Frame(main, bg=RETRO_BG)
+        right_col.pack(side="right", fill="both", expand=True, padx=(6, 0))
+
+        # Left: info, output, qualities, progress
+        info_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        info_panel.pack(fill="x", pady=(0, 8))
+
+        tk.Label(info_panel, text="CURRENT SELECTION", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
+        self.file_label = tk.Label(info_panel, text="Selected: (none)", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=420, justify="left")
         self.file_label.pack(anchor="w", padx=10)
+        self.meta_label = tk.Label(info_panel, text="Duration: - | Resolution: - | Audio: -", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.meta_label.pack(anchor="w", padx=10, pady=(2, 2))
+        self.history_label = tk.Label(info_panel, text="History: none", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=420, justify="left")
+        self.history_label.pack(anchor="w", padx=10, pady=(0, 6))
 
-        self.meta_label = tk.Label(file_panel, text="Duration: - | Resolution: - | Audio: -", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
-        self.meta_label.pack(anchor="w", padx=10, pady=(4, 8))
+        out_row = tk.Frame(info_panel, bg=RETRO_PANEL)
+        out_row.pack(fill="x", padx=10, pady=(0, 10))
+        tk.Label(out_row, text="OUTPUT BASE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(side="left")
+        self.output_label = tk.Label(out_row, text=self.output_base_dir, fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=260, justify="left")
+        self.output_label.pack(side="left", padx=(8, 8))
+        tk.Button(out_row, text="CHANGE", command=self.on_choose_output_dir,
+                  bg=RETRO_ACCENT, fg="black", font=FONT_SMALL, bd=0, padx=10, pady=4).pack(side="left")
 
-        btn_row = tk.Frame(file_panel, bg=RETRO_PANEL)
-        btn_row.pack(fill="x", padx=10, pady=(0, 10))
-
-        self.pick_btn = tk.Button(btn_row, text="CHOOSE MP4", command=self.on_choose_file,
-                                  bg=RETRO_ACCENT, fg="black", font=FONT_MAIN, bd=0, padx=12, pady=6)
-        self.pick_btn.pack(side="left")
-
-        q_panel = tk.Frame(self.root, bg=RETRO_PANEL, bd=1, relief="solid")
-        q_panel.pack(fill="x", padx=12, pady=8)
-
+        q_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        q_panel.pack(fill="x", pady=(0, 8))
         tk.Label(q_panel, text="RENDER QUALITIES", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
-
         q_grid = tk.Frame(q_panel, bg=RETRO_PANEL)
         q_grid.pack(fill="x", padx=10, pady=(0, 8))
-
         for i, q in enumerate(QUALITY_ORDER):
             tk.Checkbutton(
                 q_grid, text=q, variable=self.quality_vars[q],
@@ -251,13 +285,11 @@ class RetroHlsApp:
                 activebackground=RETRO_PANEL, activeforeground=RETRO_ACCENT,
                 font=FONT_MAIN
             ).grid(row=0, column=i, padx=8, sticky="w")
-
         tk.Label(q_panel, text="Tip: 1080p is heavier on CPU. Start with 720p+480p.", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)\
             .pack(anchor="w", padx=10, pady=(0, 10))
 
-        p_panel = tk.Frame(self.root, bg=RETRO_PANEL, bd=1, relief="solid")
-        p_panel.pack(fill="x", padx=12, pady=8)
-
+        p_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        p_panel.pack(fill="x", pady=(0, 8))
         tk.Label(p_panel, text="PROGRESS", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
         self.status_label = tk.Label(p_panel, text="Status: idle", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
         self.status_label.pack(anchor="w", padx=10, pady=(0, 6))
@@ -270,7 +302,7 @@ class RetroHlsApp:
         style.configure("Retro.Horizontal.TProgressbar", troughcolor=RETRO_BG, background=RETRO_FG)
 
         tk.Label(p_panel, text="Overall", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL).pack(anchor="w", padx=10)
-        self.overall_bar = ttk.Progressbar(p_panel, length=520, mode="determinate", style="Retro.Horizontal.TProgressbar")
+        self.overall_bar = ttk.Progressbar(p_panel, length=420, mode="determinate", style="Retro.Horizontal.TProgressbar")
         self.overall_bar.pack(anchor="w", padx=10, pady=(0, 10))
 
         self.per_quality_bars = {}
@@ -278,36 +310,78 @@ class RetroHlsApp:
         for q in QUALITY_ORDER:
             row = tk.Frame(p_panel, bg=RETRO_PANEL)
             row.pack(fill="x", padx=10, pady=(0, 6))
-
             tk.Label(row, text=q, fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=8, anchor="w").pack(side="left")
-            bar = ttk.Progressbar(row, length=440, mode="determinate", style="Retro.Horizontal.TProgressbar")
+            bar = ttk.Progressbar(row, length=340, mode="determinate", style="Retro.Horizontal.TProgressbar")
             bar.pack(side="left", padx=(6, 0))
             pct = tk.Label(row, text="0%", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=6, anchor="e")
             pct.pack(side="right")
-
             self.per_quality_bars[q] = bar
             self.per_quality_labels[q] = pct
 
-        a_panel = tk.Frame(self.root, bg=RETRO_BG)
-        a_panel.pack(fill="x", padx=12, pady=(6, 12))
-
+        a_panel = tk.Frame(left_col, bg=RETRO_BG)
+        a_panel.pack(fill="x", pady=(6, 0))
         self.start_btn = tk.Button(a_panel, text="START RENDER", command=self.on_start,
                                    bg=RETRO_FG, fg="black", font=FONT_MAIN, bd=0, padx=16, pady=8)
         self.start_btn.pack(side="left")
-
-        self.open_btn = tk.Button(a_panel, text="OPEN HLS FOLDER", command=self.on_open_folder,
+        self.open_btn = tk.Button(a_panel, text="OPEN LAST OUTPUT", command=self.on_open_folder,
                                   bg=RETRO_ACCENT, fg="black", font=FONT_MAIN, bd=0, padx=12, pady=8, state="disabled")
         self.open_btn.pack(side="left", padx=(10, 0))
-
         tk.Button(a_panel, text="QUIT", command=self.root.destroy,
                   bg="#333333", fg=RETRO_ACCENT, font=FONT_MAIN, bd=0, padx=12, pady=8).pack(side="right")
+
+        # Right: tabs (queue/history)
+        tabs_panel = tk.Frame(right_col, bg=RETRO_BG)
+        tabs_panel.pack(fill="both", expand=True)
+        self.notebook = ttk.Notebook(tabs_panel)
+        self.notebook.pack(fill="both", expand=True)
+
+        queue_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        history_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        self.notebook.add(queue_tab, text="Queue")
+        self.notebook.add(history_tab, text="History")
+
+        tk.Label(queue_tab, text="RENDER QUEUE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
+        list_frame = tk.Frame(queue_tab, bg=RETRO_PANEL)
+        list_frame.pack(fill="both", expand=True, padx=10, pady=(0, 6))
+        self.queue_list = tk.Listbox(list_frame, bg=RETRO_BG, fg=RETRO_ACCENT, selectmode=tk.BROWSE)
+        self.queue_list.pack(side="left", fill="both", expand=True)
+        sbq = tk.Scrollbar(list_frame, orient="vertical", command=self.queue_list.yview)
+        sbq.pack(side="right", fill="y")
+        self.queue_list.config(yscrollcommand=sbq.set)
+        self.queue_list.bind("<<ListboxSelect>>", self.on_select_queue)
+
+        btn_row = tk.Frame(queue_tab, bg=RETRO_PANEL)
+        btn_row.pack(fill="x", padx=10, pady=(0, 10))
+        self.pick_btn = tk.Button(btn_row, text="ADD VIDEOS", command=self.on_add_files,
+                                  bg=RETRO_ACCENT, fg="black", font=FONT_MAIN, bd=0, padx=12, pady=6)
+        self.pick_btn.pack(side="left")
+        self.remove_btn = tk.Button(btn_row, text="REMOVE SELECTED", command=self.on_remove_selected,
+                                    bg="#333333", fg=RETRO_ACCENT, font=FONT_MAIN, bd=0, padx=12, pady=6)
+        self.remove_btn.pack(side="left", padx=(8, 0))
+        self.clear_btn = tk.Button(btn_row, text="CLEAR LIST", command=self.on_clear_list,
+                                   bg="#333333", fg=RETRO_ACCENT, font=FONT_MAIN, bd=0, padx=12, pady=6)
+        self.clear_btn.pack(side="left", padx=(8, 0))
+
+        tk.Label(history_tab, text="OUTPUT HISTORY", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
+        hist_frame = tk.Frame(history_tab, bg=RETRO_PANEL)
+        hist_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+        self.history_list = tk.Listbox(hist_frame, bg=RETRO_BG, fg=RETRO_ACCENT, selectmode=tk.BROWSE)
+        self.history_list.pack(side="left", fill="both", expand=True)
+        sbh = tk.Scrollbar(hist_frame, orient="vertical", command=self.history_list.yview)
+        sbh.pack(side="right", fill="y")
+        self.history_list.config(yscrollcommand=sbh.set)
+        self.history_list.bind("<<ListboxSelect>>", self.on_select_history)
+
+        self._refresh_history_ui()
 
     def _set_status(self, text: str):
         self.status_label.config(text=f"Status: {text}")
 
-    def _reset_progress(self):
+    def _reset_progress(self, reset_overall: bool = True):
         self.per_quality_progress = {}
-        self.overall_bar["value"] = 0
+        self.current_job_percent = 0.0
+        if reset_overall:
+            self.overall_bar["value"] = 0
         for q in QUALITY_ORDER:
             self.per_quality_bars[q]["value"] = 0
             self.per_quality_labels[q].config(text="0%")
@@ -322,50 +396,149 @@ class RetroHlsApp:
         if quality in self.per_quality_labels:
             self.per_quality_labels[quality].config(text=f"{int(percent)}%")
 
+        avg = 0.0
         if selected:
             avg = sum(self.per_quality_progress.get(q, 0.0) for q in selected) / len(selected)
+            self.current_job_percent = avg
+
+        if self.jobs_total > 0:
+            queue_percent = ((self.jobs_done + (avg / 100.0)) / self.jobs_total) * 100.0
+            self._update_overall(queue_percent)
+        else:
             self._update_overall(avg)
 
-    def on_choose_file(self):
+    def _refresh_queue_ui(self):
+        self.queue_list.delete(0, tk.END)
+        for fp in self.render_queue:
+            self.queue_list.insert(tk.END, fp)
+
+    def _refresh_history_ui(self):
+        self.history_list.delete(0, tk.END)
+        self.history_order = []
+        items = list(self.history.items())
+        try:
+            items.sort(key=lambda x: x[1].get("ts", ""))
+        except Exception:
+            pass
+        for fp, rec in items:
+            out = rec.get("output", "?")
+            ts = rec.get("ts", "?")
+            self.history_order.append(fp)
+            self.history_list.insert(tk.END, f"{ts} | {fp} -> {out}")
+
+    def _show_history_for(self, fp: str):
+        rec = self.history.get(fp)
+        if rec:
+            out = rec.get("output", "?")
+            ts = rec.get("ts", "?")
+            self.history_label.config(text=f"History: {out} (at {ts})")
+        else:
+            self.history_label.config(text="History: none")
+
+    def _update_selected_file_info(self, fp: str):
+        if not fp:
+            self.file_label.config(text="Selected: (none)")
+            self.meta_label.config(text="Duration: - | Resolution: - | Audio: -")
+            self.history_label.config(text="History: none")
+            return
+
+        self.file_label.config(text=f"Selected: {fp}")
+        info = get_video_info(fp)
+        dur = float(info.get("duration_s", 0.0) or 0.0)
+        width = info.get("width", 0)
+        height = info.get("height", 0)
+        audio_flag = has_audio_stream(fp)
+        self.meta_label.config(
+            text=f"Duration: {format_seconds(dur)} | Resolution: {width}x{height} | Audio: {'yes' if audio_flag else 'no'}"
+        )
+        self._show_history_for(fp)
+
+    def on_add_files(self):
         if self.is_running:
             messagebox.showinfo("Busy", "Rendering is in progress.")
             return
-
-        fp = filedialog.askopenfilename(title="Select MP4 video", filetypes=[("MP4 files", "*.mp4"), ("All files", "*.*")])
-        if not fp:
+        fps = filedialog.askopenfilenames(title="Select MP4 videos", filetypes=[("MP4 files", "*.mp4"), ("All files", "*.*")])
+        if not fps:
             return
+        added = False
+        for fp in fps:
+            if fp not in self.render_queue:
+                self.render_queue.append(fp)
+                added = True
+        if added:
+            self._refresh_queue_ui()
+            self.queue_list.selection_clear(0, tk.END)
+            self.queue_list.selection_set(tk.END)
+            self.queue_list.see(tk.END)
+            self._update_selected_file_info(self.render_queue[-1])
 
-        self.file_path = fp
-        self.output_dir = os.path.splitext(fp)[0] + "_hls"
-        safe_mkdir(self.output_dir)
+    def on_remove_selected(self):
+        if self.is_running:
+            messagebox.showinfo("Busy", "Rendering is in progress.")
+            return
+        sel = self.queue_list.curselection()
+        if not sel:
+            return
+        idx = sel[0]
+        if 0 <= idx < len(self.render_queue):
+            del self.render_queue[idx]
+            self._refresh_queue_ui()
+            if self.render_queue:
+                new_idx = min(idx, len(self.render_queue) - 1)
+                self.queue_list.selection_set(new_idx)
+                self.queue_list.see(new_idx)
+                self._update_selected_file_info(self.render_queue[new_idx])
+            else:
+                self._update_selected_file_info(None)
 
-        info = get_video_info(fp)
-        self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
-        self.audio_exists = has_audio_stream(fp)
+    def on_clear_list(self):
+        if self.is_running:
+            messagebox.showinfo("Busy", "Rendering is in progress.")
+            return
+        self.render_queue = []
+        self._refresh_queue_ui()
+        self._update_selected_file_info(None)
 
-        self.file_label.config(text=self.file_path)
-        self.meta_label.config(
-            text=f"Duration: {format_seconds(self.duration_s)} | "
-                 f"Resolution: {info.get('width',0)}x{info.get('height',0)} | "
-                 f"Audio: {'yes' if self.audio_exists else 'no'}"
-        )
+    def on_select_queue(self, event=None):
+        sel = self.queue_list.curselection()
+        if not sel:
+            return
+        idx = sel[0]
+        if 0 <= idx < len(self.render_queue):
+            self._update_selected_file_info(self.render_queue[idx])
 
-        self._reset_progress()
-        self.open_btn.config(state="disabled")
-        self._set_status("idle (ready)")
+    def on_select_history(self, event=None):
+        sel = self.history_list.curselection()
+        if not sel:
+            return
+        idx = sel[0]
+        if hasattr(self, "history_order") and 0 <= idx < len(self.history_order):
+            fp = self.history_order[idx]
+            self._update_selected_file_info(fp)
+            self.notebook.select(0)
+
+    def on_choose_output_dir(self):
+        if self.is_running:
+            messagebox.showinfo("Busy", "Rendering is in progress.")
+            return
+        folder = filedialog.askdirectory(title="Select output base folder", initialdir=self.output_base_dir)
+        if folder:
+            self.output_base_dir = folder
+            self.output_label.config(text=self.output_base_dir)
 
     def on_open_folder(self):
-        if not self.output_dir or not os.path.isdir(self.output_dir):
+        target = self.last_output_dir or self.output_dir
+        if not target or not os.path.isdir(target):
             messagebox.showwarning("Missing", "Output folder not found.")
             return
-        os.startfile(self.output_dir)
+        os.startfile(target)
 
     def on_start(self):
         if self.is_running:
             messagebox.showinfo("Busy", "Rendering is already running.")
             return
-        if not self.file_path:
-            messagebox.showwarning("No file", "Please choose a video first.")
+        if not self.render_queue:
+            messagebox.showwarning("No files", "Please add at least one video.")
             return
 
         selected = [q for q in QUALITY_ORDER if self.quality_vars[q].get()]
@@ -374,14 +547,19 @@ class RetroHlsApp:
             return
 
         self.current_selected = selected
-
+        self.jobs_total = len(self.render_queue)
+        self.jobs_done = 0
+        self.last_output_dir = None
         self.is_running = True
         self.start_btn.config(state="disabled")
         self.pick_btn.config(state="disabled")
+        self.remove_btn.config(state="disabled")
+        self.clear_btn.config(state="disabled")
         self.open_btn.config(state="disabled")
+        self.output_label.config(text=self.output_base_dir)
         self._set_status("starting...")
 
-        threading.Thread(target=self._render_worker, args=(selected,), daemon=True).start()
+        threading.Thread(target=self._render_worker, args=(list(self.render_queue), selected), daemon=True).start()
 
     def _finish_success(self, master_path: str):
         for q in self.current_selected:
@@ -391,6 +569,8 @@ class RetroHlsApp:
         self.is_running = False
         self.start_btn.config(state="normal")
         self.pick_btn.config(state="normal")
+        self.remove_btn.config(state="normal")
+        self.clear_btn.config(state="normal")
         self.open_btn.config(state="normal")
         messagebox.showinfo("Success", f"HLS generated!\n\nFolder:\n{self.output_dir}\n\nMaster:\n{master_path}")
 
@@ -399,6 +579,8 @@ class RetroHlsApp:
         self.is_running = False
         self.start_btn.config(state="normal")
         self.pick_btn.config(state="normal")
+        self.remove_btn.config(state="normal")
+        self.clear_btn.config(state="normal")
         self.open_btn.config(state="disabled")
         messagebox.showerror("Error", msg)
 
@@ -521,28 +703,51 @@ class RetroHlsApp:
         self.root.after(0, lambda: self._update_quality_progress(quality, 100.0, selected))
         return True, None
 
-    def _render_worker(self, selected):
-        self.root.after(0, self._reset_progress)
-        self.root.after(0, lambda: self._set_status("rendering..."))
+    def _render_worker(self, files, selected):
+        self.root.after(0, lambda: self._reset_progress(reset_overall=True))
+        self.root.after(0, lambda: self._set_status("rendering queue..."))
+        safe_mkdir(self.output_base_dir)
 
-        self.per_quality_progress = {q: 0.0 for q in selected}
-
-        total_s = max(float(self.duration_s), 0.001)
-
-        for idx, q in enumerate(selected, 1):
-            self.root.after(0, lambda q=q, idx=idx: self._set_status(f"rendering {q} ({idx}/{len(selected)})"))
-            ok, err = self._render_single_quality(q, total_s, selected)
-            if not ok:
-                if err is None:
-                    return
-                self.root.after(0, lambda e=err: self._finish_with_error(e))
+        for idx, fp in enumerate(files, 1):
+            if not os.path.isfile(fp):
+                self.root.after(0, lambda fp=fp: self._finish_with_error(f"File missing: {fp}"))
                 return
 
-        try:
-            master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
-        except Exception as e:
-            self.root.after(0, lambda: self._finish_with_error(f"Master playlist write failed: {e}"))
-            return
+            self.file_path = fp
+            base_name = os.path.splitext(os.path.basename(fp))[0]
+            self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
+            safe_mkdir(self.output_dir)
+            info = get_video_info(fp)
+            self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
+            self.audio_exists = has_audio_stream(fp)
+            self.current_selected = selected
+            self._reset_progress(reset_overall=False)
+            self.per_quality_progress = {q: 0.0 for q in selected}
+
+            self.root.after(0, lambda fp=fp: self._update_selected_file_info(fp))
+            self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"rendering {idx}/{total}: {name}"))
+
+            total_s = max(float(self.duration_s), 0.001)
+            for q_idx, q in enumerate(selected, 1):
+                self.root.after(0, lambda q=q, q_idx=q_idx: self._set_status(f"rendering {q} ({q_idx}/{len(selected)})"))
+                ok, err = self._render_single_quality(q, total_s, selected)
+                if not ok:
+                    if err is None:
+                        return
+                    self.root.after(0, lambda e=err: self._finish_with_error(e))
+                    return
+
+            try:
+                master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
+            except Exception as e:
+                self.root.after(0, lambda: self._finish_with_error(f"Master playlist write failed: {e}"))
+                return
+
+            self.history[fp] = {"output": self.output_dir, "ts": datetime.now().isoformat(timespec="seconds")}
+            save_history(self.history)
+            self.root.after(0, self._refresh_history_ui)
+            self.last_output_dir = self.output_dir
+            self.jobs_done = idx
 
         self.root.after(0, lambda: self._finish_success(master_path))
 
