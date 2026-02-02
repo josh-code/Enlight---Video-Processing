@@ -10,6 +10,7 @@ import queue
 import time
 import re
 from datetime import datetime
+from typing import Tuple
 
 # ----------------------------
 # Retro theme
@@ -32,6 +33,31 @@ HISTORY_FILE = "output_history.json"
 # ----------------------------
 def run_cmd(cmd):
     return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+def check_ffmpeg_available() -> Tuple[bool, str]:
+    """
+    Check if ffmpeg and ffprobe are available in PATH.
+    Returns (is_available, error_message)
+    """
+    try:
+        result = run_cmd(["ffmpeg", "-version"])
+        if result.returncode != 0:
+            return False, "ffmpeg command failed"
+    except FileNotFoundError:
+        return False, "ffmpeg not found in PATH"
+    except Exception as e:
+        return False, f"Error checking ffmpeg: {e}"
+
+    try:
+        result = run_cmd(["ffprobe", "-version"])
+        if result.returncode != 0:
+            return False, "ffprobe command failed"
+    except FileNotFoundError:
+        return False, "ffprobe not found in PATH"
+    except Exception as e:
+        return False, f"Error checking ffprobe: {e}"
+
+    return True, ""
 
 def has_audio_stream(file_path: str) -> bool:
     cmd = [
@@ -87,6 +113,148 @@ def format_seconds(s: float) -> str:
 
 def safe_mkdir(path: str):
     os.makedirs(path, exist_ok=True)
+
+def extract_audio_from_video(video_path: str, output_audio_path: str) -> Tuple[bool, str]:
+    """
+    Extract audio from video file using ffmpeg.
+    Converts to 16kHz mono WAV format required by Whisper.
+    
+    Args:
+        video_path: Path to input video file
+        output_audio_path: Path where extracted audio will be saved
+    
+    Returns:
+        Tuple of (success: bool, error_message: str)
+    """
+    cmd = [
+        "ffmpeg", "-y", "-i", video_path,
+        "-vn",  # No video
+        "-acodec", "pcm_s16le",  # 16-bit PCM
+        "-ar", "16000",  # 16kHz sample rate
+        "-ac", "1",  # Mono
+        output_audio_path
+    ]
+    creationflags, startupinfo = windows_no_window_flags()
+    try:
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=creationflags,
+            startupinfo=startupinfo
+        )
+        if result.returncode != 0:
+            return False, f"FFmpeg error: {result.stderr[:200]}"
+        return True, ""
+    except Exception as e:
+        return False, f"Failed to extract audio: {e}"
+
+def format_srt_time(seconds: float) -> str:
+    """
+    Convert seconds to SRT time format: HH:MM:SS,mmm
+    
+    Args:
+        seconds: Time in seconds (float)
+    
+    Returns:
+        Formatted time string (e.g., "00:01:23,456")
+    """
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    # Use round() instead of int() to prevent duplicate timestamps when fractional milliseconds
+    # truncate to the same value. Clamp to 999 since SRT format only supports 0-999 milliseconds.
+    millis = min(round((seconds % 1) * 1000), 999)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
+
+def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", output_dir: str = None) -> Tuple[bool, dict, str]:
+    """
+    Transcribe audio using OpenAI Whisper (base model).
+    
+    Args:
+        audio_path: Path to audio file (WAV format, 16kHz mono)
+        language: Language code ("auto" for auto-detect, or "en", "es", etc.)
+        output_dir: Directory to save transcript files (optional)
+    
+    Returns:
+        Tuple of (success: bool, result_dict: dict, error_message: str)
+        If success=True, result_dict contains:
+        - "transcript_text": str - Plain text transcript
+        - "srt_path": str - Path to SRT file (if output_dir provided)
+        - "txt_path": str - Path to TXT file (if output_dir provided)
+        - "json_path": str - Path to JSON file (if output_dir provided)
+        - "detected_language": str - Language code detected by Whisper
+        If success=False, result_dict will be empty dict
+    """
+    try:
+        import whisper
+        import json
+    except ImportError:
+        return False, {}, "Whisper not installed. Run: pip install openai-whisper"
+    
+    try:
+        # Load Whisper model (base model for speed/quality balance)
+        # First run will download model automatically (~150MB)
+        model = whisper.load_model("base")
+        
+        # Transcribe
+        if language == "auto":
+            result = model.transcribe(audio_path)
+        else:
+            result = model.transcribe(audio_path, language=language)
+        
+        transcript_text = result["text"]
+        detected_language = result.get("language", language if language != "auto" else "unknown")
+        
+        result_dict = {
+            "transcript_text": transcript_text,
+            "detected_language": detected_language
+        }
+        
+        # Save transcript files if output_dir provided
+        if output_dir:
+            base_name = os.path.splitext(os.path.basename(audio_path))[0]
+            # Remove "_temp_audio" suffix if present
+            if base_name.endswith("_temp_audio"):
+                base_name = base_name[:-11]
+            
+            # Save as .txt (plain text transcript)
+            txt_path = os.path.join(output_dir, f"{base_name}_transcript.txt")
+            with open(txt_path, "w", encoding="utf-8") as f:
+                f.write(transcript_text)
+            result_dict["txt_path"] = txt_path
+            
+            # Save as .srt (subtitle format with timestamps)
+            srt_path = os.path.join(output_dir, f"{base_name}_transcript.srt")
+            with open(srt_path, "w", encoding="utf-8") as f:
+                segments = result.get("segments", [])
+                for i, segment in enumerate(segments, 1):
+                    start = segment["start"]
+                    end = segment["end"]
+                    text = segment["text"].strip()
+                    
+                    # Convert seconds to SRT time format
+                    start_time = format_srt_time(start)
+                    end_time = format_srt_time(end)
+                    
+                    f.write(f"{i}\n")
+                    f.write(f"{start_time} --> {end_time}\n")
+                    f.write(f"{text}\n\n")
+            result_dict["srt_path"] = srt_path
+            
+            # Save as .json (full transcription data with segments, words, etc.)
+            json_path = os.path.join(output_dir, f"{base_name}_transcript.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(result, f, indent=2, ensure_ascii=False)
+            result_dict["json_path"] = json_path
+            
+            return True, result_dict, ""
+        else:
+            return True, result_dict, ""
+            
+    except Exception as e:
+        return False, {}, f"Transcription error: {str(e)}"
 
 def load_history():
     try:
@@ -202,6 +370,124 @@ def add_master_playlist(output_dir: str, selected, audio_exists: bool):
         f.write("\n".join(lines) + "\n")
     return master_path
 
+def create_subtitle_playlist(output_dir: str, srt_path: str, language_code: str = "en") -> str:
+    """
+    Create an HLS subtitle playlist (.m3u8) that references an SRT file.
+    
+    Args:
+        output_dir: Directory where playlist will be saved
+        srt_path: Path to the SRT subtitle file (relative to output_dir or absolute)
+        language_code: Language code (e.g., "en", "es", "fr")
+    
+    Returns:
+        Path to the created subtitle playlist file
+    
+    Raises:
+        FileNotFoundError: If SRT file doesn't exist
+        IOError: If playlist file cannot be written
+    """
+    # Validate SRT file exists
+    if not os.path.exists(srt_path):
+        raise FileNotFoundError(f"SRT file not found: {srt_path}")
+    
+    # Get relative path from output_dir to srt_path
+    if os.path.isabs(srt_path):
+        rel_srt_path = os.path.relpath(srt_path, output_dir)
+    else:
+        rel_srt_path = srt_path
+    
+    # Normalize path separators for HLS (use forward slashes)
+    rel_srt_path = rel_srt_path.replace("\\", "/")
+    
+    # Normalize language code (lowercase, max 3 chars for ISO 639)
+    language_code = language_code.lower()[:3] if language_code else "en"
+    
+    playlist_lines = [
+        "#EXTM3U",
+        "#EXT-X-VERSION:3",
+        f"#EXT-X-TARGETDURATION:10",
+        f"#EXTINF:10.0,",
+        rel_srt_path
+    ]
+    
+    playlist_path = os.path.join(output_dir, f"subtitle_{language_code}.m3u8")
+    try:
+        with open(playlist_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(playlist_lines) + "\n")
+    except IOError as e:
+        raise IOError(f"Failed to write subtitle playlist: {e}")
+    
+    return playlist_path
+
+def add_master_playlist_with_subtitles(output_dir: str, selected, audio_exists: bool, subtitle_paths: dict = None) -> str:
+    """
+    Create master HLS playlist with optional subtitle tracks.
+    
+    Args:
+        output_dir: Output directory
+        selected: List of quality strings (e.g., ["1080p", "720p"])
+        audio_exists: Whether video has audio track
+        subtitle_paths: Optional dict mapping language codes to subtitle playlist paths
+                       Format: {"en": "subtitle_en.m3u8", "es": "subtitle_es.m3u8"}
+                       If None or empty, no subtitles added
+    
+    Returns:
+        Path to master playlist file
+    """
+    lines = ["#EXTM3U", "#EXT-X-VERSION:3"]
+    
+    # Add subtitle tracks (EXT-X-MEDIA) if provided
+    if subtitle_paths and len(subtitle_paths) > 0:
+        subtitle_group_id = "subtitles"
+        for lang_code, subtitle_playlist_path in subtitle_paths.items():
+            # Get relative path for subtitle playlist
+            if os.path.isabs(subtitle_playlist_path):
+                rel_subtitle_path = os.path.relpath(subtitle_playlist_path, output_dir)
+            else:
+                rel_subtitle_path = subtitle_playlist_path
+            
+            # Normalize path separators
+            rel_subtitle_path = rel_subtitle_path.replace("\\", "/")
+            
+            # Language name mapping (optional, for display)
+            lang_names = {
+                "en": "English", "es": "Spanish", "fr": "French", "de": "German",
+                "it": "Italian", "pt": "Portuguese", "ru": "Russian", "ja": "Japanese",
+                "ko": "Korean", "zh": "Chinese", "ar": "Arabic", "hi": "Hindi"
+            }
+            lang_name = lang_names.get(lang_code, lang_code.upper())
+            
+            # Add EXT-X-MEDIA entry for subtitle track
+            # First subtitle is DEFAULT=YES, AUTOSELECT=YES
+            is_first = list(subtitle_paths.keys()).index(lang_code) == 0
+            media_line = (
+                f'#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="{subtitle_group_id}",'
+                f'NAME="{lang_name}",LANGUAGE="{lang_code}",'
+                f'DEFAULT={"YES" if is_first else "NO"},'
+                f'AUTOSELECT={"YES" if is_first else "NO"},'
+                f'FORCED=NO,URI="{rel_subtitle_path}"'
+            )
+            lines.append(media_line)
+    
+    # Add video stream entries with subtitle reference
+    for q in selected:
+        prof = QUALITY_PROFILES[q]
+        bw = prof["bandwidth"]
+        codecs = 'CODECS="avc1.4d401f,mp4a.40.2"' if audio_exists else 'CODECS="avc1.4d401f"'
+        
+        # Add SUBTITLES reference if subtitles exist
+        stream_line = f'#EXT-X-STREAM-INF:BANDWIDTH={bw},RESOLUTION={prof["w"]}x{prof["h"]},{codecs}'
+        if subtitle_paths and len(subtitle_paths) > 0:
+            stream_line += f',SUBTITLES="subtitles"'
+        stream_line += f'\n{q}/index.m3u8'
+        
+        lines.append(stream_line)
+    
+    master_path = os.path.join(output_dir, "master.m3u8")
+    with open(master_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    return master_path
+
 # ----------------------------
 # UI App
 # ----------------------------
@@ -227,6 +513,14 @@ class RetroHlsApp:
         self.jobs_done = 0
         self.last_output_dir = None
         self.history_order = []
+
+        # Queue processing tracking
+        self.queue_results = []  # List of dicts: {"file": str, "status": "success"|"failed", "output_dir": str|None, "error": str|None, "master_path": str|None}
+        self.render_mode = "all"  # "all" or "selected"
+
+        # Transcription settings
+        self.transcribe_enabled = tk.BooleanVar(value=False)
+        self.transcription_language = tk.StringVar(value="auto")
 
         self.quality_vars = {
             "1080p": tk.BooleanVar(value=False),
@@ -287,6 +581,40 @@ class RetroHlsApp:
             ).grid(row=0, column=i, padx=8, sticky="w")
         tk.Label(q_panel, text="Tip: 1080p is heavier on CPU. Start with 720p+480p.", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)\
             .pack(anchor="w", padx=10, pady=(0, 10))
+
+        # Transcription panel
+        trans_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        trans_panel.pack(fill="x", pady=(0, 8))
+
+        tk.Label(trans_panel, text="TRANSCRIPTION", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
+
+        # Enable checkbox row
+        trans_row1 = tk.Frame(trans_panel, bg=RETRO_PANEL)
+        trans_row1.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Checkbutton(
+            trans_row1, text="Enable Transcription", variable=self.transcribe_enabled,
+            bg=RETRO_PANEL, fg=RETRO_ACCENT, selectcolor=RETRO_BG,
+            activebackground=RETRO_PANEL, activeforeground=RETRO_ACCENT,
+            font=FONT_MAIN, command=self._on_transcribe_toggle
+        ).pack(side="left")
+
+        # Language selection row (disabled until transcription enabled)
+        trans_row2 = tk.Frame(trans_panel, bg=RETRO_PANEL)
+        trans_row2.pack(fill="x", padx=10, pady=(0, 10))
+
+        tk.Label(trans_row2, text="Language:", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=(0, 8))
+
+        self.language_combo = ttk.Combobox(
+            trans_row2, textvariable=self.transcription_language,
+            values=["auto", "en", "es", "fr", "de", "it", "pt", "ru", "ja", "ko", "zh", "ar", "hi"],
+            state="readonly", width=12, font=FONT_SMALL
+        )
+        self.language_combo.pack(side="left")
+        self.language_combo.set("auto")
+        self.language_combo.config(state="disabled")  # Disabled until transcription enabled
+
+        tk.Label(trans_panel, text="Tip: Transcription runs after video rendering. Requires audio track.", 
+                 fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(anchor="w", padx=10, pady=(0, 10))
 
         p_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
         p_panel.pack(fill="x", pady=(0, 8))
@@ -376,6 +704,13 @@ class RetroHlsApp:
 
     def _set_status(self, text: str):
         self.status_label.config(text=f"Status: {text}")
+
+    def _on_transcribe_toggle(self):
+        """Enable/disable language selection based on transcription checkbox"""
+        if self.transcribe_enabled.get():
+            self.language_combo.config(state="readonly")
+        else:
+            self.language_combo.config(state="disabled")
 
     def _reset_progress(self, reset_overall: bool = True):
         self.per_quality_progress = {}
@@ -531,7 +866,10 @@ class RetroHlsApp:
         if not target or not os.path.isdir(target):
             messagebox.showwarning("Missing", "Output folder not found.")
             return
-        os.startfile(target)
+        try:
+            os.startfile(target)
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open folder: {e}")
 
     def on_start(self):
         if self.is_running:
@@ -546,8 +884,71 @@ class RetroHlsApp:
             messagebox.showwarning("No quality", "Select at least one quality.")
             return
 
+        # Check FFmpeg availability
+        is_available, error_msg = check_ffmpeg_available()
+        if not is_available:
+            messagebox.showerror("FFmpeg Not Found", 
+                f"FFmpeg or ffprobe is not available.\n\n{error_msg}\n\n"
+                "Please install FFmpeg and ensure it's in your PATH.")
+            return
+
+        # Determine render mode and files to process
+        files_to_render = []
+        sel = self.queue_list.curselection()
+        
+        if sel and len(sel) > 0:
+            # File is selected - ask user
+            idx = sel[0]
+            if 0 <= idx < len(self.render_queue):
+                selected_file = self.render_queue[idx]
+                # Validate selected file exists
+                if not os.path.isfile(selected_file):
+                    messagebox.showerror("Error", f"Selected file no longer exists:\n{selected_file}")
+                    return
+                
+                # Show dialog
+                response = messagebox.askyesnocancel(
+                    "Render Mode",
+                    f"A file is selected in the queue:\n{os.path.basename(selected_file)}\n\n"
+                    "Choose render mode:\n\n"
+                    "Yes = Render Selected File Only\n"
+                    "No = Render All Files\n"
+                    "Cancel = Don't Start"
+                )
+                
+                if response is None:  # Cancel
+                    return
+                elif response is True:  # Yes - selected only
+                    self.render_mode = "selected"
+                    files_to_render = [selected_file]
+                else:  # False - No - all files
+                    self.render_mode = "all"
+                    files_to_render = list(self.render_queue)
+            else:
+                # Invalid selection index - fallback to all
+                self.render_mode = "all"
+                files_to_render = list(self.render_queue)
+        else:
+            # No selection - render all
+            self.render_mode = "all"
+            files_to_render = list(self.render_queue)
+        
+        # Validate files exist
+        valid_files = [f for f in files_to_render if os.path.isfile(f)]
+        if not valid_files:
+            messagebox.showerror("Error", "No valid files to render. Please check file paths.")
+            return
+        
+        if len(valid_files) < len(files_to_render):
+            missing = [f for f in files_to_render if f not in valid_files]
+            messagebox.showwarning("Warning", 
+                f"{len(missing)} file(s) no longer exist and will be skipped:\n" + 
+                "\n".join([os.path.basename(f) for f in missing[:3]]) + 
+                ("..." if len(missing) > 3 else ""))
+            files_to_render = valid_files
+
         self.current_selected = selected
-        self.jobs_total = len(self.render_queue)
+        self.jobs_total = len(files_to_render)  # Use files_to_render count, not entire queue
         self.jobs_done = 0
         self.last_output_dir = None
         self.is_running = True
@@ -559,7 +960,7 @@ class RetroHlsApp:
         self.output_label.config(text=self.output_base_dir)
         self._set_status("starting...")
 
-        threading.Thread(target=self._render_worker, args=(list(self.render_queue), selected), daemon=True).start()
+        threading.Thread(target=self._render_worker, args=(files_to_render, selected), daemon=True).start()
 
     def _finish_success(self, master_path: str):
         for q in self.current_selected:
@@ -583,6 +984,137 @@ class RetroHlsApp:
         self.clear_btn.config(state="normal")
         self.open_btn.config(state="disabled")
         messagebox.showerror("Error", msg)
+
+    def _finish_queue_complete(self, queue_results):
+        """
+        Handle completion of entire queue with summary.
+        
+        Args:
+            queue_results: List of dicts with format:
+                {"file": str, "status": "success"|"failed", "output_dir": str|None, 
+                 "error": str|None, "master_path": str|None}
+        """
+        if not queue_results:
+            # Edge case: no results (shouldn't happen, but handle it)
+            self._set_status("completed (no files processed)")
+            self.is_running = False
+            self.start_btn.config(state="normal")
+            self.pick_btn.config(state="normal")
+            self.remove_btn.config(state="normal")
+            self.clear_btn.config(state="normal")
+            self.open_btn.config(state="disabled")
+            messagebox.showwarning("Warning", "No files were processed.")
+            return
+        
+        # Calculate statistics
+        total = len(queue_results)
+        successes = [r for r in queue_results if r["status"] == "success"]
+        failures = [r for r in queue_results if r["status"] == "failed"]
+        success_count = len(successes)
+        failure_count = len(failures)
+        
+        # Update progress to 100%
+        self._update_overall(100.0)
+        
+        # Update all quality bars to 100% for visual completion
+        for q in self.current_selected:
+            self._update_quality_progress(q, 100.0, self.current_selected)
+        
+        # Find last successful output
+        last_success = None
+        last_master_path = None
+        for r in reversed(queue_results):  # Check in reverse to get last
+            if r["status"] == "success" and r["output_dir"]:
+                last_success = r["output_dir"]
+                last_master_path = r.get("master_path")
+                break
+        
+        # Update last_output_dir
+        if last_success:
+            self.last_output_dir = last_success
+        
+        # Reset state
+        self.is_running = False
+        self.start_btn.config(state="normal")
+        self.pick_btn.config(state="normal")
+        self.remove_btn.config(state="normal")
+        self.clear_btn.config(state="normal")
+        
+        # Enable/disable open button based on success
+        if last_success:
+            self.open_btn.config(state="normal")
+        else:
+            self.open_btn.config(state="disabled")
+        
+        # Build summary message
+        if failure_count == 0:
+            # All succeeded
+            self._set_status("done ✅ - all succeeded")
+            msg = f"All {success_count} file(s) rendered successfully!\n\n"
+            if last_master_path:
+                msg += f"Last output:\n{last_success}\n\nMaster playlist:\n{last_master_path}"
+                # Check if transcription was done
+                last_result = None
+                for r in reversed(queue_results):
+                    if r["status"] == "success" and r.get("transcript_paths"):
+                        last_result = r
+                        break
+                if last_result:
+                    transcript_paths = last_result.get("transcript_paths", {})
+                    msg += f"\n\nTranscripts:\n"
+                    if transcript_paths.get("srt"):
+                        msg += f"  SRT: {transcript_paths['srt']}\n"
+                    if transcript_paths.get("txt"):
+                        msg += f"  TXT: {transcript_paths['txt']}\n"
+                    if transcript_paths.get("json"):
+                        msg += f"  JSON: {transcript_paths['json']}\n"
+                    if last_result.get("subtitle_playlist_path"):
+                        msg += f"\nSubtitle playlist (HLS):\n  {last_result['subtitle_playlist_path']}"
+            else:
+                msg += f"Last output:\n{last_success}"
+            messagebox.showinfo("Success", msg)
+        elif success_count == 0:
+            # All failed
+            self._set_status("done ❌ - all failed")
+            msg = f"All {failure_count} file(s) failed to render.\n\n"
+            msg += "Failed files:\n"
+            for r in failures[:5]:  # Show first 5
+                msg += f"  • {os.path.basename(r['file'])}\n"
+                if r["error"]:
+                    msg += f"    Error: {r['error'][:100]}\n"
+            if len(failures) > 5:
+                msg += f"  ... and {len(failures) - 5} more"
+            messagebox.showerror("All Failed", msg)
+        else:
+            # Partial success
+            self._set_status(f"done ⚠️ - {success_count} succeeded, {failure_count} failed")
+            msg = f"Queue completed: {success_count} succeeded, {failure_count} failed\n\n"
+            
+            if success_count > 0:
+                msg += f"✅ Successful ({success_count}):\n"
+                for r in successes[:3]:  # Show first 3
+                    msg += f"  • {os.path.basename(r['file'])}\n"
+                if len(successes) > 3:
+                    msg += f"  ... and {len(successes) - 3} more\n"
+                msg += "\n"
+            
+            if failure_count > 0:
+                msg += f"❌ Failed ({failure_count}):\n"
+                for r in failures[:3]:  # Show first 3
+                    msg += f"  • {os.path.basename(r['file'])}\n"
+                    if r["error"]:
+                        error_preview = r["error"][:80] + "..." if len(r["error"]) > 80 else r["error"]
+                        msg += f"    {error_preview}\n"
+                if len(failures) > 3:
+                    msg += f"  ... and {len(failures) - 3} more\n"
+            
+            if last_master_path:
+                msg += f"\nLast successful output:\n{last_success}"
+            
+            messagebox.showwarning("Queue Complete", msg)
+        
+        # Final history refresh
+        self.root.after(0, self._refresh_history_ui)
 
     def _render_single_quality(self, quality: str, total_s: float, selected):
         qdir = os.path.join(self.output_dir, quality)
@@ -682,12 +1214,19 @@ class RetroHlsApp:
                 log_path = write_log(self.output_dir, f"ffmpeg_error_{quality}.log", "".join(stderr_lines))
                 try:
                     proc.kill()
+                    # Wait a bit for process to terminate
+                    try:
+                        proc.wait(timeout=5)
+                    except (subprocess.TimeoutExpired, AttributeError):
+                        # timeout parameter not available in older Python versions
+                        pass
                 except Exception:
                     pass
-                self.root.after(0, lambda: self._finish_with_error(
+                error_msg = (
                     f"FFmpeg appears stuck while rendering {quality} (no output for 30s).\n\n"
                     f"Partial log saved:\n{log_path}"
-                ))
+                )
+                self.root.after(0, lambda msg=error_msg: self._finish_with_error(msg))
                 return False, None
 
             time.sleep(0.05)
@@ -708,48 +1247,241 @@ class RetroHlsApp:
         self.root.after(0, lambda: self._set_status("rendering queue..."))
         safe_mkdir(self.output_base_dir)
 
+        queue_results = []  # Local list to track results
+        master_path = None  # Track last successful master path
+        
         for idx, fp in enumerate(files, 1):
-            if not os.path.isfile(fp):
-                self.root.after(0, lambda fp=fp: self._finish_with_error(f"File missing: {fp}"))
-                return
-
-            self.file_path = fp
-            base_name = os.path.splitext(os.path.basename(fp))[0]
-            self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
-            safe_mkdir(self.output_dir)
-            info = get_video_info(fp)
-            self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
-            self.audio_exists = has_audio_stream(fp)
-            self.current_selected = selected
-            self._reset_progress(reset_overall=False)
-            self.per_quality_progress = {q: 0.0 for q in selected}
-
-            self.root.after(0, lambda fp=fp: self._update_selected_file_info(fp))
-            self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"rendering {idx}/{total}: {name}"))
-
-            total_s = max(float(self.duration_s), 0.001)
-            for q_idx, q in enumerate(selected, 1):
-                self.root.after(0, lambda q=q, q_idx=q_idx: self._set_status(f"rendering {q} ({q_idx}/{len(selected)})"))
-                ok, err = self._render_single_quality(q, total_s, selected)
-                if not ok:
-                    if err is None:
-                        return
-                    self.root.after(0, lambda e=err: self._finish_with_error(e))
-                    return
-
+            file_result = {
+                "file": fp,
+                "status": "failed",  # Default to failed, set to success if completes
+                "output_dir": None,
+                "error": None,
+                "master_path": None,
+                "transcript_path": None,  # Path to SRT file if transcription succeeded (backward compatibility)
+                "transcript_paths": None,  # Dict with "srt", "txt", "json" paths if transcription succeeded
+                "subtitle_playlist_path": None,  # Path to HLS subtitle playlist (.m3u8) if created
+                "transcript_error": None  # Error message if transcription failed
+            }
+            
             try:
-                master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
+                # Validate file exists (re-check in case deleted)
+                if not os.path.isfile(fp):
+                    file_result["error"] = f"File missing: {fp}"
+                    queue_results.append(file_result.copy())  # Append copy to avoid reference issues
+                    self.root.after(0, lambda idx=idx, total=len(files), fp=fp: self._set_status(f"Failed {idx}/{total}: {os.path.basename(fp)} - file missing"))
+                    self.jobs_done = idx
+                    # Update overall progress for failed file
+                    if self.jobs_total > 0:
+                        queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                        self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                    continue
+                
+                # Set up file processing
+                self.file_path = fp
+                base_name = os.path.splitext(os.path.basename(fp))[0]
+                self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
+                safe_mkdir(self.output_dir)
+                
+                # Get video info
+                info = get_video_info(fp)
+                self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
+                self.audio_exists = has_audio_stream(fp)
+                self.current_selected = selected
+                self._reset_progress(reset_overall=False)
+                self.per_quality_progress = {q: 0.0 for q in selected}
+                
+                # Update UI
+                self.root.after(0, lambda fp=fp: self._update_selected_file_info(fp))
+                self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"rendering {idx}/{total}: {name}"))
+                
+                # Render each quality
+                total_s = max(float(self.duration_s), 0.001)
+                render_error = None
+                
+                for q_idx, q in enumerate(selected, 1):
+                    self.root.after(0, lambda q=q, q_idx=q_idx, total_q=len(selected): self._set_status(f"rendering {q} ({q_idx}/{total_q})"))
+                    ok, err = self._render_single_quality(q, total_s, selected)
+                    if not ok:
+                        if err is None:
+                            # Process was killed/stuck - treat as error
+                            render_error = f"Rendering {q} was interrupted"
+                        else:
+                            render_error = err
+                        break  # Exit quality loop on error
+                
+                # Check if rendering succeeded
+                if render_error:
+                    file_result["error"] = render_error
+                    queue_results.append(file_result.copy())  # Append copy to avoid reference issues
+                    self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name}"))
+                    self.jobs_done = idx
+                    # Update overall progress for failed file
+                    if self.jobs_total > 0:
+                        queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                        self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                    continue
+                
+                # Create initial master playlist (without subtitles)
+                try:
+                    master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
+                    file_result["master_path"] = master_path
+                except Exception as e:
+                    file_result["error"] = f"Master playlist write failed: {e}"
+                    queue_results.append(file_result.copy())  # Append copy to avoid reference issues
+                    self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name} - playlist error"))
+                    self.jobs_done = idx
+                    if self.jobs_total > 0:
+                        queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                        self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                    continue
+                
+                # Transcription (if enabled and audio exists)
+                transcript_paths = {}  # Dict: {"srt": path, "txt": path, "json": path}
+                subtitle_playlist_path = None
+                trans_success = False
+                trans_result = {}
+                detected_lang = None
+                language = None
+
+                if self.transcribe_enabled.get() and self.audio_exists:
+                    try:
+                        self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribing {idx}/{total}: {name}"))
+                        
+                        # Extract audio to temporary file
+                        temp_audio = os.path.join(self.output_dir, f"{base_name}_temp_audio.wav")
+                        success, error_msg = extract_audio_from_video(fp, temp_audio)
+                        
+                        if success:
+                            # Transcribe
+                            language = self.transcription_language.get()
+                            trans_success, trans_result, trans_error = transcribe_audio_with_whisper(
+                                temp_audio, language, self.output_dir
+                            )
+                            
+                            if trans_success and trans_result:
+                                # Store transcript paths
+                                transcript_paths = {
+                                    "srt": trans_result.get("srt_path"),
+                                    "txt": trans_result.get("txt_path"),
+                                    "json": trans_result.get("json_path")
+                                }
+                                file_result["transcript_path"] = transcript_paths.get("srt")  # Keep for backward compatibility
+                                file_result["transcript_paths"] = transcript_paths
+                                
+                                # Get detected language (normalize to lowercase for consistency)
+                                detected_lang = trans_result.get("detected_language", language if language != "auto" else "en")
+                                detected_lang = detected_lang.lower() if detected_lang else "en"
+                                
+                                # Create HLS subtitle playlist for SRT file (only if SRT file exists)
+                                srt_path = transcript_paths.get("srt")
+                                if srt_path and os.path.exists(srt_path):
+                                    try:
+                                        subtitle_playlist_path = create_subtitle_playlist(
+                                            self.output_dir,
+                                            srt_path,
+                                            detected_lang
+                                        )
+                                        file_result["subtitle_playlist_path"] = subtitle_playlist_path
+                                    except Exception as e:
+                                        # Subtitle playlist creation failed - log but don't fail
+                                        file_result["transcript_error"] = f"Subtitle playlist creation failed: {str(e)}"
+                                else:
+                                    file_result["transcript_error"] = "SRT file not found after transcription"
+                                
+                                self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribed {idx}/{total}: {name}"))
+                            else:
+                                # Transcription failed but don't fail the whole render
+                                self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcription warning {idx}/{total}: {name}"))
+                                file_result["transcript_error"] = trans_error
+                            
+                            # Clean up temp audio file
+                            try:
+                                if os.path.exists(temp_audio):
+                                    os.remove(temp_audio)
+                            except Exception:
+                                pass
+                        else:
+                            file_result["transcript_error"] = f"Audio extraction failed: {error_msg}"
+                    except Exception as e:
+                        # Transcription error - don't fail the render, just log it
+                        file_result["transcript_error"] = f"Transcription error: {str(e)}"
+
+                # Update master playlist to include subtitle tracks if transcription succeeded
+                if subtitle_playlist_path and os.path.exists(subtitle_playlist_path) and trans_success:
+                    try:
+                        # Use detected_lang if available, otherwise fallback
+                        lang_to_use = detected_lang if detected_lang else (language if language and language != "auto" else "en")
+                        subtitle_paths_dict = {lang_to_use: subtitle_playlist_path}
+                        # Replace master playlist with version that includes subtitle tracks
+                        master_path = add_master_playlist_with_subtitles(
+                            self.output_dir,
+                            selected,
+                            self.audio_exists,
+                            subtitle_paths_dict
+                        )
+                        file_result["master_path"] = master_path
+                    except Exception as e:
+                        # Master playlist update failed - log but don't fail render
+                        # Original master playlist still exists, so render is still successful
+                        if not file_result.get("transcript_error"):
+                            file_result["transcript_error"] = f"Failed to add subtitles to master playlist: {str(e)}"
+                
+                # Success - save to history and update result
+                file_result["status"] = "success"
+                file_result["output_dir"] = self.output_dir
+                file_result["master_path"] = master_path
+                
+                # Perform all operations that might fail before appending
+                history_entry = {
+                    "output": self.output_dir,
+                    "ts": datetime.now().isoformat(timespec="seconds"),
+                    "transcribed": self.transcribe_enabled.get() and self.audio_exists
+                }
+                if transcript_paths:
+                    history_entry["transcript"] = transcript_paths.get("srt")  # Store SRT path for backward compatibility
+                    history_entry["transcript_paths"] = transcript_paths  # Store all paths
+                    if subtitle_playlist_path:
+                        history_entry["subtitle_playlist"] = subtitle_playlist_path
+                self.history[fp] = history_entry
+                save_history(self.history)
+                self.root.after(0, self._refresh_history_ui)
+                self.last_output_dir = self.output_dir
+                self.jobs_done = idx
+                
+                # Update status and progress
+                self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Completed {idx}/{total}: {name}"))
+                if self.jobs_total > 0:
+                    queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                    self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                
+                # Append copy only after all operations succeed
+                queue_results.append(file_result.copy())  # Append copy to avoid reference issues
+                
+                # Small delay to show completion status
+                time.sleep(0.5)
+            
             except Exception as e:
-                self.root.after(0, lambda: self._finish_with_error(f"Master playlist write failed: {e}"))
-                return
+                # Catch any unexpected exceptions
+                # Only append if not already appended (check if file_result was modified for success)
+                if file_result.get("status") != "success":
+                    # File processing failed - append error result
+                    file_result["error"] = f"Unexpected error: {str(e)}"
+                    queue_results.append(file_result.copy())  # Append copy to avoid reference issues
+                    self.root.after(0, lambda idx=idx, total=len(files), fp=fp: self._set_status(f"Failed {idx}/{total}: {os.path.basename(fp)} - error"))
+                else:
+                    # File was successfully rendered and appended, but exception occurred in post-processing
+                    # Don't add duplicate entry - the success entry is already in queue_results
+                    # Just log the error but don't create a new entry
+                    self.root.after(0, lambda idx=idx, total=len(files), fp=fp: self._set_status(f"Completed {idx}/{total}: {os.path.basename(fp)} (post-processing warning)"))
+                
+                self.jobs_done = idx
+                if self.jobs_total > 0:
+                    queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                    self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                continue
 
-            self.history[fp] = {"output": self.output_dir, "ts": datetime.now().isoformat(timespec="seconds")}
-            save_history(self.history)
-            self.root.after(0, self._refresh_history_ui)
-            self.last_output_dir = self.output_dir
-            self.jobs_done = idx
-
-        self.root.after(0, lambda: self._finish_success(master_path))
+        # After loop completes, call finish method
+        self.root.after(0, lambda results=queue_results: self._finish_queue_complete(results))
 
 # ----------------------------
 # Main
