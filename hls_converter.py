@@ -59,6 +59,67 @@ def check_ffmpeg_available() -> Tuple[bool, str]:
 
     return True, ""
 
+def get_available_ffmpeg_encoders() -> set:
+    """
+    Run ffmpeg -encoders and return a set of available H.264 encoder names
+    (e.g. "h264_amf", "h264_nvenc", "h264_qsv"). libx264 is assumed available if ffmpeg runs.
+    """
+    result = set()
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-encoders"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=10,
+        )
+        out = (proc.stdout or "") + (proc.stderr or "")
+        for name in ("h264_amf", "h264_nvenc", "h264_qsv"):
+            if name in out:
+                result.add(name)
+    except Exception:
+        pass
+    return result
+
+def build_video_encode_args(encoder_key: str, prof: dict) -> list:
+    """
+    Build FFmpeg video encoding args for the given encoder and quality profile.
+    Returns a list of args (e.g. -c:v, encoder name, -b:v, ...). Does not include -i, -vf, audio, or HLS args.
+    encoder_key: "cpu" | "amd" | "nvidia" | "intel"
+    prof: dict with "b", "maxrate", "buf" from QUALITY_PROFILES.
+    """
+    b, maxrate, buf = prof["b"], prof["maxrate"], prof["buf"]
+    if encoder_key == "cpu":
+        return [
+            "-c:v", "libx264", "-profile:v", "main", "-crf", "20",
+            "-g", "48", "-keyint_min", "48", "-sc_threshold", "0",
+            "-b:v", b, "-maxrate", maxrate, "-bufsize", buf,
+        ]
+    if encoder_key == "amd":
+        return [
+            "-c:v", "h264_amf", "-rc", "vbr_peak", "-quality", "balanced",
+            "-b:v", b, "-maxrate", maxrate, "-bufsize", buf,
+            "-g", "48",
+        ]
+    if encoder_key == "nvidia":
+        return [
+            "-c:v", "h264_nvenc", "-rc", "vbr",
+            "-b:v", b, "-maxrate", maxrate, "-bufsize", buf,
+            "-g", "48",
+        ]
+    if encoder_key == "intel":
+        return [
+            "-c:v", "h264_qsv",
+            "-b:v", b, "-maxrate", maxrate, "-bufsize", buf,
+            "-g", "48",
+        ]
+    # Fallback to CPU
+    return [
+        "-c:v", "libx264", "-profile:v", "main", "-crf", "20",
+        "-g", "48", "-keyint_min", "48", "-sc_threshold", "0",
+        "-b:v", b, "-maxrate", maxrate, "-bufsize", buf,
+    ]
+
 def has_audio_stream(file_path: str) -> bool:
     cmd = [
         "ffprobe", "-v", "error",
@@ -529,6 +590,13 @@ class RetroHlsApp:
             "360p": tk.BooleanVar(value=False),
         }
 
+        self.encoder_var = tk.StringVar()
+        self.available_encoders = get_available_ffmpeg_encoders()
+
+        # Simulated transcript progress (Whisper has no callback; we tick the bar during transcription)
+        self._transcript_progress_after_id = None
+        self._transcript_simulated_pct = 0.0
+
         self._build_ui()
 
     def _build_ui(self):
@@ -580,7 +648,24 @@ class RetroHlsApp:
                 font=FONT_MAIN
             ).grid(row=0, column=i, padx=8, sticky="w")
         tk.Label(q_panel, text="Tip: 1080p is heavier on CPU. Start with 720p+480p.", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)\
-            .pack(anchor="w", padx=10, pady=(0, 10))
+            .pack(anchor="w", padx=10, pady=(0, 4))
+
+        # Encoder selection (CPU vs GPU)
+        enc_row = tk.Frame(q_panel, bg=RETRO_PANEL)
+        enc_row.pack(fill="x", padx=10, pady=(0, 10))
+        tk.Label(enc_row, text="Encoder:", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=(0, 8))
+        self.encoder_display = {"cpu": "CPU (libx264)", "amd": "AMD GPU (AMF)", "nvidia": "NVIDIA GPU (NVENC)", "intel": "Intel GPU (QSV)"}
+        encoder_values = list(self.encoder_display.values())
+        self.encoder_var.set(self.encoder_display["cpu"])
+        self.encoder_combo = ttk.Combobox(
+            enc_row,
+            textvariable=self.encoder_var,
+            values=encoder_values,
+            state="readonly",
+            width=22,
+            font=FONT_SMALL,
+        )
+        self.encoder_combo.pack(side="left")
 
         # Transcription panel
         trans_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
@@ -645,6 +730,15 @@ class RetroHlsApp:
             pct.pack(side="right")
             self.per_quality_bars[q] = bar
             self.per_quality_labels[q] = pct
+
+        # Transcript progress row (encoding + transcript)
+        trans_row = tk.Frame(p_panel, bg=RETRO_PANEL)
+        trans_row.pack(fill="x", padx=10, pady=(0, 6))
+        tk.Label(trans_row, text="Transcript", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=8, anchor="w").pack(side="left")
+        self.transcript_bar = ttk.Progressbar(trans_row, length=340, mode="determinate", style="Retro.Horizontal.TProgressbar")
+        self.transcript_bar.pack(side="left", padx=(6, 0))
+        self.transcript_label = tk.Label(trans_row, text="0%", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=6, anchor="e")
+        self.transcript_label.pack(side="right")
 
         a_panel = tk.Frame(left_col, bg=RETRO_BG)
         a_panel.pack(fill="x", pady=(6, 0))
@@ -713,6 +807,7 @@ class RetroHlsApp:
             self.language_combo.config(state="disabled")
 
     def _reset_progress(self, reset_overall: bool = True):
+        self._cancel_transcript_progress_timer()
         self.per_quality_progress = {}
         self.current_job_percent = 0.0
         if reset_overall:
@@ -720,9 +815,57 @@ class RetroHlsApp:
         for q in QUALITY_ORDER:
             self.per_quality_bars[q]["value"] = 0
             self.per_quality_labels[q].config(text="0%")
+        self.transcript_bar["value"] = 0
+        self.transcript_label.config(text="-" if not self.transcribe_enabled.get() else "0%")
 
     def _update_overall(self, percent: float):
         self.overall_bar["value"] = percent
+
+    def _cancel_transcript_progress_timer(self):
+        """Cancel the simulated transcript progress timer if running."""
+        if self._transcript_progress_after_id is not None:
+            try:
+                self.root.after_cancel(self._transcript_progress_after_id)
+            except Exception:
+                pass
+            self._transcript_progress_after_id = None
+
+    def _tick_transcript_progress(self):
+        """
+        Called periodically while transcription runs. Increments simulated transcript
+        progress (Whisper has no progress callback) and updates overall bar.
+        """
+        self._transcript_simulated_pct = min(90.0, self._transcript_simulated_pct + 4.0)
+        pct = int(self._transcript_simulated_pct)
+        self.transcript_bar["value"] = pct
+        self.transcript_label.config(text=f"{pct}%")
+        # Nudge overall bar: 85% + 15% * (simulated/100) for this file
+        if self.jobs_total > 0:
+            effective = 0.85 + 0.15 * (self._transcript_simulated_pct / 100.0)
+            queue_percent = ((self.jobs_done + effective) / self.jobs_total) * 100.0
+            self._update_overall(queue_percent)
+        if self._transcript_simulated_pct < 90.0:
+            self._transcript_progress_after_id = self.root.after(300, self._tick_transcript_progress)
+        else:
+            self._transcript_progress_after_id = None
+
+    def _set_transcript_progress(self, state: str):
+        """Update transcript row: idle (0% or -), running (incremental sim), or done (100%)."""
+        self._cancel_transcript_progress_timer()
+        if state == "idle":
+            self.transcript_bar["value"] = 0
+            self.transcript_label.config(text="-" if not self.transcribe_enabled.get() else "0%")
+        elif state == "running":
+            self._transcript_simulated_pct = 0.0
+            self.transcript_bar["value"] = 0
+            self.transcript_label.config(text="0%")
+            self._transcript_progress_after_id = self.root.after(300, self._tick_transcript_progress)
+        elif state == "done":
+            self.transcript_bar["value"] = 100
+            self.transcript_label.config(text="100%")
+            # Advance overall bar to reflect completed file (encoding + transcript); worker will set jobs_done next
+            if self.jobs_total > 0:
+                self._update_overall(((self.jobs_done + 1) / self.jobs_total) * 100.0)
 
     def _update_quality_progress(self, quality: str, percent: float, selected):
         self.per_quality_progress[quality] = percent
@@ -737,7 +880,12 @@ class RetroHlsApp:
             self.current_job_percent = avg
 
         if self.jobs_total > 0:
-            queue_percent = ((self.jobs_done + (avg / 100.0)) / self.jobs_total) * 100.0
+            # When all qualities complete and transcription is enabled for this file, reserve 15% for transcript phase
+            if avg >= 100.0 and self.transcribe_enabled.get() and self.audio_exists:
+                effective = 0.85
+            else:
+                effective = avg / 100.0
+            queue_percent = ((self.jobs_done + effective) / self.jobs_total) * 100.0
             self._update_overall(queue_percent)
         else:
             self._update_overall(avg)
@@ -1128,6 +1276,12 @@ class RetroHlsApp:
         prof = QUALITY_PROFILES[quality]
         w, h = prof["w"], prof["h"]
 
+        display = self.encoder_var.get()
+        encoder_key = next((k for k, v in self.encoder_display.items() if v == display), "cpu")
+
+        scale_pad_vf = f"scale=w={w}:h={h}:force_original_aspect_ratio=decrease,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2"
+        video_args = build_video_encode_args(encoder_key, prof)
+
         cmd = [
             "ffmpeg",
             "-hide_banner",
@@ -1135,10 +1289,8 @@ class RetroHlsApp:
             "-nostdin",
             "-stats",
             "-y", "-i", self.file_path,
-            "-vf", f"scale=w={w}:h={h}:force_original_aspect_ratio=decrease,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2",
-            "-c:v", "libx264", "-profile:v", "main", "-crf", "20", "-g", "48", "-keyint_min", "48", "-sc_threshold", "0",
-            "-b:v", prof["b"], "-maxrate", prof["maxrate"], "-bufsize", prof["buf"],
-        ]
+            "-vf", scale_pad_vf,
+        ] + video_args
 
         if self.audio_exists:
             cmd += ["-c:a", "aac", "-b:a", "128k", "-ac", "2"]
@@ -1166,7 +1318,10 @@ class RetroHlsApp:
                 startupinfo=startupinfo
             )
         except Exception as e:
-            return False, f"Failed to start ffmpeg for {quality}: {e}"
+            err = f"Failed to start ffmpeg for {quality}: {e}"
+            if encoder_key != "cpu":
+                err += "\n\nTry CPU encoder or install FFmpeg with GPU support (--enable-amf / --enable-nvenc / --enable-libmfx)."
+            return False, err
 
         out_q = queue.Queue()
         err_q = queue.Queue()
@@ -1237,7 +1392,10 @@ class RetroHlsApp:
 
         if proc.returncode != 0:
             log_path = write_log(self.output_dir, f"ffmpeg_error_{quality}.log", stderr_text)
-            return False, f"FFmpeg failed for {quality}.\n\nError log:\n{log_path}"
+            err = f"FFmpeg failed for {quality}.\n\nError log:\n{log_path}"
+            if encoder_key != "cpu":
+                err += "\n\nTry CPU encoder or install FFmpeg with GPU support (--enable-amf / --enable-nvenc / --enable-libmfx)."
+            return False, err
 
         self.root.after(0, lambda: self._update_quality_progress(quality, 100.0, selected))
         return True, None
@@ -1345,6 +1503,7 @@ class RetroHlsApp:
 
                 if self.transcribe_enabled.get() and self.audio_exists:
                     try:
+                        self.root.after(0, lambda: self._set_transcript_progress("running"))
                         self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribing {idx}/{total}: {name}"))
                         
                         # Extract audio to temporary file
@@ -1388,9 +1547,11 @@ class RetroHlsApp:
                                 else:
                                     file_result["transcript_error"] = "SRT file not found after transcription"
                                 
+                                self.root.after(0, lambda: self._set_transcript_progress("done"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribed {idx}/{total}: {name}"))
                             else:
                                 # Transcription failed but don't fail the whole render
+                                self.root.after(0, lambda: self._set_transcript_progress("idle"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcription warning {idx}/{total}: {name}"))
                                 file_result["transcript_error"] = trans_error
                             
@@ -1401,9 +1562,11 @@ class RetroHlsApp:
                             except Exception:
                                 pass
                         else:
+                            self.root.after(0, lambda: self._set_transcript_progress("idle"))
                             file_result["transcript_error"] = f"Audio extraction failed: {error_msg}"
                     except Exception as e:
                         # Transcription error - don't fail the render, just log it
+                        self.root.after(0, lambda: self._set_transcript_progress("idle"))
                         file_result["transcript_error"] = f"Transcription error: {str(e)}"
 
                 # Update master playlist to include subtitle tracks if transcription succeeded

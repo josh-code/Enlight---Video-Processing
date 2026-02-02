@@ -1,0 +1,14 @@
+{
+  "C:/Users/S7/Downloads/Test videos/Raw/module_4_lesson_7 (1080p).mp4": {
+    "output": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls",
+    "ts": "2026-02-02T04:28:30",
+    "transcribed": true,
+    "transcript": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.srt",
+      "txt": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.txt",
+      "json": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.json"
+    },
+    "subtitle_playlist": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\subtitle_en.m3u8"
+  }
+}
