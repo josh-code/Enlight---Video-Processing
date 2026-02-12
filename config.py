@@ -22,6 +22,11 @@ class Config:
         "PRESIGN_EXACT_ENDPOINT",
         "/api/v1/admin/content/aws/uploadUrlExact",
     )
+    PRESIGN_BATCH_ENDPOINT = os.getenv(
+        "PRESIGN_BATCH_ENDPOINT",
+        "/api/v1/admin/content/aws/uploadUrlExactBatch",
+    )
+    PRESIGN_BATCH_SIZE = int(os.getenv("PRESIGN_BATCH_SIZE", "200"))
     FILE_CREATE_ENDPOINT = os.getenv(
         "FILE_CREATE_ENDPOINT",
         "/api/v1/admin/content/files",

@@ -104,6 +104,55 @@ class S3UploadManager:
                 time.sleep(RETRY_DELAYS[attempt])
         raise RuntimeError("get_presigned_url_exact failed after retries")
 
+    def get_presigned_urls_batch(
+        self,
+        keys_with_content_types: List[tuple[str, str]],
+    ) -> List[dict]:
+        """
+        Fetch presigned URLs in batches of up to 200 keys per API call.
+        keys_with_content_types: list of (s3_key, content_type).
+        Returns list of { key, signedUrl, downloadUrl } in same order.
+        """
+        if not requests:
+            raise RuntimeError("requests not installed")
+        batch_size = getattr(Config, "PRESIGN_BATCH_SIZE", 200) or 200
+        url = self._url(Config.PRESIGN_BATCH_ENDPOINT)
+        results: List[dict] = []
+        for start in range(0, len(keys_with_content_types), batch_size):
+            chunk = keys_with_content_types[start : start + batch_size]
+            body = {
+                "keys": [
+                    {"key": k, "contentType": ct or ""}
+                    for k, ct in chunk
+                ]
+            }
+            for attempt in range(MAX_RETRIES):
+                try:
+                    r = requests.post(
+                        url,
+                        json=body,
+                        headers=self._headers(),
+                        timeout=60,
+                    )
+                    if r.status_code in (401, 403):
+                        raise PermissionError(f"Auth failed: {r.status_code}")
+                    r.raise_for_status()
+                    data = r.json()
+                    ok = data.get("status", data.get("success"))
+                    if not ok or not data.get("data"):
+                        raise ValueError("Invalid batch response: missing data")
+                    results.extend(data["data"])
+                    break
+                except (
+                    requests.exceptions.RequestException,
+                    ValueError,
+                    PermissionError,
+                ) as e:
+                    if attempt == MAX_RETRIES - 1:
+                        raise
+                    time.sleep(RETRY_DELAYS[attempt])
+        return results
+
     def upload_file(
         self,
         local_path: str,
@@ -161,28 +210,37 @@ class S3UploadManager:
             raise NotADirectoryError(local_dir)
         prefix = (s3_prefix or "").rstrip("/")
         uploaded: List[tuple[str, str]] = []
-        files: List[Path] = []
+        # Build full list of (path, key, content_type)
+        file_entries: List[tuple[Path, str, str]] = []
         for p in local_path.rglob("*"):
             if p.is_file():
-                files.append(p)
-        total = len(files)
-        for i, p in enumerate(files):
+                rel = p.relative_to(local_path)
+                parts = rel.parts
+                key = f"{prefix}/{'/'.join(parts)}".replace("\\", "/")
+                content_type = _get_content_type(str(p))
+                file_entries.append((p, key, content_type))
+        total = len(file_entries)
+        batch_size = getattr(Config, "PRESIGN_BATCH_SIZE", 200) or 200
+        for start in range(0, total, batch_size):
             if cancel_check and cancel_check():
                 break
-            rel = p.relative_to(local_path)
-            parts = rel.parts
-            key = f"{prefix}/{'/'.join(parts)}".replace("\\", "/")
-            content_type = _get_content_type(str(p))
-            presigned = self.get_presigned_url_exact(key, content_type)
-            signed_url = presigned.get("signedUrl")
-            if not signed_url:
-                raise ValueError(f"No signedUrl in response for {key}")
-            self.upload_file(str(p), signed_url, content_type)
-            uploaded.append((str(p), key))
-            if progress_callback:
-                progress_callback(i + 1, total, rel.name)
-            if state_callback:
-                state_callback({"uploaded": uploaded, "last_key": key})
+            chunk = file_entries[start : start + batch_size]
+            keys_with_types = [(k, ct) for _, k, ct in chunk]
+            presigned_list = self.get_presigned_urls_batch(keys_with_types)
+            for i, (p, key, content_type) in enumerate(chunk):
+                if cancel_check and cancel_check():
+                    break
+                presigned = presigned_list[i] if i < len(presigned_list) else {}
+                signed_url = presigned.get("signedUrl")
+                if not signed_url:
+                    raise ValueError(f"No signedUrl in response for {key}")
+                self.upload_file(str(p), signed_url, content_type)
+                uploaded.append((str(p), key))
+                idx = start + i + 1
+                if progress_callback:
+                    progress_callback(idx, total, p.name)
+                if state_callback:
+                    state_callback({"uploaded": uploaded, "last_key": key})
         return uploaded
 
     def create_file_record(
