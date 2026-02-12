@@ -1,0 +1,38 @@
+{
+	"welcome": {
+		"title": "Welcome to Church Planting Institute",
+		"body": "Thank you for joining Church Planting Institute"
+	},
+	"streakBonus": {
+		"title": "Streak Bonus Earned!",
+		"body": "Congratulations! You've earned {{points}} bonus points for reaching a streak of {{days}} days!"
+	},
+	"courseCompletionBonus": {
+		"title": "Course Completion Bonus",
+		"body": "Congratulations! You've earned {{points}} bonus points for completing the course: {{courseName_en}}."
+	},
+	"coursePurchased": {
+		"title": "Course Purchased",
+		"body": "You have successfully purchased the course {{courseName_en}}."
+	},
+	"courseCompletion": {
+		"title": "Course Completion",
+		"body": "Congratulations! You have completed the course: {{courseName_en}}."
+	},
+	"newBadgeEarned": {
+		"title": "New Badge Earned",
+		"body": "You have earned the {{badgeName}} badge."
+	},
+	"newMessage": {
+		"title": "New Message",
+		"body": "{{senderName}} sent you a new message."
+	},
+	"newConversation": {
+		"title": "New Conversation",
+		"body": "{{senderName}} has started a conversation with you."
+	},
+	"conversationAccepted": {
+		"title": "Conversation Accepted",
+		"body": "{{senderName}} has accepted your conversation."
+	}
+}

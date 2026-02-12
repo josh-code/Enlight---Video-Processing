@@ -1,0 +1,38 @@
+{
+	"welcome": {
+		"title": "Bienvenido a Church Planting Institute",
+		"body": "Gracias por unirte a Church Planting Institute"
+	},
+	"streakBonus": {
+		"title": "¡Bono de racha obtenido!",
+		"body": "¡Felicidades! Has ganado {{points}} puntos de bonificación por alcanzar una racha de {{days}} días."
+	},
+	"courseCompletionBonus": {
+		"title": "Bono por finalización del curso",
+		"body": "¡Felicidades! Has ganado {{points}} puntos de bonificación por completar el curso: {{courseName_es}}."
+	},
+	"coursePurchased": {
+		"title": "Curso comprado",
+		"body": "Has comprado con éxito el curso {{courseName_es}}."
+	},
+	"courseCompletion": {
+		"title": "Finalización del curso",
+		"body": "¡Felicidades! Has completado el curso: {{courseName_es}}."
+	},
+	"newBadgeEarned": {
+		"title": "Insignia nueva obtenida",
+		"body": "Has ganado la insignia {{badgeName}}."
+	},
+	"newMessage": {
+		"title": "Mensaje nuevo",
+		"body": "{{senderName}} te ha enviado un nuevo mensaje."
+	},
+	"newConversation": {
+		"title": "Nueva conversación",
+		"body": "{{senderName}} ha iniciado una conversación contigo."
+	},
+	"conversationAccepted": {
+		"title": "Conversación aceptada",
+		"body": "{{senderName}} ha aceptado tu conversación."
+	}
+}

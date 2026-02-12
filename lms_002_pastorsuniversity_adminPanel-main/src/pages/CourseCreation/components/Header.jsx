@@ -1,0 +1,14 @@
+import React from "react";
+
+import { Button } from "@/components/shadcn/ui/button";
+
+export default function Header({ title, className = "", ...props }) {
+    return (
+        <div className={`flex items-center gap-4 ${className}`} {...props}>
+            <Button className="bg-site-primary rounded-[7px] h-full px-7 py-1 text-sm font-medium">
+                Back
+            </Button>
+            <h4 className="text-black font-bold text-lg">{title}</h4>
+        </div>
+    );
+}

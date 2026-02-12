@@ -1,0 +1,68 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body { background-color: #101010; color: #fff; font-family: Arial,
+      sans-serif; padding: 20px; margin: 0; } .container { max-width: 600px;
+      margin: 0 auto; background-color: #1a1a1a; /* Slightly lighter than the
+      body background */ border-radius: 8px; overflow: hidden; box-shadow: 0 4px
+      8px rgba(0, 0, 0, 0.2); } .header { background-color: #1a1a1a; color:
+      #2B7FFF; padding: 20px; text-align: center; border-top-left-radius: 8px;
+      border-top-right-radius: 8px; } .header h1 { margin: 0; font-size: 24px;
+      color: #fff; } .content { padding: 20px; background-color: #262626; /*
+      Provides contrast against the header */ } .content p { margin: 0 0 16px;
+      line-height: 1.6; color: #e0e0e0; /* Slightly lighter gray for better
+      readability */ } .purchase-details { background-color: #1a1a1a; color:
+      #2B7FFF; font-size: 18px; font-weight: bold; text-align: center; padding:
+      20px; border-radius: 8px; margin: 20px 0; } .user-info { background-color:
+      #1a1a1a; color: #e0e0e0; padding: 15px; border-radius: 8px; margin: 15px
+      0; border-left: 4px solid #2B7FFF; } .user-info p { margin: 5px 0; }
+      .footer { text-align: center; padding: 20px; font-size: 14px; color: #aaa;
+      background-color: #1a1a1a; border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px; } .footer p { margin: 0; } .footer a {
+      color: #2B7FFF; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Course Purchase Notification</h1>
+      </div>
+
+      <div class="content">
+        <p>Dear Admin,</p>
+
+        <p>A new course purchase has been completed. Here are the details:</p>
+
+        <div class="user-info">
+          <p><strong>Purchase Details:</strong></p>
+          <p>Course: {{courseName}}</p>
+          <p>Amount: {{amount}}</p>
+          <p>Transaction ID: {{transactionId}}</p>
+        </div>
+
+        <div class="user-info">
+          <p><strong>User Information:</strong></p>
+          <p>Name: {{userName}}</p>
+          <p>Email: {{userEmail}}</p>
+          <p>Phone: {{userPhone}}</p>
+          <p>Purchase Date: {{purchaseDate}}</p>
+        </div>
+
+        <p>This purchase has been automatically processed and the user has been
+          granted access to the course content.</p>
+
+        <p>You can view more details about this transaction in your admin
+          dashboard.</p>
+      </div>
+
+      <div class="footer">
+        <p>If you have any questions, please contact
+          <a target="_blank" href="mailto:bluehancedigital@gmail.com">our
+            support team.</a></p>
+        <p>&copy; {{year}} Bluehance. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

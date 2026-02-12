@@ -1,0 +1,176 @@
+[
+	{
+		"name": {
+			"en": "HTML Fundamentals",
+			"es": "Fundamentos de HTML",
+			"fr": "Fondamentaux HTML",
+			"de": "HTML-Grundlagen",
+			"it": "Fondamenti di HTML",
+			"pt": "Fundamentos de HTML",
+			"ru": "Основы HTML",
+			"zh": "HTML基础",
+			"ja": "HTMLの基礎",
+			"ko": "HTML 기초"
+		},
+		"description": {
+			"en": "Learn the building blocks of HTML including tags, attributes, and semantic HTML5 elements.",
+			"es": "Aprende los bloques de construcción de HTML incluyendo etiquetas, atributos y elementos semánticos de HTML5.",
+			"fr": "Apprenez les blocs de construction HTML incluant les balises, attributs et éléments sémantiques HTML5.",
+			"de": "Lernen Sie die Bausteine von HTML einschließlich Tags, Attribute und semantische HTML5-Elemente.",
+			"it": "Impara i blocchi costitutivi di HTML inclusi tag, attributi ed elementi semantici HTML5.",
+			"pt": "Aprenda os blocos de construção do HTML incluindo tags, atributos e elementos semânticos do HTML5.",
+			"ru": "Изучите строительные блоки HTML, включая теги, атрибуты и семантические элементы HTML5.",
+			"zh": "学习HTML的构建块，包括标签、属性和语义HTML5元素。",
+			"ja": "タグ、属性、セマンティックHTML5要素を含むHTMLの構成要素を学びます。",
+			"ko": "태그, 속성 및 시맨틱 HTML5 요소를 포함한 HTML의 구성 요소를 배웁니다."
+		},
+		"course": null,
+		"order": 1,
+		"sessions": []
+	},
+	{
+		"name": {
+			"en": "CSS Styling",
+			"es": "Estilos CSS",
+			"fr": "Styles CSS",
+			"de": "CSS-Styling",
+			"it": "Stili CSS",
+			"pt": "Estilos CSS",
+			"ru": "Стили CSS",
+			"zh": "CSS样式",
+			"ja": "CSSスタイリング",
+			"ko": "CSS 스타일링"
+		},
+		"description": {
+			"en": "Master CSS including selectors, layouts, flexbox, grid, and responsive design.",
+			"es": "Domina CSS incluyendo selectores, diseños, flexbox, grid y diseño responsivo.",
+			"fr": "Maîtrisez CSS incluant les sélecteurs, les mises en page, flexbox, grid et le design responsive.",
+			"de": "Meistern Sie CSS einschließlich Selektoren, Layouts, Flexbox, Grid und responsivem Design.",
+			"it": "Padroneggia CSS inclusi selettori, layout, flexbox, grid e design responsive.",
+			"pt": "Domine CSS incluindo seletores, layouts, flexbox, grid e design responsivo.",
+			"ru": "Освойте CSS, включая селекторы, макеты, flexbox, grid и адаптивный дизайн.",
+			"zh": "掌握CSS，包括选择器、布局、flexbox、grid和响应式设计。",
+			"ja": "セレクター、レイアウト、flexbox、grid、レスポンシブデザインを含むCSSをマスターします。",
+			"ko": "선택자, 레이아웃, flexbox, grid 및 반응형 디자인을 포함한 CSS를 마스터합니다."
+		},
+		"course": null,
+		"order": 2,
+		"sessions": []
+	},
+	{
+		"name": {
+			"en": "JavaScript Basics",
+			"es": "Conceptos Básicos de JavaScript",
+			"fr": "Bases de JavaScript",
+			"de": "JavaScript-Grundlagen",
+			"it": "Basi di JavaScript",
+			"pt": "Noções Básicas de JavaScript",
+			"ru": "Основы JavaScript",
+			"zh": "JavaScript基础",
+			"ja": "JavaScriptの基礎",
+			"ko": "JavaScript 기초"
+		},
+		"description": {
+			"en": "Introduction to JavaScript programming including variables, functions, arrays, and DOM manipulation.",
+			"es": "Introducción a la programación JavaScript incluyendo variables, funciones, arrays y manipulación del DOM.",
+			"fr": "Introduction à la programmation JavaScript incluant les variables, fonctions, tableaux et manipulation du DOM.",
+			"de": "Einführung in die JavaScript-Programmierung einschließlich Variablen, Funktionen, Arrays und DOM-Manipulation.",
+			"it": "Introduzione alla programmazione JavaScript inclusi variabili, funzioni, array e manipolazione del DOM.",
+			"pt": "Introdução à programação JavaScript incluindo variáveis, funções, arrays e manipulação do DOM.",
+			"ru": "Введение в программирование на JavaScript, включая переменные, функции, массивы и манипуляции с DOM.",
+			"zh": "JavaScript编程入门，包括变量、函数、数组和DOM操作。",
+			"ja": "変数、関数、配列、DOM操作を含むJavaScriptプログラミングの紹介。",
+			"ko": "변수, 함수, 배열 및 DOM 조작을 포함한 JavaScript 프로그래밍 소개."
+		},
+		"course": null,
+		"order": 3,
+		"sessions": []
+	},
+	{
+		"name": {
+			"en": "React Frontend",
+			"es": "Frontend con React",
+			"fr": "Frontend React",
+			"de": "React Frontend",
+			"it": "Frontend React",
+			"pt": "Frontend React",
+			"ru": "React Frontend",
+			"zh": "React前端",
+			"ja": "Reactフロントエンド",
+			"ko": "React 프론트엔드"
+		},
+		"description": {
+			"en": "Build modern user interfaces with React, including components, hooks, state management, and routing.",
+			"es": "Construye interfaces de usuario modernas con React, incluyendo componentes, hooks, gestión de estado y enrutamiento.",
+			"fr": "Construisez des interfaces utilisateur modernes avec React, incluant les composants, hooks, gestion d'état et routage.",
+			"de": "Erstellen Sie moderne Benutzeroberflächen mit React, einschließlich Komponenten, Hooks, State-Management und Routing.",
+			"it": "Costruisci interfacce utente moderne con React, inclusi componenti, hook, gestione dello stato e routing.",
+			"pt": "Construa interfaces de usuário modernas com React, incluindo componentes, hooks, gerenciamento de estado e roteamento.",
+			"ru": "Создавайте современные пользовательские интерфейсы с React, включая компоненты, хуки, управление состоянием и маршрутизацию.",
+			"zh": "使用React构建现代用户界面，包括组件、钩子、状态管理和路由。",
+			"ja": "コンポーネント、フック、状態管理、ルーティングを含むReactでモダンなユーザーインターフェースを構築します。",
+			"ko": "컴포넌트, 훅, 상태 관리 및 라우팅을 포함한 React로 현대적인 사용자 인터페이스를 구축합니다."
+		},
+		"course": null,
+		"order": 1,
+		"sessions": []
+	},
+	{
+		"name": {
+			"en": "Node.js Backend",
+			"es": "Backend con Node.js",
+			"fr": "Backend Node.js",
+			"de": "Node.js Backend",
+			"it": "Backend Node.js",
+			"pt": "Backend Node.js",
+			"ru": "Backend Node.js",
+			"zh": "Node.js后端",
+			"ja": "Node.jsバックエンド",
+			"ko": "Node.js 백엔드"
+		},
+		"description": {
+			"en": "Create robust backend services with Node.js, Express, databases, and API development.",
+			"es": "Crea servicios backend robustos con Node.js, Express, bases de datos y desarrollo de API.",
+			"fr": "Créez des services backend robustes avec Node.js, Express, bases de données et développement d'API.",
+			"de": "Erstellen Sie robuste Backend-Services mit Node.js, Express, Datenbanken und API-Entwicklung.",
+			"it": "Crea servizi backend robusti con Node.js, Express, database e sviluppo di API.",
+			"pt": "Crie serviços backend robustos com Node.js, Express, bancos de dados e desenvolvimento de API.",
+			"ru": "Создавайте надежные серверные сервисы с Node.js, Express, базами данных и разработкой API.",
+			"zh": "使用Node.js、Express、数据库和API开发创建强大的后端服务。",
+			"ja": "Node.js、Express、データベース、API開発を使用して堅牢なバックエンドサービスを作成します。",
+			"ko": "Node.js, Express, 데이터베이스 및 API 개발을 사용하여 강력한 백엔드 서비스를 만듭니다."
+		},
+		"course": null,
+		"order": 2,
+		"sessions": []
+	},
+	{
+		"name": {
+			"en": "Deployment and DevOps",
+			"es": "Despliegue y DevOps",
+			"fr": "Déploiement et DevOps",
+			"de": "Bereitstellung und DevOps",
+			"it": "Distribuzione e DevOps",
+			"pt": "Implantação e DevOps",
+			"ru": "Развертывание и DevOps",
+			"zh": "部署和DevOps",
+			"ja": "デプロイメントとDevOps",
+			"ko": "배포 및 DevOps"
+		},
+		"description": {
+			"en": "Learn to deploy your applications to production, set up CI/CD pipelines, and manage infrastructure.",
+			"es": "Aprende a desplegar tus aplicaciones a producción, configurar pipelines de CI/CD y gestionar infraestructura.",
+			"fr": "Apprenez à déployer vos applications en production, configurer des pipelines CI/CD et gérer l'infrastructure.",
+			"de": "Lernen Sie, Ihre Anwendungen in der Produktion bereitzustellen, CI/CD-Pipelines einzurichten und die Infrastruktur zu verwalten.",
+			"it": "Impara a distribuire le tue applicazioni in produzione, configurare pipeline CI/CD e gestire l'infrastruttura.",
+			"pt": "Aprenda a implantar suas aplicações em produção, configurar pipelines de CI/CD e gerenciar infraestrutura.",
+			"ru": "Научитесь развертывать свои приложения в продакшене, настраивать CI/CD пайплайны и управлять инфраструктурой.",
+			"zh": "学习将应用程序部署到生产环境，设置CI/CD管道和管理基础设施。",
+			"ja": "アプリケーションを本番環境にデプロイし、CI/CDパイプラインを設定し、インフラストラクチャを管理する方法を学びます。",
+			"ko": "애플리케이션을 프로덕션에 배포하고, CI/CD 파이프라인을 설정하고, 인프라를 관리하는 방법을 배웁니다."
+		},
+		"course": null,
+		"order": 3,
+		"sessions": []
+	}
+]

@@ -1,0 +1,53 @@
+{
+	"name": {
+		"en": "Unlock Your Full Potential",
+		"es": "Desbloquea tu potencial completo"
+	},
+	"description": {
+		"en": "Get unlimited access to all courses and continue your discipleship journey",
+		"es": "Obtén acceso ilimitado a todos los cursos y continúa tu viaje de discipulado."
+	},
+	"features": [
+		{
+			"en": "Access to all 5 Discipleship Foundation courses",
+			"es": "Acceso a los 5 cursos de Discipleship Foundation"
+		},
+		{
+			"en": "Over 280 lessons from Dr. Wendell Vinson",
+			"es": "Más de 280 lecciones del Dr. Wendell Vinson"
+		},
+		{
+			"en": "HD video streaming on any device",
+			"es": "Transmisión de video HD en cualquier dispositivo"
+		},
+		{
+			"en": "Track your progress with learning streaks",
+			"es": "Rastrea tu progreso con rachas de aprendizaje"
+		},
+		{
+			"en": "Downloadable course materials",
+			"es": "Materiales del curso descargables"
+		},
+		{
+			"en": "Certificate of completion",
+			"es": "Certificado de finalización"
+		},
+		{
+			"en": "Cancel anytime, no commitment",
+			"es": "Cancela en cualquier momento, sin compromiso"
+		}
+	],
+	"monthly": {
+		"stripePriceId": "REPLACE_WITH_MONTHLY_STRIPE_PRICE_ID",
+		"amount": 2999,
+		"currency": "usd"
+	},
+	"yearly": {
+		"stripePriceId": "REPLACE_WITH_YEARLY_STRIPE_PRICE_ID",
+		"amount": 29999,
+		"currency": "usd",
+		"monthlyEquivalent": 2499,
+		"savingsPercent": 17
+	},
+	"isActive": true
+}
