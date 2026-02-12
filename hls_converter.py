@@ -10,7 +10,19 @@ import queue
 import time
 import re
 from datetime import datetime
+from pathlib import Path
 from typing import Tuple
+
+try:
+    from config import Config as S3Config
+    from s3_uploader import S3UploadManager
+    _S3_AVAILABLE = True
+except ImportError:
+    S3Config = None
+    S3UploadManager = None
+    _S3_AVAILABLE = False
+
+S3_CONFIG_FILE = "s3_config.json"
 
 # ----------------------------
 # Retro theme
@@ -645,6 +657,15 @@ class RetroHlsApp:
         self._transcript_progress_after_id = None
         self._transcript_simulated_pct = 0.0
 
+        # S3 upload
+        self.s3_enabled = tk.BooleanVar(value=False)
+        self.s3_course_id = tk.StringVar(value="")
+        self.s3_video_name = tk.StringVar(value="")
+        self.s3_language = tk.StringVar(value="en")
+        self.s3_delete_local = tk.BooleanVar(value=False)
+        self.s3_upload_cancel = False  # set True to cancel upload
+        self._load_s3_config()
+
         self._build_ui()
 
     def _build_ui(self):
@@ -749,6 +770,58 @@ class RetroHlsApp:
         tk.Label(trans_panel, text="Tip: Transcription runs after video rendering. Requires audio track.", 
                  fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(anchor="w", padx=10, pady=(0, 10))
 
+        # S3 Upload panel
+        s3_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        s3_panel.pack(fill="x", pady=(0, 8))
+        tk.Label(s3_panel, text="S3 UPLOAD", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
+        s3_row1 = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_row1.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Checkbutton(
+            s3_row1, text="Enable S3 Upload", variable=self.s3_enabled,
+            bg=RETRO_PANEL, fg=RETRO_ACCENT, selectcolor=RETRO_BG,
+            activebackground=RETRO_PANEL, activeforeground=RETRO_ACCENT,
+            font=FONT_MAIN, command=self._on_s3_toggle
+        ).pack(side="left")
+        self.s3_backend_label = tk.Label(s3_panel, text="Backend: not configured", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.s3_backend_label.pack(anchor="w", padx=10, pady=(0, 2))
+        s3_row2 = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_row2.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Label(s3_row2, text="Course ID", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
+        self.s3_course_entry = tk.Entry(s3_row2, textvariable=self.s3_course_id, width=28, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT, insertbackground=RETRO_ACCENT)
+        self.s3_course_entry.pack(side="left")
+        s3_row3 = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_row3.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Label(s3_row3, text="Video Name", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
+        self.s3_video_entry = tk.Entry(s3_row3, textvariable=self.s3_video_name, width=28, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT, insertbackground=RETRO_ACCENT)
+        self.s3_video_entry.pack(side="left")
+        s3_row4 = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_row4.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Label(s3_row4, text="Language", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
+        self.s3_lang_combo = ttk.Combobox(s3_row4, textvariable=self.s3_language, values=(S3Config.SUPPORTED_LANGUAGES if _S3_AVAILABLE and S3Config else ["en"]), state="readonly", width=10, font=FONT_SMALL)
+        self.s3_lang_combo.pack(side="left")
+        if _S3_AVAILABLE and S3Config:
+            self.s3_lang_combo.set(S3Config.DEFAULT_LANGUAGE)
+        self.s3_prefix_label = tk.Label(s3_panel, text="S3 Prefix: (set Course ID + Video Name)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=400, justify="left")
+        self.s3_prefix_label.pack(anchor="w", padx=10, pady=(4, 2))
+        s3_row5 = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_row5.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Checkbutton(
+            s3_row5, text="Delete local files after upload", variable=self.s3_delete_local,
+            bg=RETRO_PANEL, fg=RETRO_ACCENT, selectcolor=RETRO_BG,
+            activebackground=RETRO_PANEL, activeforeground=RETRO_ACCENT,
+            font=FONT_SMALL
+        ).pack(side="left")
+        s3_btn_row = tk.Frame(s3_panel, bg=RETRO_PANEL)
+        s3_btn_row.pack(fill="x", padx=10, pady=(6, 10))
+        self.s3_test_btn = tk.Button(s3_btn_row, text="Test Connection", command=self._on_s3_test, bg=RETRO_ACCENT, fg="black", font=FONT_SMALL, bd=0, padx=10, pady=4)
+        self.s3_test_btn.pack(side="left")
+        self.s3_cancel_btn = tk.Button(s3_btn_row, text="Cancel Upload", command=self._on_s3_cancel, bg="#333333", fg=RETRO_ACCENT, font=FONT_SMALL, bd=0, padx=10, pady=4, state="disabled")
+        self.s3_cancel_btn.pack(side="left", padx=(8, 0))
+        self.s3_course_id.trace_add("write", lambda *a: self._update_s3_prefix_label())
+        self.s3_video_name.trace_add("write", lambda *a: self._update_s3_prefix_label())
+        self.s3_language.trace_add("write", lambda *a: self._update_s3_prefix_label())
+        self._on_s3_toggle()
+
         p_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
         p_panel.pack(fill="x", pady=(0, 8))
         tk.Label(p_panel, text="PROGRESS", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
@@ -788,6 +861,17 @@ class RetroHlsApp:
         self.transcript_label = tk.Label(trans_row, text="0%", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=6, anchor="e")
         self.transcript_label.pack(side="right")
 
+        # Upload progress row (S3)
+        upload_row = tk.Frame(p_panel, bg=RETRO_PANEL)
+        upload_row.pack(fill="x", padx=10, pady=(0, 6))
+        tk.Label(upload_row, text="Upload", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=8, anchor="w").pack(side="left")
+        self.upload_bar = ttk.Progressbar(upload_row, length=340, mode="determinate", style="Retro.Horizontal.TProgressbar")
+        self.upload_bar.pack(side="left", padx=(6, 0))
+        self.upload_label = tk.Label(upload_row, text="-", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=6, anchor="e")
+        self.upload_label.pack(side="right")
+        self.upload_status_label = tk.Label(p_panel, text="", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.upload_status_label.pack(anchor="w", padx=10, pady=(0, 4))
+
         a_panel = tk.Frame(left_col, bg=RETRO_BG)
         a_panel.pack(fill="x", pady=(6, 0))
         self.start_btn = tk.Button(a_panel, text="START RENDER", command=self.on_start,
@@ -807,8 +891,10 @@ class RetroHlsApp:
 
         queue_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
         history_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        logs_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
         self.notebook.add(queue_tab, text="Queue")
         self.notebook.add(history_tab, text="History")
+        self.notebook.add(logs_tab, text="Logs")
 
         tk.Label(queue_tab, text="RENDER QUEUE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
         list_frame = tk.Frame(queue_tab, bg=RETRO_PANEL)
@@ -842,10 +928,113 @@ class RetroHlsApp:
         self.history_list.config(yscrollcommand=sbh.set)
         self.history_list.bind("<<ListboxSelect>>", self.on_select_history)
 
+        tk.Label(logs_tab, text="LOGS", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
+        log_frame = tk.Frame(logs_tab, bg=RETRO_PANEL)
+        log_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+        self.log_text = tk.Text(log_frame, bg=RETRO_BG, fg=RETRO_ACCENT, font=("Courier New", 9), wrap=tk.WORD, state="disabled")
+        self.log_text.pack(side="left", fill="both", expand=True)
+        self.log_text.tag_configure("error", foreground="#ff6666")
+        self.log_text.tag_configure("success", foreground=RETRO_FG)
+        slog = tk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
+        slog.pack(side="right", fill="y")
+        self.log_text.config(yscrollcommand=slog.set)
+
         self._refresh_history_ui()
+
+    def _log(self, msg: str, is_error: bool = False):
+        """Append a line to the Logs tab (thread-safe; schedules on main thread)."""
+        tag = "error" if is_error else "success" if "success" in msg.lower() or "done" in msg.lower() or "complete" in msg.lower() else None
+        ts = datetime.now().strftime("%H:%M:%S")
+        line = f"[{ts}] {msg}\n"
+        def _append():
+            self.log_text.config(state="normal")
+            if tag:
+                self.log_text.insert(tk.END, line, tag)
+            else:
+                self.log_text.insert(tk.END, line)
+            self.log_text.see(tk.END)
+            self.log_text.config(state="disabled")
+        self.root.after(0, _append)
 
     def _set_status(self, text: str):
         self.status_label.config(text=f"Status: {text}")
+
+    def _load_s3_config(self):
+        """Load non-sensitive S3 settings from s3_config.json."""
+        if not os.path.isfile(S3_CONFIG_FILE):
+            return
+        try:
+            with open(S3_CONFIG_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if data.get("last_course_id") is not None:
+                self.s3_course_id.set(data["last_course_id"])
+            if data.get("last_video_name") is not None:
+                self.s3_video_name.set(data["last_video_name"])
+            if data.get("language") is not None:
+                self.s3_language.set(data["language"])
+            if data.get("delete_local_after_upload") is not None:
+                self.s3_delete_local.set(data["delete_local_after_upload"])
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    def _save_s3_config(self):
+        """Save non-sensitive S3 settings to s3_config.json."""
+        try:
+            data = {
+                "last_course_id": self.s3_course_id.get(),
+                "last_video_name": self.s3_video_name.get(),
+                "language": self.s3_language.get(),
+                "delete_local_after_upload": self.s3_delete_local.get(),
+            }
+            with open(S3_CONFIG_FILE, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+        except OSError:
+            pass
+
+    def _update_s3_prefix_label(self):
+        """Update S3 prefix display from course ID + language + sanitized video name."""
+        cid = (self.s3_course_id.get() or "").strip()
+        vid = (self.s3_video_name.get() or "").strip()
+        lang = (self.s3_language.get() or "en").strip()
+        if not cid or not vid:
+            self.s3_prefix_label.config(text="S3 Prefix: (set Course ID + Video Name)")
+            return
+        safe_name = sanitize_folder_name(vid)
+        prefix = f"courses/{cid}/{lang}/{safe_name}/"
+        if len(prefix) > 50:
+            display = prefix[:47] + "..."
+        else:
+            display = prefix
+        self.s3_prefix_label.config(text=f"S3 Prefix: {display}")
+
+    def _on_s3_toggle(self):
+        """Enable/disable S3 panel fields and update backend label."""
+        enabled = self.s3_enabled.get()
+        state = "normal" if enabled else "disabled"
+        self.s3_course_entry.config(state=state)
+        self.s3_video_entry.config(state=state)
+        self.s3_lang_combo.config(state="readonly" if enabled else "disabled")
+        if _S3_AVAILABLE and S3Config and S3Config.is_configured():
+            self.s3_backend_label.config(text="Backend: ✓ Configured from .env", fg=RETRO_FG)
+        else:
+            self.s3_backend_label.config(text="Backend: not configured (set .env)", fg=RETRO_MUTED)
+        self._update_s3_prefix_label()
+
+    def _on_s3_test(self):
+        """Test backend connection and token."""
+        if not _S3_AVAILABLE:
+            messagebox.showwarning("S3", "s3_uploader not available. Install requests and python-dotenv.")
+            return
+        mgr = S3UploadManager()
+        ok, msg = mgr.validate_connection()
+        if ok:
+            messagebox.showinfo("S3", "Connection successful.")
+        else:
+            messagebox.showerror("S3", f"Connection failed: {msg}")
+
+    def _on_s3_cancel(self):
+        """Set flag to cancel upload (worker checks this)."""
+        self.s3_upload_cancel = True
 
     def _on_transcribe_toggle(self):
         """Enable/disable language selection based on transcription checkbox"""
@@ -1079,6 +1268,27 @@ class RetroHlsApp:
         if not selected:
             messagebox.showwarning("No quality", "Select at least one quality.")
             return
+
+        # S3 validation (if enabled)
+        if self.s3_enabled.get():
+            if not _S3_AVAILABLE or not S3Config or not S3Config.is_configured():
+                messagebox.showerror("S3", "S3 upload enabled but backend not configured. Set BACKEND_URL and AUTH_TOKEN in .env")
+                return
+            cid = (self.s3_course_id.get() or "").strip()
+            vid = (self.s3_video_name.get() or "").strip()
+            lang = (self.s3_language.get() or "").strip()
+            if len(cid) != 24 or not re.match(r"^[a-fA-F0-9]{24}$", cid):
+                messagebox.showerror("S3", "Course ID must be 24 hex characters (MongoDB ObjectId).")
+                return
+            if not vid:
+                messagebox.showerror("S3", "Video Name is required.")
+                return
+            if len(vid) > 200:
+                messagebox.showerror("S3", "Video Name must be at most 200 characters.")
+                return
+            if lang not in (S3Config.SUPPORTED_LANGUAGES if S3Config else []):
+                messagebox.showerror("S3", f"Language must be one of: {S3Config.SUPPORTED_LANGUAGES if S3Config else []}")
+                return
 
         # Check FFmpeg availability
         is_available, error_msg = check_ffmpeg_available()
@@ -1453,6 +1663,7 @@ class RetroHlsApp:
     def _render_worker(self, files, selected):
         self.root.after(0, lambda: self._reset_progress(reset_overall=True))
         self.root.after(0, lambda: self._set_status("rendering queue..."))
+        self._log(f"Render started: {len(files)} file(s), qualities: {selected}")
         safe_mkdir(self.output_base_dir)
 
         queue_results = []  # Local list to track results
@@ -1474,6 +1685,7 @@ class RetroHlsApp:
             try:
                 # Validate file exists (re-check in case deleted)
                 if not os.path.isfile(fp):
+                    self._log(f"File missing: {fp}", is_error=True)
                     file_result["error"] = f"File missing: {fp}"
                     queue_results.append(file_result.copy())  # Append copy to avoid reference issues
                     self.root.after(0, lambda idx=idx, total=len(files), fp=fp: self._set_status(f"Failed {idx}/{total}: {os.path.basename(fp)} - file missing"))
@@ -1501,6 +1713,7 @@ class RetroHlsApp:
                 # Update UI
                 self.root.after(0, lambda fp=fp: self._update_selected_file_info(fp))
                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"rendering {idx}/{total}: {name}"))
+                self._log(f"File {idx}/{len(files)}: {base_name} — encoding {selected}...")
                 
                 # Render each quality
                 total_s = max(float(self.duration_s), 0.001)
@@ -1519,6 +1732,7 @@ class RetroHlsApp:
                 
                 # Check if rendering succeeded
                 if render_error:
+                    self._log(f"Encoding failed: {render_error}", is_error=True)
                     file_result["error"] = render_error
                     queue_results.append(file_result.copy())  # Append copy to avoid reference issues
                     self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name}"))
@@ -1534,6 +1748,7 @@ class RetroHlsApp:
                     master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
                     file_result["master_path"] = master_path
                 except Exception as e:
+                    self._log(f"Master playlist write failed: {e}", is_error=True)
                     file_result["error"] = f"Master playlist write failed: {e}"
                     queue_results.append(file_result.copy())  # Append copy to avoid reference issues
                     self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name} - playlist error"))
@@ -1558,7 +1773,7 @@ class RetroHlsApp:
                         
                         # Extract audio to temporary file
                         temp_audio = os.path.join(self.output_dir, f"{base_name}_temp_audio.wav")
-                        success, error_msg = extract_audio_from_video(fp, temp_audio)``
+                        success, error_msg = extract_audio_from_video(fp, temp_audio)
                         if success:
                             # Transcribe
                             language = self.transcription_language.get()
@@ -1598,6 +1813,7 @@ class RetroHlsApp:
                                 
                                 self.root.after(0, lambda: self._set_transcript_progress("done"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribed {idx}/{total}: {name}"))
+                                self._log("Transcription done.")
                             else:
                                 # Transcription failed but don't fail the whole render
                                 self.root.after(0, lambda: self._set_transcript_progress("idle"))
@@ -1658,8 +1874,123 @@ class RetroHlsApp:
                 save_history(self.history)
                 self.root.after(0, self._refresh_history_ui)
                 self.last_output_dir = self.output_dir
+
+                # S3 upload phase (if enabled)
+                if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
+                    cid = (self.s3_course_id.get() or "").strip()
+                    vid_display = (self.s3_video_name.get() or "").strip()
+                    lang = (self.s3_language.get() or "en").strip()
+                    s3_video_name = sanitize_folder_name(vid_display)
+                    s3_prefix = f"courses/{cid}/{lang}/{s3_video_name}"
+                    self.s3_upload_cancel = False
+                    self.root.after(0, lambda: self.s3_cancel_btn.config(state="normal"))
+                    self.root.after(0, lambda: self.upload_bar.config(value=0))
+                    self.root.after(0, lambda: self.upload_label.config(text="0%"))
+                    if self.jobs_total > 0:
+                        self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.75) / self.jobs_total * 100.0))
+                    try:
+                        self._log("S3 upload starting...")
+                        mgr = S3UploadManager()
+                        total_files = sum(1 for _ in Path(self.output_dir).rglob("*") if _.is_file())
+                        self._log(f"Uploading {total_files} files to S3 prefix: {s3_prefix}")
+                        def on_progress(current, total, name):
+                            pct_bar = (current / total * 100.0) if total else 0.0
+                            jobs_done = self.jobs_done
+                            jobs_total = self.jobs_total
+                            p = 0.75 + 0.20 * (current / total) if total else 0.75
+                            overall_pct = (jobs_done + p) / jobs_total * 100.0 if jobs_total > 0 else 0.0
+                            def _update():
+                                self.upload_bar["value"] = pct_bar
+                                self.upload_label.config(text=f"{current}/{total}")
+                                self.upload_status_label.config(text=f"Uploading {name[:40]}..." if len(name) > 40 else f"Uploading {name}")
+                                if jobs_total > 0:
+                                    self._update_overall(overall_pct)
+                                self.root.update_idletasks()
+                            self.root.after(0, _update)
+                            self._log(f"Uploaded {current}/{total}: {name}")
+                        def cancel_check():
+                            return self.s3_upload_cancel
+                        uploaded = mgr.upload_directory(
+                            self.output_dir,
+                            s3_prefix,
+                            cancel_check=cancel_check,
+                            progress_callback=on_progress,
+                        )
+                        if self.s3_upload_cancel:
+                            self._log("Upload cancelled by user.", is_error=True)
+                            self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Cancelled {idx}/{total}: {name} (upload)"))
+                            file_result["error"] = "Upload cancelled"
+                            queue_results.append(file_result.copy())
+                            self.jobs_done = idx
+                            if self.jobs_total > 0:
+                                self.root.after(0, lambda p=(self.jobs_done / self.jobs_total) * 100.0: self._update_overall(p))
+                            self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
+                            self.root.after(0, lambda: self.upload_status_label.config(text=""))
+                            continue
+                        if self.jobs_total > 0:
+                            self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.95) / self.jobs_total * 100.0))
+                        # Build s3_keys for File record
+                        master_key = None
+                        for local_path, s3_key in uploaded:
+                            if s3_key.endswith("master.m3u8") or "/master.m3u8" in s3_key.replace("\\", "/"):
+                                master_key = s3_key
+                                break
+                        if not master_key:
+                            master_key = f"{s3_prefix}/master.m3u8"
+                        qualities_map = {}
+                        for local_path, s3_key in uploaded:
+                            for q in selected:
+                                if f"/{q}/index.m3u8" in s3_key or s3_key.replace("\\", "/").endswith(f"{q}/index.m3u8"):
+                                    qualities_map[q] = s3_key
+                                    break
+                        transcript_map = {}
+                        for local_path, s3_key in uploaded:
+                            if "_transcript.srt" in s3_key or s3_key.endswith("_transcript.srt"):
+                                transcript_map["srt"] = s3_key
+                            if "_transcript.vtt" in s3_key or s3_key.endswith("_transcript.vtt"):
+                                transcript_map["vtt"] = s3_key
+                            if "_transcript.txt" in s3_key or s3_key.endswith("_transcript.txt"):
+                                transcript_map["txt"] = s3_key
+                            if "_transcript.json" in s3_key or s3_key.endswith("_transcript.json"):
+                                transcript_map["json"] = s3_key
+                        s3_keys = {"master": master_key or "", "qualities": qualities_map, "transcript": transcript_map}
+                        mgr.create_file_record(
+                            name=vid_display,
+                            course_id=cid,
+                            language=lang,
+                            s3_keys=s3_keys,
+                            duration=self.duration_s,
+                            qualities=selected,
+                            uploaded_by="python-encoder",
+                        )
+                        self._log("File record created successfully.")
+                        if self.jobs_total > 0:
+                            self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.98) / self.jobs_total * 100.0))
+                        self._save_s3_config()
+                        if self.s3_delete_local.get():
+                            try:
+                                shutil.rmtree(self.output_dir)
+                            except OSError:
+                                pass
+                    except Exception as s3_err:
+                        self._log(f"S3/File record error: {s3_err}", is_error=True)
+                        file_result["error"] = f"S3/File record: {s3_err}"
+                        queue_results.append(file_result.copy())
+                        self.jobs_done = idx
+                        self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name} (upload)"))
+                        if self.jobs_total > 0:
+                            self.root.after(0, lambda p=(self.jobs_done / self.jobs_total) * 100.0: self._update_overall(p))
+                        self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
+                        self.root.after(0, lambda: self.upload_status_label.config(text=""))
+                        continue
+                    self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
+                    self.root.after(0, lambda: self.upload_bar.config(value=100))
+                    self.root.after(0, lambda: self.upload_label.config(text="100%"))
+                    self.root.after(0, lambda: self.upload_status_label.config(text=""))
+                    self._log("S3 upload complete.")
+
                 self.jobs_done = idx
-                
+                self._log(f"Completed {idx}/{len(files)}: {base_name}")
                 # Update status and progress
                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Completed {idx}/{total}: {name}"))
                 if self.jobs_total > 0:
@@ -1674,9 +2005,8 @@ class RetroHlsApp:
             
             except Exception as e:
                 # Catch any unexpected exceptions
-                # Only append if not already appended (check if file_result was modified for success)
                 if file_result.get("status") != "success":
-                    # File processing failed - append error result
+                    self._log(f"Unexpected error: {e}", is_error=True)
                     file_result["error"] = f"Unexpected error: {str(e)}"
                     queue_results.append(file_result.copy())  # Append copy to avoid reference issues
                     self.root.after(0, lambda idx=idx, total=len(files), fp=fp: self._set_status(f"Failed {idx}/{total}: {os.path.basename(fp)} - error"))
