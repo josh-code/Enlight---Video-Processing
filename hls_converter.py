@@ -175,6 +175,23 @@ def format_seconds(s: float) -> str:
 def safe_mkdir(path: str):
     os.makedirs(path, exist_ok=True)
 
+def sanitize_folder_name(name: str) -> str:
+    """
+    Sanitize a string for use as a folder or file name: replace spaces with underscores,
+    remove or replace characters that are problematic on common filesystems.
+    """
+    if not name:
+        return name
+    # Replace spaces with underscores and strip leading/trailing
+    s = name.strip().replace(" ", "_")
+    # Collapse multiple underscores
+    while "__" in s:
+        s = s.replace("__", "_")
+    # Remove chars that are invalid in folder names on Windows: \ / : * ? " < > |
+    for ch in ('\\', '/', ':', '*', '?', '"', '<', '>', '|'):
+        s = s.replace(ch, "_")
+    return s.strip("_") or name.strip()
+
 def extract_audio_from_video(video_path: str, output_audio_path: str) -> Tuple[bool, str]:
     """
     Extract audio from video file using ffmpeg.
@@ -229,6 +246,14 @@ def format_srt_time(seconds: float) -> str:
     millis = min(round((seconds % 1) * 1000), 999)
     return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
 
+def format_vtt_time(seconds: float) -> str:
+    """
+    Convert seconds to WebVTT time format: HH:MM:SS.mmm
+    (Same as SRT but with dot for milliseconds; HLS/browsers expect WebVTT.)
+    """
+    srt_fmt = format_srt_time(seconds)
+    return srt_fmt.replace(",", ".")
+
 def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", output_dir: str = None) -> Tuple[bool, dict, str]:
     """
     Transcribe audio using OpenAI Whisper (base model).
@@ -248,6 +273,7 @@ def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", outpu
         - "detected_language": str - Language code detected by Whisper
         If success=False, result_dict will be empty dict
     """
+
     try:
         import whisper
         import json
@@ -255,6 +281,13 @@ def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", outpu
         return False, {}, "Whisper not installed. Run: pip install openai-whisper"
     
     try:
+        # Use certifi's CA bundle for Whisper model download (fixes SSL_CERTIFICATE_VERIFY_FAILED on macOS)
+        try:
+            import certifi
+            os.environ["SSL_CERT_FILE"] = certifi.where()
+            os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
+        except ImportError:
+            pass
         # Load Whisper model (base model for speed/quality balance)
         # First run will download model automatically (~150MB)
         model = whisper.load_model("base")
@@ -303,6 +336,20 @@ def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", outpu
                     f.write(f"{start_time} --> {end_time}\n")
                     f.write(f"{text}\n\n")
             result_dict["srt_path"] = srt_path
+
+            # Save as .vtt (WebVTT – required by HLS for subtitle tracks; browsers don't render SRT from HLS)
+            vtt_path = os.path.join(output_dir, f"{base_name}_transcript.vtt")
+            with open(vtt_path, "w", encoding="utf-8") as f:
+                f.write("WEBVTT\n\n")
+                for segment in segments:
+                    start = segment["start"]
+                    end = segment["end"]
+                    text = segment["text"].strip()
+                    start_time = format_vtt_time(start)
+                    end_time = format_vtt_time(end)
+                    f.write(f"{start_time} --> {end_time}\n")
+                    f.write(f"{text}\n\n")
+            result_dict["vtt_path"] = vtt_path
             
             # Save as .json (full transcription data with segments, words, etc.)
             json_path = os.path.join(output_dir, f"{base_name}_transcript.json")
@@ -431,34 +478,35 @@ def add_master_playlist(output_dir: str, selected, audio_exists: bool):
         f.write("\n".join(lines) + "\n")
     return master_path
 
-def create_subtitle_playlist(output_dir: str, srt_path: str, language_code: str = "en") -> str:
+def create_subtitle_playlist(output_dir: str, subtitle_path: str, language_code: str = "en") -> str:
     """
-    Create an HLS subtitle playlist (.m3u8) that references an SRT file.
+    Create an HLS subtitle playlist (.m3u8) that references a subtitle file.
+    Prefer WebVTT (.vtt): HLS expects WebVTT for subtitles; SRT in the playlist often won't render in players.
     
     Args:
         output_dir: Directory where playlist will be saved
-        srt_path: Path to the SRT subtitle file (relative to output_dir or absolute)
+        subtitle_path: Path to the subtitle file – use .vtt (WebVTT) for HLS compatibility
         language_code: Language code (e.g., "en", "es", "fr")
     
     Returns:
         Path to the created subtitle playlist file
     
     Raises:
-        FileNotFoundError: If SRT file doesn't exist
+        FileNotFoundError: If subtitle file doesn't exist
         IOError: If playlist file cannot be written
     """
-    # Validate SRT file exists
-    if not os.path.exists(srt_path):
-        raise FileNotFoundError(f"SRT file not found: {srt_path}")
+    # Validate subtitle file exists
+    if not os.path.exists(subtitle_path):
+        raise FileNotFoundError(f"Subtitle file not found: {subtitle_path}")
     
-    # Get relative path from output_dir to srt_path
-    if os.path.isabs(srt_path):
-        rel_srt_path = os.path.relpath(srt_path, output_dir)
+    # Get relative path from output_dir to subtitle_path
+    if os.path.isabs(subtitle_path):
+        rel_subtitle_path = os.path.relpath(subtitle_path, output_dir)
     else:
-        rel_srt_path = srt_path
+        rel_subtitle_path = subtitle_path
     
     # Normalize path separators for HLS (use forward slashes)
-    rel_srt_path = rel_srt_path.replace("\\", "/")
+    rel_subtitle_path = rel_subtitle_path.replace("\\", "/")
     
     # Normalize language code (lowercase, max 3 chars for ISO 639)
     language_code = language_code.lower()[:3] if language_code else "en"
@@ -468,7 +516,7 @@ def create_subtitle_playlist(output_dir: str, srt_path: str, language_code: str 
         "#EXT-X-VERSION:3",
         f"#EXT-X-TARGETDURATION:10",
         f"#EXTINF:10.0,",
-        rel_srt_path
+        rel_subtitle_path
     ]
     
     playlist_path = os.path.join(output_dir, f"subtitle_{language_code}.m3u8")
@@ -1212,6 +1260,8 @@ class RetroHlsApp:
                     msg += f"\n\nTranscripts:\n"
                     if transcript_paths.get("srt"):
                         msg += f"  SRT: {transcript_paths['srt']}\n"
+                    if transcript_paths.get("vtt"):
+                        msg += f"  VTT: {transcript_paths['vtt']}\n"
                     if transcript_paths.get("txt"):
                         msg += f"  TXT: {transcript_paths['txt']}\n"
                     if transcript_paths.get("json"):
@@ -1436,7 +1486,7 @@ class RetroHlsApp:
                 
                 # Set up file processing
                 self.file_path = fp
-                base_name = os.path.splitext(os.path.basename(fp))[0]
+                base_name = sanitize_folder_name(os.path.splitext(os.path.basename(fp))[0])
                 self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
                 safe_mkdir(self.output_dir)
                 
@@ -1508,19 +1558,18 @@ class RetroHlsApp:
                         
                         # Extract audio to temporary file
                         temp_audio = os.path.join(self.output_dir, f"{base_name}_temp_audio.wav")
-                        success, error_msg = extract_audio_from_video(fp, temp_audio)
-                        
+                        success, error_msg = extract_audio_from_video(fp, temp_audio)``
                         if success:
                             # Transcribe
                             language = self.transcription_language.get()
                             trans_success, trans_result, trans_error = transcribe_audio_with_whisper(
                                 temp_audio, language, self.output_dir
                             )
-                            
                             if trans_success and trans_result:
                                 # Store transcript paths
                                 transcript_paths = {
                                     "srt": trans_result.get("srt_path"),
+                                    "vtt": trans_result.get("vtt_path"),
                                     "txt": trans_result.get("txt_path"),
                                     "json": trans_result.get("json_path")
                                 }
@@ -1531,13 +1580,13 @@ class RetroHlsApp:
                                 detected_lang = trans_result.get("detected_language", language if language != "auto" else "en")
                                 detected_lang = detected_lang.lower() if detected_lang else "en"
                                 
-                                # Create HLS subtitle playlist for SRT file (only if SRT file exists)
-                                srt_path = transcript_paths.get("srt")
-                                if srt_path and os.path.exists(srt_path):
+                                # Create HLS subtitle playlist: use VTT so players show captions (HLS expects WebVTT)
+                                subtitle_file = transcript_paths.get("vtt") or transcript_paths.get("srt")
+                                if subtitle_file and os.path.exists(subtitle_file):
                                     try:
                                         subtitle_playlist_path = create_subtitle_playlist(
                                             self.output_dir,
-                                            srt_path,
+                                            subtitle_file,
                                             detected_lang
                                         )
                                         file_result["subtitle_playlist_path"] = subtitle_playlist_path
@@ -1545,7 +1594,7 @@ class RetroHlsApp:
                                         # Subtitle playlist creation failed - log but don't fail
                                         file_result["transcript_error"] = f"Subtitle playlist creation failed: {str(e)}"
                                 else:
-                                    file_result["transcript_error"] = "SRT file not found after transcription"
+                                    file_result["transcript_error"] = "Subtitle file (VTT/SRT) not found after transcription"
                                 
                                 self.root.after(0, lambda: self._set_transcript_progress("done"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribed {idx}/{total}: {name}"))

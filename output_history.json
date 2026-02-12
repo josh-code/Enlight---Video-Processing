@@ -1,14 +1,15 @@
 {
-  "C:/Users/S7/Downloads/Test videos/Raw/module_4_lesson_7 (1080p).mp4": {
-    "output": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls",
-    "ts": "2026-02-02T04:28:30",
+  "/Volumes/Seagate/PU Videos/Module 3/module_3_lesson_6 (720p).mp4": {
+    "output": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls",
+    "ts": "2026-02-12T13:59:02",
     "transcribed": true,
-    "transcript": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.srt",
+    "transcript": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/module_3_lesson_6 (720p)_transcript.srt",
     "transcript_paths": {
-      "srt": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.srt",
-      "txt": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.txt",
-      "json": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\module_4_lesson_7 (1080p)_transcript.json"
+      "srt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/module_3_lesson_6 (720p)_transcript.srt",
+      "vtt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/module_3_lesson_6 (720p)_transcript.vtt",
+      "txt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/module_3_lesson_6 (720p)_transcript.txt",
+      "json": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/module_3_lesson_6 (720p)_transcript.json"
     },
-    "subtitle_playlist": "C:/Users/S7/Downloads/Test videos/Encoded\\module_4_lesson_7 (1080p)_hls\\subtitle_en.m3u8"
+    "subtitle_playlist": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/module_3_lesson_6 (720p)_hls/subtitle_en.m3u8"
   }
 }
