@@ -660,7 +660,6 @@ class RetroHlsApp:
         # S3 upload
         self.s3_enabled = tk.BooleanVar(value=False)
         self.s3_course_id = tk.StringVar(value="")
-        self.s3_video_name = tk.StringVar(value="")
         self.s3_language = tk.StringVar(value="en")
         self.s3_delete_local = tk.BooleanVar(value=False)
         self.s3_upload_cancel = False  # set True to cancel upload
@@ -789,11 +788,6 @@ class RetroHlsApp:
         tk.Label(s3_row2, text="Course ID", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
         self.s3_course_entry = tk.Entry(s3_row2, textvariable=self.s3_course_id, width=28, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT, insertbackground=RETRO_ACCENT)
         self.s3_course_entry.pack(side="left")
-        s3_row3 = tk.Frame(s3_panel, bg=RETRO_PANEL)
-        s3_row3.pack(fill="x", padx=10, pady=(0, 4))
-        tk.Label(s3_row3, text="Video Name", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
-        self.s3_video_entry = tk.Entry(s3_row3, textvariable=self.s3_video_name, width=28, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT, insertbackground=RETRO_ACCENT)
-        self.s3_video_entry.pack(side="left")
         s3_row4 = tk.Frame(s3_panel, bg=RETRO_PANEL)
         s3_row4.pack(fill="x", padx=10, pady=(0, 4))
         tk.Label(s3_row4, text="Language", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
@@ -801,7 +795,7 @@ class RetroHlsApp:
         self.s3_lang_combo.pack(side="left")
         if _S3_AVAILABLE and S3Config:
             self.s3_lang_combo.set(S3Config.DEFAULT_LANGUAGE)
-        self.s3_prefix_label = tk.Label(s3_panel, text="S3 Prefix: (set Course ID + Video Name)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=400, justify="left")
+        self.s3_prefix_label = tk.Label(s3_panel, text="S3 Prefix: (set Course ID)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=400, justify="left")
         self.s3_prefix_label.pack(anchor="w", padx=10, pady=(4, 2))
         s3_row5 = tk.Frame(s3_panel, bg=RETRO_PANEL)
         s3_row5.pack(fill="x", padx=10, pady=(0, 4))
@@ -818,7 +812,6 @@ class RetroHlsApp:
         self.s3_cancel_btn = tk.Button(s3_btn_row, text="Cancel Upload", command=self._on_s3_cancel, bg="#333333", fg=RETRO_ACCENT, font=FONT_SMALL, bd=0, padx=10, pady=4, state="disabled")
         self.s3_cancel_btn.pack(side="left", padx=(8, 0))
         self.s3_course_id.trace_add("write", lambda *a: self._update_s3_prefix_label())
-        self.s3_video_name.trace_add("write", lambda *a: self._update_s3_prefix_label())
         self.s3_language.trace_add("write", lambda *a: self._update_s3_prefix_label())
         self._on_s3_toggle()
 
@@ -968,8 +961,6 @@ class RetroHlsApp:
                 data = json.load(f)
             if data.get("last_course_id") is not None:
                 self.s3_course_id.set(data["last_course_id"])
-            if data.get("last_video_name") is not None:
-                self.s3_video_name.set(data["last_video_name"])
             if data.get("language") is not None:
                 self.s3_language.set(data["language"])
             if data.get("delete_local_after_upload") is not None:
@@ -982,7 +973,6 @@ class RetroHlsApp:
         try:
             data = {
                 "last_course_id": self.s3_course_id.get(),
-                "last_video_name": self.s3_video_name.get(),
                 "language": self.s3_language.get(),
                 "delete_local_after_upload": self.s3_delete_local.get(),
             }
@@ -992,27 +982,24 @@ class RetroHlsApp:
             pass
 
     def _update_s3_prefix_label(self):
-        """Update S3 prefix display from course ID + language + sanitized video name."""
+        """Update S3 prefix display from course ID + language. Video name is derived from each file."""
         cid = (self.s3_course_id.get() or "").strip()
-        vid = (self.s3_video_name.get() or "").strip()
         lang = (self.s3_language.get() or "en").strip()
-        if not cid or not vid:
-            self.s3_prefix_label.config(text="S3 Prefix: (set Course ID + Video Name)")
+        if not cid:
+            self.s3_prefix_label.config(text="S3 Prefix: (set Course ID)")
             return
-        safe_name = sanitize_folder_name(vid)
-        prefix = f"courses/{cid}/{lang}/{safe_name}/"
-        if len(prefix) > 50:
-            display = prefix[:47] + "..."
+        prefix = f"courses/{cid}/{lang}/<filename>/"
+        if len(prefix) > 55:
+            display = prefix[:52] + "..."
         else:
             display = prefix
-        self.s3_prefix_label.config(text=f"S3 Prefix: {display}")
+        self.s3_prefix_label.config(text=f"S3 Prefix: {display} (per file)")
 
     def _on_s3_toggle(self):
         """Enable/disable S3 panel fields and update backend label."""
         enabled = self.s3_enabled.get()
         state = "normal" if enabled else "disabled"
         self.s3_course_entry.config(state=state)
-        self.s3_video_entry.config(state=state)
         self.s3_lang_combo.config(state="readonly" if enabled else "disabled")
         if _S3_AVAILABLE and S3Config and S3Config.is_configured():
             self.s3_backend_label.config(text="Backend: ✓ Configured from .env", fg=RETRO_FG)
@@ -1275,16 +1262,9 @@ class RetroHlsApp:
                 messagebox.showerror("S3", "S3 upload enabled but backend not configured. Set BACKEND_URL and AUTH_TOKEN in .env")
                 return
             cid = (self.s3_course_id.get() or "").strip()
-            vid = (self.s3_video_name.get() or "").strip()
             lang = (self.s3_language.get() or "").strip()
             if len(cid) != 24 or not re.match(r"^[a-fA-F0-9]{24}$", cid):
                 messagebox.showerror("S3", "Course ID must be 24 hex characters (MongoDB ObjectId).")
-                return
-            if not vid:
-                messagebox.showerror("S3", "Video Name is required.")
-                return
-            if len(vid) > 200:
-                messagebox.showerror("S3", "Video Name must be at most 200 characters.")
                 return
             if lang not in (S3Config.SUPPORTED_LANGUAGES if S3Config else []):
                 messagebox.showerror("S3", f"Language must be one of: {S3Config.SUPPORTED_LANGUAGES if S3Config else []}")
@@ -1878,10 +1858,8 @@ class RetroHlsApp:
                 # S3 upload phase (if enabled)
                 if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
                     cid = (self.s3_course_id.get() or "").strip()
-                    vid_display = (self.s3_video_name.get() or "").strip()
                     lang = (self.s3_language.get() or "en").strip()
-                    s3_video_name = sanitize_folder_name(vid_display)
-                    s3_prefix = f"courses/{cid}/{lang}/{s3_video_name}"
+                    s3_prefix = f"courses/{cid}/{lang}/{base_name}"
                     self.s3_upload_cancel = False
                     self.root.after(0, lambda: self.s3_cancel_btn.config(state="normal"))
                     self.root.after(0, lambda: self.upload_bar.config(value=0))
@@ -1955,7 +1933,7 @@ class RetroHlsApp:
                                 transcript_map["json"] = s3_key
                         s3_keys = {"master": master_key or "", "qualities": qualities_map, "transcript": transcript_map}
                         mgr.create_file_record(
-                            name=vid_display,
+                            name=base_name,
                             course_id=cid,
                             language=lang,
                             s3_keys=s3_keys,
