@@ -683,8 +683,35 @@ class RetroHlsApp:
         right_col = tk.Frame(main, bg=RETRO_BG)
         right_col.pack(side="right", fill="both", expand=True, padx=(6, 0))
 
-        # Left: info, output, qualities, progress
-        info_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        # Scrollable left column: canvas + scrollbar + inner frame
+        left_scrollbar = ttk.Scrollbar(left_col)
+        left_canvas = tk.Canvas(left_col, bg=RETRO_BG, highlightthickness=0, yscrollcommand=left_scrollbar.set)
+        left_scrollbar.config(command=left_canvas.yview)
+        left_col_inner = tk.Frame(left_canvas, bg=RETRO_BG)
+        left_canvas_window = left_canvas.create_window((0, 0), window=left_col_inner, anchor="nw")
+
+        def _on_left_frame_configure(event):
+            left_canvas.configure(scrollregion=left_canvas.bbox("all"))
+
+        def _on_left_canvas_configure(event):
+            left_canvas.itemconfig(left_canvas_window, width=event.width)
+
+        def _on_mousewheel(event):
+            left_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        left_col_inner.bind("<Configure>", _on_left_frame_configure)
+        left_canvas.bind("<Configure>", _on_left_canvas_configure)
+        # Scroll when mouse is over the left side (canvas or inner content)
+        for w in (left_canvas, left_col_inner):
+            w.bind("<MouseWheel>", _on_mousewheel)
+            w.bind("<Button-4>", lambda e: left_canvas.yview_scroll(-1, "units"))
+            w.bind("<Button-5>", lambda e: left_canvas.yview_scroll(1, "units"))
+
+        left_scrollbar.pack(side="right", fill="y")
+        left_canvas.pack(side="left", fill="both", expand=True)
+
+        # Left: info, output, qualities, progress (inside scrollable inner frame)
+        info_panel = tk.Frame(left_col_inner, bg=RETRO_PANEL, bd=1, relief="solid")
         info_panel.pack(fill="x", pady=(0, 8))
 
         tk.Label(info_panel, text="CURRENT SELECTION", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
@@ -703,7 +730,7 @@ class RetroHlsApp:
         tk.Button(out_row, text="CHANGE", command=self.on_choose_output_dir,
                   bg=RETRO_ACCENT, fg="black", font=FONT_SMALL, bd=0, padx=10, pady=4).pack(side="left")
 
-        q_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        q_panel = tk.Frame(left_col_inner, bg=RETRO_PANEL, bd=1, relief="solid")
         q_panel.pack(fill="x", pady=(0, 8))
         tk.Label(q_panel, text="RENDER QUALITIES", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
         q_grid = tk.Frame(q_panel, bg=RETRO_PANEL)
@@ -736,7 +763,7 @@ class RetroHlsApp:
         self.encoder_combo.pack(side="left")
 
         # Transcription panel
-        trans_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        trans_panel = tk.Frame(left_col_inner, bg=RETRO_PANEL, bd=1, relief="solid")
         trans_panel.pack(fill="x", pady=(0, 8))
 
         tk.Label(trans_panel, text="TRANSCRIPTION", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
@@ -770,7 +797,7 @@ class RetroHlsApp:
                  fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(anchor="w", padx=10, pady=(0, 10))
 
         # S3 Upload panel
-        s3_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        s3_panel = tk.Frame(left_col_inner, bg=RETRO_PANEL, bd=1, relief="solid")
         s3_panel.pack(fill="x", pady=(0, 8))
         tk.Label(s3_panel, text="S3 UPLOAD", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
         s3_row1 = tk.Frame(s3_panel, bg=RETRO_PANEL)
@@ -815,7 +842,7 @@ class RetroHlsApp:
         self.s3_language.trace_add("write", lambda *a: self._update_s3_prefix_label())
         self._on_s3_toggle()
 
-        p_panel = tk.Frame(left_col, bg=RETRO_PANEL, bd=1, relief="solid")
+        p_panel = tk.Frame(left_col_inner, bg=RETRO_PANEL, bd=1, relief="solid")
         p_panel.pack(fill="x", pady=(0, 8))
         tk.Label(p_panel, text="PROGRESS", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 4))
         self.status_label = tk.Label(p_panel, text="Status: idle", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
@@ -865,7 +892,7 @@ class RetroHlsApp:
         self.upload_status_label = tk.Label(p_panel, text="", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
         self.upload_status_label.pack(anchor="w", padx=10, pady=(0, 4))
 
-        a_panel = tk.Frame(left_col, bg=RETRO_BG)
+        a_panel = tk.Frame(left_col_inner, bg=RETRO_BG)
         a_panel.pack(fill="x", pady=(6, 0))
         self.start_btn = tk.Button(a_panel, text="START RENDER", command=self.on_start,
                                    bg=RETRO_FG, fg="black", font=FONT_MAIN, bd=0, padx=16, pady=8)
