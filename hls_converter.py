@@ -663,6 +663,10 @@ class RetroHlsApp:
         self.s3_language = tk.StringVar(value="en")
         self.s3_delete_local = tk.BooleanVar(value=False)
         self.s3_upload_cancel = False  # set True to cancel upload
+        self.upload_queue = queue.Queue(maxsize=4)  # pipeline: encoder puts jobs, uploader consumes
+        self.upload_failures = []  # list of {"base_name", "error", "failed_keys"?}
+        self._upload_failures_lock = threading.Lock()
+        self._uploader_thread = None
         self._load_s3_config()
 
         self._build_ui()
@@ -1049,6 +1053,120 @@ class RetroHlsApp:
     def _on_s3_cancel(self):
         """Set flag to cancel upload (worker checks this)."""
         self.s3_upload_cancel = True
+
+    def _update_upload_progress(self, current: int, total: int, name: str):
+        """Update upload bar and status (call from main thread or via root.after)."""
+        if total and total > 0:
+            pct = (current / total) * 100.0
+            self.upload_bar["value"] = pct
+            self.upload_label.config(text=f"{current}/{total}")
+        else:
+            self.upload_label.config(text="-")
+        if name:
+            display = name[:40] + "..." if len(name) > 40 else name
+            self.upload_status_label.config(text=f"Uploading {display}")
+        else:
+            self.upload_status_label.config(text="")
+
+    def _upload_worker(self):
+        """Background thread: consume upload queue, parallel upload + file record."""
+        while True:
+            try:
+                job = self.upload_queue.get()
+            except Exception:
+                break
+            if job is None:
+                break
+            output_dir = job["output_dir"]
+            s3_prefix = job["s3_prefix"]
+            base_name = job["base_name"]
+            course_id = job["course_id"]
+            lang = job["language"]
+            duration_s = job["duration_s"]
+            qualities = job["qualities"]
+            delete_local = job["delete_local"]
+
+            def progress_cb(c, t, n):
+                self.root.after(0, lambda: self._update_upload_progress(c, t, n))
+
+            def cancel_check():
+                return self.s3_upload_cancel
+
+            try:
+                mgr = S3UploadManager()
+                uploaded, failed = mgr.upload_directory(
+                    output_dir,
+                    s3_prefix,
+                    cancel_check=cancel_check,
+                    progress_callback=progress_cb,
+                )
+                if self.s3_upload_cancel:
+                    with self._upload_failures_lock:
+                        self.upload_failures.append({"base_name": base_name, "error": "Cancelled"})
+                    self.root.after(0, lambda: self._log("Upload cancelled by user.", is_error=True))
+                    continue
+                if failed:
+                    with self._upload_failures_lock:
+                        self.upload_failures.append({
+                            "base_name": base_name,
+                            "error": f"{len(failed)} file(s) failed",
+                            "failed_keys": [f[1] for f in failed],
+                        })
+                    self._log(f"Upload partial failure for {base_name}: {len(failed)} failed", is_error=True)
+                    for (path, key, err) in failed[:5]:
+                        self._log(f"  {key}: {err}", is_error=True)
+                    if len(failed) > 5:
+                        self._log(f"  ... and {len(failed) - 5} more", is_error=True)
+                    continue
+                master_key = None
+                for local_path, s3_key in uploaded:
+                    if "master.m3u8" in s3_key:
+                        master_key = s3_key
+                        break
+                if not master_key:
+                    master_key = f"{s3_prefix}/master.m3u8"
+                qualities_map = {}
+                for local_path, s3_key in uploaded:
+                    for q in qualities:
+                        if f"/{q}/index.m3u8" in s3_key or s3_key.endswith(f"{q}/index.m3u8"):
+                            qualities_map[q] = s3_key
+                            break
+                transcript_map = {}
+                for local_path, s3_key in uploaded:
+                    if "_transcript.srt" in s3_key:
+                        transcript_map["srt"] = s3_key
+                    if "_transcript.vtt" in s3_key:
+                        transcript_map["vtt"] = s3_key
+                    if "_transcript.txt" in s3_key:
+                        transcript_map["txt"] = s3_key
+                    if "_transcript.json" in s3_key:
+                        transcript_map["json"] = s3_key
+                s3_keys = {"master": master_key, "qualities": qualities_map, "transcript": transcript_map}
+                mgr.create_file_record(
+                    name=base_name,
+                    course_id=course_id,
+                    language=lang,
+                    s3_keys=s3_keys,
+                    duration=duration_s,
+                    qualities=qualities,
+                    uploaded_by="python-encoder",
+                )
+                self._log(f"File record created for {base_name}.")
+                if delete_local:
+                    try:
+                        shutil.rmtree(output_dir)
+                    except OSError:
+                        pass
+            except PermissionError as e:
+                with self._upload_failures_lock:
+                    self.upload_failures.append({"base_name": base_name, "error": f"Auth failed: {e}"})
+                self._log(f"Upload auth failed for {base_name}: {e}", is_error=True)
+            except Exception as e:
+                with self._upload_failures_lock:
+                    self.upload_failures.append({"base_name": base_name, "error": str(e)})
+                self._log(f"Upload error for {base_name}: {e}", is_error=True)
+            finally:
+                self.root.after(0, lambda: self._update_upload_progress(0, 0, ""))
 
     def _on_transcribe_toggle(self):
         """Enable/disable language selection based on transcription checkbox"""
@@ -1458,6 +1576,17 @@ class RetroHlsApp:
             self.open_btn.config(state="normal")
         else:
             self.open_btn.config(state="disabled")
+
+        # Upload failures (background uploader; may have failed while encoding succeeded)
+        with self._upload_failures_lock:
+            upload_failures = list(self.upload_failures)
+        upload_fail_msg = ""
+        if upload_failures:
+            upload_fail_msg = f"\n\nUpload failed for {len(upload_failures)} video(s):\n"
+            for uf in upload_failures[:5]:
+                upload_fail_msg += f"  • {uf.get('base_name', '?')}: {uf.get('error', '')}\n"
+            if len(upload_failures) > 5:
+                upload_fail_msg += f"  ... and {len(upload_failures) - 5} more (see Logs tab)\n"
         
         # Build summary message
         if failure_count == 0:
@@ -1487,6 +1616,7 @@ class RetroHlsApp:
                         msg += f"\nSubtitle playlist (HLS):\n  {last_result['subtitle_playlist_path']}"
             else:
                 msg += f"Last output:\n{last_success}"
+            msg += upload_fail_msg
             messagebox.showinfo("Success", msg)
         elif success_count == 0:
             # All failed
@@ -1499,6 +1629,7 @@ class RetroHlsApp:
                     msg += f"    Error: {r['error'][:100]}\n"
             if len(failures) > 5:
                 msg += f"  ... and {len(failures) - 5} more"
+            msg += upload_fail_msg
             messagebox.showerror("All Failed", msg)
         else:
             # Partial success
@@ -1525,7 +1656,8 @@ class RetroHlsApp:
             
             if last_master_path:
                 msg += f"\nLast successful output:\n{last_success}"
-            
+            msg += upload_fail_msg
+
             messagebox.showwarning("Queue Complete", msg)
         
         # Final history refresh
@@ -1675,7 +1807,15 @@ class RetroHlsApp:
 
         queue_results = []  # Local list to track results
         master_path = None  # Track last successful master path
-        
+
+        # Start background uploader thread if S3 enabled (pipeline: encode + upload in parallel)
+        if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
+            self.upload_failures = []
+            self.s3_upload_cancel = False
+            self._uploader_thread = threading.Thread(target=self._upload_worker, daemon=True)
+            self._uploader_thread.start()
+            self.root.after(0, lambda: self.s3_cancel_btn.config(state="normal"))
+
         for idx, fp in enumerate(files, 1):
             file_result = {
                 "file": fp,
@@ -1882,117 +2022,23 @@ class RetroHlsApp:
                 self.root.after(0, self._refresh_history_ui)
                 self.last_output_dir = self.output_dir
 
-                # S3 upload phase (if enabled)
+                # Queue S3 upload for background (pipeline: encoding continues while upload runs)
                 if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
                     cid = (self.s3_course_id.get() or "").strip()
                     lang = (self.s3_language.get() or "en").strip()
                     s3_prefix = f"courses/{cid}/{lang}/{base_name}"
-                    self.s3_upload_cancel = False
-                    self.root.after(0, lambda: self.s3_cancel_btn.config(state="normal"))
-                    self.root.after(0, lambda: self.upload_bar.config(value=0))
-                    self.root.after(0, lambda: self.upload_label.config(text="0%"))
-                    if self.jobs_total > 0:
-                        self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.75) / self.jobs_total * 100.0))
-                    try:
-                        self._log("S3 upload starting...")
-                        mgr = S3UploadManager()
-                        total_files = sum(1 for _ in Path(self.output_dir).rglob("*") if _.is_file())
-                        self._log(f"Uploading {total_files} files to S3 prefix: {s3_prefix}")
-                        def on_progress(current, total, name):
-                            pct_bar = (current / total * 100.0) if total else 0.0
-                            jobs_done = self.jobs_done
-                            jobs_total = self.jobs_total
-                            p = 0.75 + 0.20 * (current / total) if total else 0.75
-                            overall_pct = (jobs_done + p) / jobs_total * 100.0 if jobs_total > 0 else 0.0
-                            def _update():
-                                self.upload_bar["value"] = pct_bar
-                                self.upload_label.config(text=f"{current}/{total}")
-                                self.upload_status_label.config(text=f"Uploading {name[:40]}..." if len(name) > 40 else f"Uploading {name}")
-                                if jobs_total > 0:
-                                    self._update_overall(overall_pct)
-                                self.root.update_idletasks()
-                            self.root.after(0, _update)
-                            self._log(f"Uploaded {current}/{total}: {name}")
-                        def cancel_check():
-                            return self.s3_upload_cancel
-                        uploaded = mgr.upload_directory(
-                            self.output_dir,
-                            s3_prefix,
-                            cancel_check=cancel_check,
-                            progress_callback=on_progress,
-                        )
-                        if self.s3_upload_cancel:
-                            self._log("Upload cancelled by user.", is_error=True)
-                            self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Cancelled {idx}/{total}: {name} (upload)"))
-                            file_result["error"] = "Upload cancelled"
-                            queue_results.append(file_result.copy())
-                            self.jobs_done = idx
-                            if self.jobs_total > 0:
-                                self.root.after(0, lambda p=(self.jobs_done / self.jobs_total) * 100.0: self._update_overall(p))
-                            self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
-                            self.root.after(0, lambda: self.upload_status_label.config(text=""))
-                            continue
-                        if self.jobs_total > 0:
-                            self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.95) / self.jobs_total * 100.0))
-                        # Build s3_keys for File record
-                        master_key = None
-                        for local_path, s3_key in uploaded:
-                            if s3_key.endswith("master.m3u8") or "/master.m3u8" in s3_key.replace("\\", "/"):
-                                master_key = s3_key
-                                break
-                        if not master_key:
-                            master_key = f"{s3_prefix}/master.m3u8"
-                        qualities_map = {}
-                        for local_path, s3_key in uploaded:
-                            for q in selected:
-                                if f"/{q}/index.m3u8" in s3_key or s3_key.replace("\\", "/").endswith(f"{q}/index.m3u8"):
-                                    qualities_map[q] = s3_key
-                                    break
-                        transcript_map = {}
-                        for local_path, s3_key in uploaded:
-                            if "_transcript.srt" in s3_key or s3_key.endswith("_transcript.srt"):
-                                transcript_map["srt"] = s3_key
-                            if "_transcript.vtt" in s3_key or s3_key.endswith("_transcript.vtt"):
-                                transcript_map["vtt"] = s3_key
-                            if "_transcript.txt" in s3_key or s3_key.endswith("_transcript.txt"):
-                                transcript_map["txt"] = s3_key
-                            if "_transcript.json" in s3_key or s3_key.endswith("_transcript.json"):
-                                transcript_map["json"] = s3_key
-                        s3_keys = {"master": master_key or "", "qualities": qualities_map, "transcript": transcript_map}
-                        mgr.create_file_record(
-                            name=base_name,
-                            course_id=cid,
-                            language=lang,
-                            s3_keys=s3_keys,
-                            duration=self.duration_s,
-                            qualities=selected,
-                            uploaded_by="python-encoder",
-                        )
-                        self._log("File record created successfully.")
-                        if self.jobs_total > 0:
-                            self.root.after(0, lambda: self._update_overall((self.jobs_done + 0.98) / self.jobs_total * 100.0))
-                        self._save_s3_config()
-                        if self.s3_delete_local.get():
-                            try:
-                                shutil.rmtree(self.output_dir)
-                            except OSError:
-                                pass
-                    except Exception as s3_err:
-                        self._log(f"S3/File record error: {s3_err}", is_error=True)
-                        file_result["error"] = f"S3/File record: {s3_err}"
-                        queue_results.append(file_result.copy())
-                        self.jobs_done = idx
-                        self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Failed {idx}/{total}: {name} (upload)"))
-                        if self.jobs_total > 0:
-                            self.root.after(0, lambda p=(self.jobs_done / self.jobs_total) * 100.0: self._update_overall(p))
-                        self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
-                        self.root.after(0, lambda: self.upload_status_label.config(text=""))
-                        continue
-                    self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
-                    self.root.after(0, lambda: self.upload_bar.config(value=100))
-                    self.root.after(0, lambda: self.upload_label.config(text="100%"))
-                    self.root.after(0, lambda: self.upload_status_label.config(text=""))
-                    self._log("S3 upload complete.")
+                    self.upload_queue.put({
+                        "output_dir": self.output_dir,
+                        "s3_prefix": s3_prefix,
+                        "base_name": base_name,
+                        "course_id": cid,
+                        "language": lang,
+                        "duration_s": self.duration_s,
+                        "qualities": selected,
+                        "delete_local": self.s3_delete_local.get(),
+                    })
+                    self._save_s3_config()
+                    self._log(f"Queued upload for {base_name} (upload runs in background).")
 
                 self.jobs_done = idx
                 self._log(f"Completed {idx}/{len(files)}: {base_name}")
@@ -2026,6 +2072,15 @@ class RetroHlsApp:
                     queue_percent = (self.jobs_done / self.jobs_total) * 100.0
                     self.root.after(0, lambda p=queue_percent: self._update_overall(p))
                 continue
+
+        # Wait for background uploader to drain (pipeline: all encodes done, uploads may still run)
+        if self.s3_enabled.get() and self._uploader_thread is not None:
+            self.root.after(0, lambda: self._set_status("Waiting for uploads to finish..."))
+            self.upload_queue.put(None)
+            self._uploader_thread.join()
+            self._uploader_thread = None
+            self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
+            self.root.after(0, lambda: self._update_upload_progress(0, 0, ""))
 
         # After loop completes, call finish method
         self.root.after(0, lambda results=queue_results: self._finish_queue_complete(results))

@@ -1,12 +1,15 @@
 """
 S3 upload manager for the HLS encoder.
 Uploads files to backend-defined presigned URLs (exact key), creates File records.
+Supports parallel uploads via ThreadPoolExecutor and returns (uploaded, failed) for error handling.
 """
 import json
 import os
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 try:
     import requests
@@ -196,13 +199,15 @@ class S3UploadManager:
         cancel_check: Optional[Callable[[], bool]] = None,
         progress_callback: Optional[Callable[[int, int, str], None]] = None,
         state_callback: Optional[Callable[[dict], None]] = None,
-    ) -> List[tuple[str, str]]:
+    ) -> Tuple[List[tuple[str, str]], List[tuple[str, str, str]]]:
         """
-        Upload all files under local_dir to S3 with prefix s3_prefix.
+        Upload all files under local_dir to S3 with prefix s3_prefix using parallel workers.
         s3_prefix should not have trailing slash (we add / for each relative path).
-        Returns list of (local_path, s3_key) uploaded.
-        cancel_check() called before each file; if True, stop and return.
-        progress_callback(current_index, total_files, current_file_name) optional.
+        Returns (uploaded, failed) where:
+          uploaded: list of (local_path, s3_key) successfully uploaded
+          failed: list of (local_path, s3_key, error_message) that failed after retries
+        cancel_check() called before each batch; if True, stop and return.
+        progress_callback(current_index, total_files, current_file_name) optional (thread-safe).
         state_callback(state_dict) called after each file for resume.
         """
         local_path = Path(local_dir)
@@ -210,38 +215,57 @@ class S3UploadManager:
             raise NotADirectoryError(local_dir)
         prefix = (s3_prefix or "").rstrip("/")
         uploaded: List[tuple[str, str]] = []
-        # Build full list of (path, key, content_type)
+        failed: List[tuple[str, str, str]] = []
         file_entries: List[tuple[Path, str, str]] = []
         for p in local_path.rglob("*"):
             if p.is_file():
                 rel = p.relative_to(local_path)
-                parts = rel.parts
-                key = f"{prefix}/{'/'.join(parts)}".replace("\\", "/")
+                key = f"{prefix}/{'/'.join(rel.parts)}".replace("\\", "/")
                 content_type = _get_content_type(str(p))
                 file_entries.append((p, key, content_type))
         total = len(file_entries)
         batch_size = getattr(Config, "PRESIGN_BATCH_SIZE", 200) or 200
-        for start in range(0, total, batch_size):
-            if cancel_check and cancel_check():
-                break
-            chunk = file_entries[start : start + batch_size]
-            keys_with_types = [(k, ct) for _, k, ct in chunk]
-            presigned_list = self.get_presigned_urls_batch(keys_with_types)
-            for i, (p, key, content_type) in enumerate(chunk):
+        concurrency = getattr(Config, "UPLOAD_CONCURRENCY", 16) or 16
+        progress_lock = threading.Lock()
+        completed_count = [0]
+
+        with ThreadPoolExecutor(max_workers=concurrency) as executor:
+            for start in range(0, total, batch_size):
                 if cancel_check and cancel_check():
                     break
-                presigned = presigned_list[i] if i < len(presigned_list) else {}
-                signed_url = presigned.get("signedUrl")
-                if not signed_url:
-                    raise ValueError(f"No signedUrl in response for {key}")
-                self.upload_file(str(p), signed_url, content_type)
-                uploaded.append((str(p), key))
-                idx = start + i + 1
-                if progress_callback:
-                    progress_callback(idx, total, p.name)
-                if state_callback:
-                    state_callback({"uploaded": uploaded, "last_key": key})
-        return uploaded
+                chunk = file_entries[start : start + batch_size]
+                keys_with_types = [(k, ct) for _, k, ct in chunk]
+                presigned_list = self.get_presigned_urls_batch(keys_with_types)
+                futures: List[Tuple] = []
+                for i, (p, key, content_type) in enumerate(chunk):
+                    presigned = presigned_list[i] if i < len(presigned_list) else {}
+                    signed_url = presigned.get("signedUrl")
+                    if not signed_url:
+                        failed.append((str(p), key, "No signedUrl in response"))
+                        continue
+                    fut = executor.submit(
+                        self.upload_file, str(p), signed_url, content_type
+                    )
+                    futures.append((fut, str(p), key, p.name))
+                future_to_info = {fut: (path, key, name) for fut, path, key, name in futures}
+                for fut in as_completed(future_to_info):
+                    path, key, name = future_to_info[fut]
+                    try:
+                        fut.result()
+                        uploaded.append((path, key))
+                    except Exception as e:
+                        failed.append((path, key, str(e)))
+                    with progress_lock:
+                        completed_count[0] += 1
+                        if progress_callback:
+                            progress_callback(completed_count[0], total, name)
+                        if state_callback:
+                            state_callback({
+                                "uploaded": uploaded,
+                                "failed": failed,
+                                "last_key": key,
+                            })
+        return (uploaded, failed)
 
     def create_file_record(
         self,

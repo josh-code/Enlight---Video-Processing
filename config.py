@@ -27,6 +27,7 @@ class Config:
         "/api/v1/admin/content/aws/uploadUrlExactBatch",
     )
     PRESIGN_BATCH_SIZE = int(os.getenv("PRESIGN_BATCH_SIZE", "200"))
+    UPLOAD_CONCURRENCY = int(os.getenv("UPLOAD_CONCURRENCY", "16"))  # parallel S3 PUT workers
     FILE_CREATE_ENDPOINT = os.getenv(
         "FILE_CREATE_ENDPOINT",
         "/api/v1/admin/content/files",
