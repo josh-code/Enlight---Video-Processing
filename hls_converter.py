@@ -1126,6 +1126,8 @@ class RetroHlsApp:
                 return self.s3_upload_cancel
 
             try:
+                total_files = sum(1 for _ in Path(output_dir).rglob("*") if _.is_file())
+                self._log(f"Upload started for {base_name} ({total_files} files).")
                 mgr = S3UploadManager()
                 uploaded, failed = mgr.upload_directory(
                     output_dir,
@@ -1174,6 +1176,7 @@ class RetroHlsApp:
                         transcript_map["txt"] = s3_key
                     if "_transcript.json" in s3_key:
                         transcript_map["json"] = s3_key
+                self._log(f"  Uploaded {len(uploaded)} files to S3. Creating file record...")
                 s3_keys = {"master": master_key, "qualities": qualities_map, "transcript": transcript_map}
                 mgr.create_file_record(
                     name=base_name,
@@ -1184,10 +1187,11 @@ class RetroHlsApp:
                     qualities=qualities,
                     uploaded_by="python-encoder",
                 )
-                self._log(f"File record created for {base_name}.")
+                self._log(f"  File record created for {base_name}.")
                 if delete_local:
                     try:
                         shutil.rmtree(output_dir)
+                        self._log(f"  Local files deleted for {base_name}.")
                     except OSError:
                         pass
             except PermissionError as e:
@@ -1901,6 +1905,7 @@ class RetroHlsApp:
                 
                 for q_idx, q in enumerate(selected, 1):
                     self.root.after(0, lambda q=q, q_idx=q_idx, total_q=len(selected): self._set_status(f"rendering {q} ({q_idx}/{total_q})"))
+                    self._log(f"  Encoding {q} ({q_idx}/{len(selected)})...")
                     ok, err = self._render_single_quality(q, total_s, selected)
                     if not ok:
                         if err is None:
@@ -1909,6 +1914,7 @@ class RetroHlsApp:
                         else:
                             render_error = err
                         break  # Exit quality loop on error
+                    self._log(f"  {q} encoding complete.")
                 
                 # Check if rendering succeeded
                 if render_error:
@@ -1925,8 +1931,10 @@ class RetroHlsApp:
                 
                 # Create initial master playlist (without subtitles)
                 try:
+                    self._log("  Creating master playlist (without subtitles)...")
                     master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
                     file_result["master_path"] = master_path
+                    self._log("  Master playlist created.")
                 except Exception as e:
                     self._log(f"Master playlist write failed: {e}", is_error=True)
                     file_result["error"] = f"Master playlist write failed: {e}"
@@ -1950,17 +1958,21 @@ class RetroHlsApp:
                     try:
                         self.root.after(0, lambda: self._set_transcript_progress("running"))
                         self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribing {idx}/{total}: {name}"))
+                        self._log("Transcription started.")
                         
                         # Extract audio to temporary file
                         temp_audio = os.path.join(self.output_dir, f"{base_name}_temp_audio.wav")
+                        self._log("  Extracting audio from video...")
                         success, error_msg = extract_audio_from_video(fp, temp_audio)
                         if success:
+                            self._log("  Audio extracted. Sending to Whisper...")
                             # Transcribe
                             language = self._get_transcription_language_code()
                             trans_success, trans_result, trans_error = transcribe_audio_with_whisper(
                                 temp_audio, language, self.output_dir
                             )
                             if trans_success and trans_result:
+                                self._log("  Whisper done. SRT, VTT, TXT, JSON files created.")
                                 # Store transcript paths
                                 transcript_paths = {
                                     "srt": trans_result.get("srt_path"),
@@ -1985,17 +1997,21 @@ class RetroHlsApp:
                                             detected_lang
                                         )
                                         file_result["subtitle_playlist_path"] = subtitle_playlist_path
+                                        self._log("  Subtitle playlist (HLS) created.")
                                     except Exception as e:
                                         # Subtitle playlist creation failed - log but don't fail
                                         file_result["transcript_error"] = f"Subtitle playlist creation failed: {str(e)}"
+                                        self._log(f"  Subtitle playlist failed: {e}", is_error=True)
                                 else:
                                     file_result["transcript_error"] = "Subtitle file (VTT/SRT) not found after transcription"
+                                    self._log("  Subtitle playlist skipped (VTT/SRT not found).", is_error=True)
                                 
                                 self.root.after(0, lambda: self._set_transcript_progress("done"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcribed {idx}/{total}: {name}"))
                                 self._log("Transcription done.")
                             else:
                                 # Transcription failed but don't fail the whole render
+                                self._log(f"  Transcription failed: {trans_error}", is_error=True)
                                 self.root.after(0, lambda: self._set_transcript_progress("idle"))
                                 self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Transcription warning {idx}/{total}: {name}"))
                                 file_result["transcript_error"] = trans_error
@@ -2007,10 +2023,12 @@ class RetroHlsApp:
                             except Exception:
                                 pass
                         else:
+                            self._log(f"  Audio extraction failed: {error_msg}", is_error=True)
                             self.root.after(0, lambda: self._set_transcript_progress("idle"))
                             file_result["transcript_error"] = f"Audio extraction failed: {error_msg}"
                     except Exception as e:
                         # Transcription error - don't fail the render, just log it
+                        self._log(f"Transcription error: {e}", is_error=True)
                         self.root.after(0, lambda: self._set_transcript_progress("idle"))
                         file_result["transcript_error"] = f"Transcription error: {str(e)}"
 
@@ -2028,6 +2046,7 @@ class RetroHlsApp:
                             subtitle_paths_dict
                         )
                         file_result["master_path"] = master_path
+                        self._log("  Master playlist updated with subtitle track.")
                     except Exception as e:
                         # Master playlist update failed - log but don't fail render
                         # Original master playlist still exists, so render is still successful
@@ -2108,10 +2127,12 @@ class RetroHlsApp:
 
         # Wait for background uploader to drain (pipeline: all encodes done, uploads may still run)
         if self.s3_enabled.get() and self._uploader_thread is not None:
+            self._log("All encoding complete. Waiting for uploads to finish...")
             self.root.after(0, lambda: self._set_status("Waiting for uploads to finish..."))
             self.upload_queue.put(None)
             self._uploader_thread.join()
             self._uploader_thread = None
+            self._log("All uploads finished.")
             self.root.after(0, lambda: self.s3_cancel_btn.config(state="disabled"))
             self.root.after(0, lambda: self._update_upload_progress(0, 0, ""))
 
