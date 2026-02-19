@@ -102,5 +102,265 @@
       "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\module_1_lesson_8_(720p)_hls\\module_1_lesson_8_(720p)_transcript.json"
     },
     "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\module_1_lesson_8_(720p)_hls\\subtitle_en.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls",
+    "ts": "2026-02-18T16:27:55",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-C_-_Week_5_-_Part_1_-_Final_No_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls",
+    "ts": "2026-02-18T16:38:34",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls",
+    "ts": "2026-02-18T16:49:59",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-B_-_Week_5_-_Part_1_-_Final_Eng_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S2-1-B - Week 2 - Prayer, Humility to Peacemakers - Final_No Slides_4k Master_Part B.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls",
+    "ts": "2026-02-18T17:07:56",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_B_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S4-2-A - Week 4 - Part 2 - Final_No Slides_4k Master_Part A-074 (1).mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls",
+    "ts": "2026-02-18T17:25:42",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-A_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_A-074_(1)_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S5-1-A - Week 5 - Part 1 - Final_No Slides_4k Master_Part A.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls",
+    "ts": "2026-02-18T17:35:42",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S5-1-A_-_Week_5_-_Part_1_-_Final_No_Slides_4k_Master_Part_A_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S2-2-A - Week 2 - Prayer, Humility to Peacemakers - Final_No Slides_4k Master_Part A-017.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls",
+    "ts": "2026-02-18T17:50:09",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_4k_Master_Part_A-017_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S1-A - Week 1 - Introduction - Final_No Slides_4k Master_Part A-061.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls",
+    "ts": "2026-02-18T18:04:49",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-A_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_A-061_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S3-1-A - Week 3 - Word of God, Patient endurance to discreetness - Final_No Slides_4k Master_Part A.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls",
+    "ts": "2026-02-18T18:15:43",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-1-A_-_Week_3_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_4k_Master_Part_A_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S4-1-B - Week 4 - Part 1 - Final_No Slides_4k Master_Part B-067.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls",
+    "ts": "2026-02-18T18:26:52",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-B_-_Week_4_-_Part_1_-_Final_No_Slides_4k_Master_Part_B-067_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S4-2-B - Week 4 - Part 2 - Final_No Slides_4k Master_Part B-075-Hindi (1).mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls",
+    "ts": "2026-02-18T18:45:41",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-2-B_-_Week_4_-_Part_2_-_Final_No_Slides_4k_Master_Part_B-075-Hindi_(1)_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S1-D - Week 1 - Introduction - Final_No Slides_4k Master_Part D.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls",
+    "ts": "2026-02-18T18:54:25",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-D_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_D_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S2-1-C - Week 2 - Prayer, Humility to Peacemakers - Afterthoughts on Prayer- Final_No Slides_4k Master_Part C.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls",
+    "ts": "2026-02-18T19:01:17",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-C_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Afterthoughts_on_Prayer-_Final_No_Slides_4k_Master_Part_C_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S1-B - Week 1 - Introduction - Final_No Slides_4k Master_Part B.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls",
+    "ts": "2026-02-18T19:07:33",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-B_-_Week_1_-_Introduction_-_Final_No_Slides_4k_Master_Part_B_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S1-C - Week 1 - Introduction - Final_English_Part C.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls",
+    "ts": "2026-02-18T19:18:25",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S1-C_-_Week_1_-_Introduction_-_Final_English_Part_C_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S4-1-A - Week 4 - Part 1 - Final_No Slides_LowRes_Part A.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls",
+    "ts": "2026-02-18T19:31:41",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S4-1-A_-_Week_4_-_Part_1_-_Final_No_Slides_LowRes_Part_A_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S3-2 - Word of God, Patient endurance to discreetness - Final_No Slides_LowRes.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls",
+    "ts": "2026-02-18T19:42:19",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S3-2_-_Word_of_God,_Patient_endurance_to_discreetness_-_Final_No_Slides_LowRes_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S2-1-A - Week 2 - Prayer, Humility to Peacemakers - Final_No Slides_LowRes_Part A.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls",
+    "ts": "2026-02-18T19:52:51",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-1-A_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_A_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S10 - Week 10 - Final_No Slides_LowRes.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls",
+    "ts": "2026-02-18T20:02:43",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S10_-_Week_10_-_Final_No_Slides_LowRes_hls\\subtitle_hi.m3u8"
+  },
+  "C:/Users/S7/Downloads/DFS2S2-2-B - Week 2 - Prayer, Humility to Peacemakers - Final_No Slides_LowRes_Part B.mp4": {
+    "output": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls",
+    "ts": "2026-02-18T20:09:55",
+    "transcribed": true,
+    "transcript": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.srt",
+    "transcript_paths": {
+      "srt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.srt",
+      "vtt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.vtt",
+      "txt": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.txt",
+      "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.json"
+    },
+    "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\subtitle_hi.m3u8"
   }
 }
