@@ -15,12 +15,17 @@ from typing import Tuple
 
 try:
     from config import Config as S3Config
+    from config import fetch_supported_languages
     from s3_uploader import S3UploadManager
     _S3_AVAILABLE = True
 except ImportError:
     S3Config = None
     S3UploadManager = None
     _S3_AVAILABLE = False
+
+    def fetch_supported_languages():
+        """Fallback when config is not available."""
+        return ([{"code": "en", "name": "English (English)"}], "en")
 
 S3_CONFIG_FILE = "s3_config.json"
 
@@ -641,7 +646,7 @@ class RetroHlsApp:
 
         # Transcription settings
         self.transcribe_enabled = tk.BooleanVar(value=False)
-        self.transcription_language = tk.StringVar(value="auto")
+        self.transcription_language = tk.StringVar(value="Auto-detect")
 
         self.quality_vars = {
             "1080p": tk.BooleanVar(value=False),
@@ -660,13 +665,24 @@ class RetroHlsApp:
         # S3 upload
         self.s3_enabled = tk.BooleanVar(value=False)
         self.s3_course_id = tk.StringVar(value="")
-        self.s3_language = tk.StringVar(value="en")
         self.s3_delete_local = tk.BooleanVar(value=False)
         self.s3_upload_cancel = False  # set True to cancel upload
         self.upload_queue = queue.Queue(maxsize=4)  # pipeline: encoder puts jobs, uploader consumes
         self.upload_failures = []  # list of {"base_name", "error", "failed_keys"?}
         self._upload_failures_lock = threading.Lock()
         self._uploader_thread = None
+
+        # Supported languages from server (display name in UI, code in logic)
+        self._supported_languages, self._default_language_code = fetch_supported_languages()
+        self._code_to_name = {x["code"]: x["name"] for x in self._supported_languages}
+        self._name_to_code = {x["name"]: x["code"] for x in self._supported_languages}
+        self._supported_codes = [x["code"] for x in self._supported_languages]
+        default_display = self._code_to_name.get(
+            self._default_language_code,
+            (self._supported_languages[0]["name"] if self._supported_languages else "English (English)"),
+        )
+        self.s3_language = tk.StringVar(value=default_display)
+
         self._load_s3_config()
 
         self._build_ui()
@@ -788,13 +804,14 @@ class RetroHlsApp:
 
         tk.Label(trans_row2, text="Language:", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=(0, 8))
 
+        trans_values = ["Auto-detect"] + [x["name"] for x in self._supported_languages]
         self.language_combo = ttk.Combobox(
             trans_row2, textvariable=self.transcription_language,
-            values=["auto", "en", "es", "fr", "de", "it", "pt", "ru", "ja", "ko", "zh", "ar", "hi"],
-            state="readonly", width=12, font=FONT_SMALL
+            values=trans_values,
+            state="readonly", width=28, font=FONT_SMALL
         )
         self.language_combo.pack(side="left")
-        self.language_combo.set("auto")
+        self.language_combo.set("Auto-detect")
         self.language_combo.config(state="disabled")  # Disabled until transcription enabled
 
         tk.Label(trans_panel, text="Tip: Transcription runs after video rendering. Requires audio track.", 
@@ -822,10 +839,9 @@ class RetroHlsApp:
         s3_row4 = tk.Frame(s3_panel, bg=RETRO_PANEL)
         s3_row4.pack(fill="x", padx=10, pady=(0, 4))
         tk.Label(s3_row4, text="Language", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, width=12, anchor="w").pack(side="left", padx=(0, 4))
-        self.s3_lang_combo = ttk.Combobox(s3_row4, textvariable=self.s3_language, values=(S3Config.SUPPORTED_LANGUAGES if _S3_AVAILABLE and S3Config else ["en"]), state="readonly", width=10, font=FONT_SMALL)
+        s3_lang_values = [x["name"] for x in self._supported_languages]
+        self.s3_lang_combo = ttk.Combobox(s3_row4, textvariable=self.s3_language, values=s3_lang_values, state="readonly", width=28, font=FONT_SMALL)
         self.s3_lang_combo.pack(side="left")
-        if _S3_AVAILABLE and S3Config:
-            self.s3_lang_combo.set(S3Config.DEFAULT_LANGUAGE)
         self.s3_prefix_label = tk.Label(s3_panel, text="S3 Prefix: (set Course ID)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=400, justify="left")
         self.s3_prefix_label.pack(anchor="w", padx=10, pady=(4, 2))
         s3_row5 = tk.Frame(s3_panel, bg=RETRO_PANEL)
@@ -993,7 +1009,8 @@ class RetroHlsApp:
             if data.get("last_course_id") is not None:
                 self.s3_course_id.set(data["last_course_id"])
             if data.get("language") is not None:
-                self.s3_language.set(data["language"])
+                code = data["language"]
+                self.s3_language.set(self._code_to_name.get(code, self._code_to_name.get("en", "English (English)")))
             if data.get("delete_local_after_upload") is not None:
                 self.s3_delete_local.set(data["delete_local_after_upload"])
         except (json.JSONDecodeError, OSError):
@@ -1004,7 +1021,7 @@ class RetroHlsApp:
         try:
             data = {
                 "last_course_id": self.s3_course_id.get(),
-                "language": self.s3_language.get(),
+                "language": self._get_s3_language_code(),
                 "delete_local_after_upload": self.s3_delete_local.get(),
             }
             with open(S3_CONFIG_FILE, "w", encoding="utf-8") as f:
@@ -1012,10 +1029,22 @@ class RetroHlsApp:
         except OSError:
             pass
 
+    def _get_transcription_language_code(self) -> str:
+        """Return Whisper language code: 'auto' for Auto-detect, else the code for the selected display name."""
+        val = (self.transcription_language.get() or "").strip()
+        if val == "Auto-detect":
+            return "auto"
+        return self._name_to_code.get(val, "en")
+
+    def _get_s3_language_code(self) -> str:
+        """Return language code for the selected S3 language display name."""
+        val = (self.s3_language.get() or "").strip()
+        return self._name_to_code.get(val, self._default_language_code)
+
     def _update_s3_prefix_label(self):
         """Update S3 prefix display from course ID + language. Video name is derived from each file."""
         cid = (self.s3_course_id.get() or "").strip()
-        lang = (self.s3_language.get() or "en").strip()
+        lang = self._get_s3_language_code()
         if not cid:
             self.s3_prefix_label.config(text="S3 Prefix: (set Course ID)")
             return
@@ -1407,12 +1436,12 @@ class RetroHlsApp:
                 messagebox.showerror("S3", "S3 upload enabled but backend not configured. Set BACKEND_URL and AUTH_TOKEN in .env")
                 return
             cid = (self.s3_course_id.get() or "").strip()
-            lang = (self.s3_language.get() or "").strip()
+            lang = self._get_s3_language_code()
             if len(cid) != 24 or not re.match(r"^[a-fA-F0-9]{24}$", cid):
                 messagebox.showerror("S3", "Course ID must be 24 hex characters (MongoDB ObjectId).")
                 return
-            if lang not in (S3Config.SUPPORTED_LANGUAGES if S3Config else []):
-                messagebox.showerror("S3", f"Language must be one of: {S3Config.SUPPORTED_LANGUAGES if S3Config else []}")
+            if lang not in self._supported_codes:
+                messagebox.showerror("S3", f"Language must be one of the supported languages.")
                 return
 
         # Check FFmpeg availability
@@ -1923,7 +1952,7 @@ class RetroHlsApp:
                         success, error_msg = extract_audio_from_video(fp, temp_audio)
                         if success:
                             # Transcribe
-                            language = self.transcription_language.get()
+                            language = self._get_transcription_language_code()
                             trans_success, trans_result, trans_error = transcribe_audio_with_whisper(
                                 temp_audio, language, self.output_dir
                             )
@@ -1939,8 +1968,8 @@ class RetroHlsApp:
                                 file_result["transcript_paths"] = transcript_paths
                                 
                                 # Get detected language (normalize to lowercase for consistency)
-                                detected_lang = trans_result.get("detected_language", language if language != "auto" else "en")
-                                detected_lang = detected_lang.lower() if detected_lang else "en"
+                                detected_lang = (trans_result.get("detected_language") or (language if language != "auto" else "en"))
+                                detected_lang = (detected_lang or "en").lower()
                                 
                                 # Create HLS subtitle playlist: use VTT so players show captions (HLS expects WebVTT)
                                 subtitle_file = transcript_paths.get("vtt") or transcript_paths.get("srt")
@@ -2025,7 +2054,7 @@ class RetroHlsApp:
                 # Queue S3 upload for background (pipeline: encoding continues while upload runs)
                 if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
                     cid = (self.s3_course_id.get() or "").strip()
-                    lang = (self.s3_language.get() or "en").strip()
+                    lang = self._get_s3_language_code()
                     s3_prefix = f"courses/{cid}/{lang}/{base_name}"
                     self.upload_queue.put({
                         "output_dir": self.output_dir,

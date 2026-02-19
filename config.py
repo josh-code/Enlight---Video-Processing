@@ -4,6 +4,7 @@ Load from environment; .env supported via python-dotenv.
 """
 import os
 from pathlib import Path
+from typing import List, Tuple
 
 # Load .env from this file's directory so it works regardless of cwd
 _CONFIG_DIR = Path(__file__).resolve().parent
@@ -12,6 +13,58 @@ try:
     load_dotenv(_CONFIG_DIR / ".env")
 except ImportError:
     pass
+
+# Fallback when supported-languages endpoint is unavailable (no network / server down)
+DEFAULT_SUPPORTED_LANGUAGES: List[dict] = [
+    {"code": "en", "name": "English (English)"},
+    {"code": "es", "name": "Español (Spanish)"},
+    {"code": "fr", "name": "Français (French)"},
+    {"code": "de", "name": "Deutsch (German)"},
+    {"code": "hi", "name": "हिन्दी (Hindi)"},
+    {"code": "nl", "name": "Nederlands (Dutch)"},
+    {"code": "pt", "name": "Português (Portuguese)"},
+    {"code": "uk", "name": "Українська (Ukrainian)"},
+    {"code": "vi", "name": "Tiếng Việt (Vietnamese)"},
+    {"code": "pl", "name": "Polski (Polish)"},
+]
+
+
+def fetch_supported_languages() -> Tuple[List[dict], str]:
+    """
+    Fetch supported languages from backend SUPPORTED_LANGUAGES_ENDPOINT.
+    Returns (languages, default_language_code) where languages is [{"code": "en", "name": "English (English)"}, ...].
+    Falls back to DEFAULT_SUPPORTED_LANGUAGES and "en" if request fails or BACKEND_URL is empty.
+    """
+    try:
+        import requests
+    except ImportError:
+        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+    url = Config.get_full_url(Config.SUPPORTED_LANGUAGES_ENDPOINT)
+    if not url:
+        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+    try:
+        r = requests.get(url, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        if not data.get("success") or "data" not in data:
+            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        payload = data["data"]
+        languages = list(payload.get("languages") or [])
+        if not languages:
+            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        default = (payload.get("defaultLanguage") or "en").lower()
+        # Ensure each item has code and name
+        out = []
+        for item in languages:
+            code = (item.get("code") or "").strip().lower()
+            name = (item.get("name") or code or "Unknown").strip()
+            if code:
+                out.append({"code": code, "name": name})
+        if not out:
+            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        return (out, default if any(x["code"] == default for x in out) else "en")
+    except Exception:
+        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
 
 
 class Config:
@@ -36,7 +89,10 @@ class Config:
         "AUTH_VALIDATE_ENDPOINT",
         "/api/v1/admin/auth/verify-admin",
     )
-    SUPPORTED_LANGUAGES = ["en", "es", "fr", "de", "ar", "hi"]
+    SUPPORTED_LANGUAGES_ENDPOINT = os.getenv(
+        "SUPPORTED_LANGUAGES_ENDPOINT",
+        "/api/v1/common/languages",
+    )
 
     @classmethod
     def is_configured(cls) -> bool:
