@@ -273,11 +273,13 @@ def format_vtt_time(seconds: float) -> str:
 
 def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", output_dir: str = None) -> Tuple[bool, dict, str]:
     """
-    Transcribe audio using OpenAI Whisper (base model).
+    Transcribe audio using OpenAI Whisper (model configurable via config.WHISPER_MODEL).
+    Model options: tiny, base, small, medium, large, large-v2, large-v3 (see Docs/whisper.md).
+    For Hindi/Indic languages, use large-v3 to get correct script (Devanagari); base can output Urdu script.
     
     Args:
         audio_path: Path to audio file (WAV format, 16kHz mono)
-        language: Language code ("auto" for auto-detect, or "en", "es", etc.)
+        language: Language code ("auto" for auto-detect, or "en", "es", "hi", etc.)
         output_dir: Directory to save transcript files (optional)
     
     Returns:
@@ -305,9 +307,11 @@ def transcribe_audio_with_whisper(audio_path: str, language: str = "auto", outpu
             os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
         except ImportError:
             pass
-        # Load Whisper model (base model for speed/quality balance)
-        # First run will download model automatically (~150MB)
-        model = whisper.load_model("base")
+        # Model from config: tiny, base, small, medium, large, large-v2, large-v3 (default small for better quality than base)
+        model_name = getattr(S3Config, "WHISPER_MODEL", "small") if S3Config else "small"
+        if not model_name:
+            model_name = "small"
+        model = whisper.load_model(model_name)
         
         # Transcribe
         if language == "auto":

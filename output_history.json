@@ -362,5 +362,18 @@
       "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_transcript.json"
     },
     "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS2S2-2-B_-_Week_2_-_Prayer,_Humility_to_Peacemakers_-_Final_No_Slides_LowRes_Part_B_hls\\subtitle_hi.m3u8"
+  },
+  "/Volumes/Rohi Backup/CPI Test/DFS1S10 - Conclusion_Final_No Slides_4k Master.mp4": {
+    "output": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls",
+    "ts": "2026-02-19T12:24:42",
+    "transcribed": true,
+    "transcript": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_transcript.srt",
+    "transcript_paths": {
+      "srt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_transcript.srt",
+      "vtt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_transcript.vtt",
+      "txt": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_transcript.txt",
+      "json": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_transcript.json"
+    },
+    "subtitle_playlist": "/Users/amitvishwakarma/Downloads/projects/cpi/Enlight---Video-Processing/hls_outputs/DFS1S10_-_Conclusion_Final_No_Slides_4k_Master_hls/subtitle_hi.m3u8"
   }
 }

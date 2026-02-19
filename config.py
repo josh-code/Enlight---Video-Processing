@@ -94,6 +94,10 @@ class Config:
         "/api/v1/common/languages",
     )
 
+    # Whisper transcription model: tiny, base, small, medium, large, large-v2, large-v3
+    # Larger models give better accuracy and correct script for Hindi/Indic (e.g. large-v3); small is default balance (~2GB VRAM).
+    WHISPER_MODEL = os.getenv("WHISPER_MODEL", "small").strip().lower() or "small"
+
     @classmethod
     def is_configured(cls) -> bool:
         return bool(cls.BACKEND_URL and cls.AUTH_TOKEN)
