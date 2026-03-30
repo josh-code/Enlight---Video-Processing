@@ -399,6 +399,44 @@ def save_history(history):
     except Exception:
         pass
 
+def normalize_path_for_history(path: str) -> str:
+    """Normalize path for history lookup (handles different path formats/slashes)."""
+    if not path:
+        return path
+    return os.path.normpath(os.path.abspath(path)).replace("\\", "/")
+
+def find_history_entry_for_path(history: dict, file_path: str):
+    """
+    Find history entry for a file path using normalized comparison.
+    Returns (history_key, entry_dict) or (None, None) if not found.
+    """
+    norm = normalize_path_for_history(file_path)
+    for key, entry in history.items():
+        if normalize_path_for_history(key) == norm:
+            return key, entry
+    return None, None
+
+def is_hls_output_valid(output_dir: str) -> bool:
+    """Check that output_dir exists and contains valid HLS output (master.m3u8 + at least one quality)."""
+    if not output_dir or not os.path.isdir(output_dir):
+        return False
+    master_path = os.path.join(output_dir, "master.m3u8")
+    if not os.path.isfile(master_path):
+        return False
+    for q in QUALITY_ORDER:
+        if os.path.isfile(os.path.join(output_dir, q, "index.m3u8")):
+            return True
+    return False
+
+def infer_qualities_from_output_dir(output_dir: str):
+    """Return list of quality strings present in output_dir (e.g. ['720p', '480p'])."""
+    if not output_dir or not os.path.isdir(output_dir):
+        return []
+    return [
+        q for q in QUALITY_ORDER
+        if os.path.isfile(os.path.join(output_dir, q, "index.m3u8"))
+    ]
+
 def write_log(output_dir: str, name: str, text: str):
     log_path = os.path.join(output_dir, name)
     with open(log_path, "w", encoding="utf-8") as f:
@@ -1844,6 +1882,7 @@ class RetroHlsApp:
 
         queue_results = []  # Local list to track results
         master_path = None  # Track last successful master path
+        skipped_encoding_files = []  # Base names of files that were already encoded (upload only)
 
         # Start background uploader thread if S3 enabled (pipeline: encode + upload in parallel)
         if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
@@ -1879,7 +1918,56 @@ class RetroHlsApp:
                         queue_percent = (self.jobs_done / self.jobs_total) * 100.0
                         self.root.after(0, lambda p=queue_percent: self._update_overall(p))
                     continue
-                
+
+                # Check if already encoded (history + valid HLS output on disk) -> upload only
+                hist_key, hist_entry = find_history_entry_for_path(self.history, fp)
+                existing_output = hist_entry.get("output") if hist_entry else None
+                if existing_output and is_hls_output_valid(existing_output):
+                    base_name = sanitize_folder_name(os.path.splitext(os.path.basename(fp))[0])
+                    skipped_encoding_files.append(base_name)
+                    self.output_dir = existing_output
+                    qualities = infer_qualities_from_output_dir(existing_output)
+                    info = get_video_info(fp)
+                    duration_s = float(info.get("duration_s", 0.0) or 0.0)
+                    master_path = os.path.join(existing_output, "master.m3u8")
+                    file_result["status"] = "success"
+                    file_result["output_dir"] = existing_output
+                    file_result["master_path"] = master_path
+                    if hist_entry.get("transcript_paths"):
+                        file_result["transcript_paths"] = hist_entry["transcript_paths"]
+                        file_result["transcript_path"] = hist_entry.get("transcript")
+                    if hist_entry.get("subtitle_playlist"):
+                        file_result["subtitle_playlist_path"] = hist_entry["subtitle_playlist"]
+                    self.root.after(0, lambda fp=fp: self._update_selected_file_info(fp))
+                    self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Already encoded {idx}/{total}: {name} — uploading only"))
+                    self._log(f"[SKIP ENCODING] {base_name} — already has valid HLS output, uploading only.")
+                    self._log(f"  Input: {fp}")
+                    self._log(f"  Output: {existing_output}")
+                    if self.s3_enabled.get() and _S3_AVAILABLE and S3Config and S3Config.is_configured():
+                        cid = (self.s3_course_id.get() or "").strip()
+                        lang = self._get_s3_language_code()
+                        s3_prefix = f"courses/{cid}/{lang}/{base_name}"
+                        self.upload_queue.put({
+                            "output_dir": existing_output,
+                            "s3_prefix": s3_prefix,
+                            "base_name": base_name,
+                            "course_id": cid,
+                            "language": lang,
+                            "duration_s": duration_s,
+                            "qualities": qualities,
+                            "delete_local": self.s3_delete_local.get(),
+                        })
+                        self._save_s3_config()
+                        self._log(f"Queued upload for {base_name} (upload runs in background).")
+                    self.jobs_done = idx
+                    self.root.after(0, lambda idx=idx, total=len(files), name=base_name: self._set_status(f"Completed {idx}/{total}: {name} (upload only)"))
+                    if self.jobs_total > 0:
+                        queue_percent = (self.jobs_done / self.jobs_total) * 100.0
+                        self.root.after(0, lambda p=queue_percent: self._update_overall(p))
+                    queue_results.append(file_result.copy())
+                    time.sleep(0.5)
+                    continue
+
                 # Set up file processing
                 self.file_path = fp
                 base_name = sanitize_folder_name(os.path.splitext(os.path.basename(fp))[0])
@@ -2124,6 +2212,12 @@ class RetroHlsApp:
                     queue_percent = (self.jobs_done / self.jobs_total) * 100.0
                     self.root.after(0, lambda p=queue_percent: self._update_overall(p))
                 continue
+
+        # Log summary of files that had encoding skipped (upload only)
+        if skipped_encoding_files:
+            self._log(f"Encoding skipped for {len(skipped_encoding_files)} file(s) (already had valid HLS output):")
+            for name in skipped_encoding_files:
+                self._log(f"  • {name}")
 
         # Wait for background uploader to drain (pipeline: all encodes done, uploads may still run)
         if self.s3_enabled.get() and self._uploader_thread is not None:
