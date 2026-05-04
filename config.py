@@ -21,6 +21,7 @@ DEFAULT_SUPPORTED_LANGUAGES: List[dict] = [
     {"code": "fr", "name": "Français (French)"},
     {"code": "de", "name": "Deutsch (German)"},
     {"code": "hi", "name": "हिन्दी (Hindi)"},
+    {"code": "mr", "name": "मराठी (Marathi)"},
     {"code": "nl", "name": "Nederlands (Dutch)"},
     {"code": "pt", "name": "Português (Portuguese)"},
     {"code": "uk", "name": "Українська (Ukrainian)"},

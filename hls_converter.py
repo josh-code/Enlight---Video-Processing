@@ -621,7 +621,8 @@ def add_master_playlist_with_subtitles(output_dir: str, selected, audio_exists: 
             lang_names = {
                 "en": "English", "es": "Spanish", "fr": "French", "de": "German",
                 "it": "Italian", "pt": "Portuguese", "ru": "Russian", "ja": "Japanese",
-                "ko": "Korean", "zh": "Chinese", "ar": "Arabic", "hi": "Hindi"
+                "ko": "Korean", "zh": "Chinese", "ar": "Arabic", "hi": "Hindi",
+                "mr": "Marathi"
             }
             lang_name = lang_names.get(lang_code, lang_code.upper())
             
