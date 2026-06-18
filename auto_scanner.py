@@ -78,8 +78,11 @@ def move_to_failed(source_path: str, reason: str, ts_str: str) -> str:
     failed_dir = src.parent / FAILED_DIR_NAME
     failed_dir.mkdir(parents=True, exist_ok=True)
     dest = failed_dir / src.name
-    if dest.exists():
-        dest = failed_dir / f"{src.stem}_{ts_str}{src.suffix}"
+    counter = 0
+    while dest.exists():
+        counter += 1
+        suffix_ts = ts_str if counter == 1 else f"{ts_str}_{counter}"
+        dest = failed_dir / f"{src.stem}_{suffix_ts}{src.suffix}"
     shutil.move(str(src), str(dest))
     err_path = failed_dir / f"{dest.stem}.error.txt"
     err_path.write_text(f"{ts_str}\n{reason}\n", encoding="utf-8")

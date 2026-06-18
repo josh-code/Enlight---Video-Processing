@@ -106,6 +106,7 @@ def test_scan_flags_wrong_depth(tmp_path):
     cands = scan_root(str(tmp_path), SUPPORTED, now_ts=os.path.getmtime(f) + 100)
     assert len(cands) == 1
     assert cands[0].valid is False
+    assert cands[0].reason is not None
 
 
 def test_move_to_failed(tmp_path):
@@ -117,3 +118,13 @@ def test_move_to_failed(tmp_path):
     err = Path(dest).parent / (Path(dest).stem + ".error.txt")
     assert err.is_file()
     assert "Encode failed" in err.read_text(encoding="utf-8")
+
+
+def test_move_to_failed_handles_repeat_collision(tmp_path):
+    f1 = _make_video(tmp_path, VALID_ID, "hi", "lec1.mp4")
+    d1 = move_to_failed(str(f1), "first", "2026-06-18_142305")
+    f2 = _make_video(tmp_path, VALID_ID, "hi", "lec1.mp4")
+    d2 = move_to_failed(str(f2), "second", "2026-06-18_142305")
+    assert d1 != d2
+    assert os.path.isfile(d1)
+    assert os.path.isfile(d2)
