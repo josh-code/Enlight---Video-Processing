@@ -91,3 +91,26 @@ def test_stop_flag_breaks_mid_pass():
     )
     assert summary["stopped"] is True
     assert len(processed) < 3
+
+
+def test_stop_flag_between_passes():
+    # Stop requested only AFTER the first full pass completes (before the next scan).
+    # Exercises the outer-loop pre-scan stop check: the loop must stop with stopped=True
+    # rather than scanning again, and must not process a second candidate.
+    processed = []
+
+    def scan_fn():
+        return [FakeCand(True)]  # always one valid candidate; infinite without the stop
+
+    def stop_fn():
+        return len(processed) >= 1  # False during first pass, True once one is processed
+
+    summary = run_auto_loop(
+        scan_fn=scan_fn,
+        process_fn=processed.append,
+        move_failed_fn=lambda c: None,
+        stop_fn=stop_fn,
+        log_fn=lambda m: None,
+    )
+    assert summary["stopped"] is True
+    assert len(processed) == 1
