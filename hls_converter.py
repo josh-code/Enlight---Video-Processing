@@ -1150,8 +1150,11 @@ class RetroHlsApp:
             return scan_root(self.auto_root, self._supported_codes, time.time())
 
         def process_fn(c):
-            self._auto_process_video(c)
-            counts["processed"] += 1
+            ok = self._auto_process_video(c)
+            if ok:
+                counts["processed"] += 1
+            else:
+                counts["failed"] += 1
             self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
 
         def move_failed_fn(c):
@@ -1168,7 +1171,8 @@ class RetroHlsApp:
             return self.auto_stop_flag
 
         def log_fn(msg):
-            counts["passes"] = counts.get("passes", 0)
+            counts["passes"] += 1
+            self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
             self._set_auto_status(msg)
             self._log(f"[AUTO] {msg}")
 
@@ -1224,15 +1228,15 @@ class RetroHlsApp:
             if not ok:
                 self._auto_move_source_to_failed(fp, f"Encode failed ({q}): {err}")
                 self._log(f"[AUTO] Encode failed for {base_name}: {err}", is_error=True)
-                return
+                return False
             self._log(f"[AUTO]   {q} done.")
 
         try:
-            master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
+            add_master_playlist(self.output_dir, selected, self.audio_exists)
         except Exception as e:
             self._auto_move_source_to_failed(fp, f"Master playlist failed: {e}")
             self._log(f"[AUTO] Master playlist failed for {base_name}: {e}", is_error=True)
-            return
+            return False
 
         transcribed = False
         if self.audio_exists and self._auto_config and self._auto_config.should_transcribe(c.language):
@@ -1255,6 +1259,7 @@ class RetroHlsApp:
         })
         self._set_auto_status(f"queued upload: {base_name}")
         self._log(f"[AUTO] Queued upload for {base_name}.")
+        return True
 
     def _auto_transcribe(self, fp, base_name, selected, lang_code):
         try:
@@ -1778,8 +1783,8 @@ class RetroHlsApp:
             messagebox.showerror("Error", f"Failed to open folder: {e}")
 
     def on_start(self):
-        if self.is_running:
-            messagebox.showinfo("Busy", "Rendering is already running.")
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is already in progress.")
             return
         if not self.render_queue:
             messagebox.showwarning("No files", "Please add at least one video.")
