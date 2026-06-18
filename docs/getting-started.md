@@ -97,3 +97,54 @@ If FFmpeg is not found, install it and add its `bin` folder to your system PATH 
 - Use **Queue** to add MP4 files, choose qualities and encoder, then **START RENDER**.
 - Outputs are written under the configured output base (default: `hls_outputs/` in the project folder).
 - For S3/backend integration, see [File/Folder System — Python Encoder Integration](file-folder-system/04-python-encoder-integration.md).
+
+---
+
+## Auto / Folder mode
+
+The **Auto / Folder** tab enables batch processing of videos organized in a folder hierarchy without manual queue management.
+
+### Folder layout
+
+Place videos in a directory tree following this structure:
+
+```
+<root>/
+  <courseId>/
+    <langCode>/
+      video.mp4
+      video.mov
+      video.mkv
+```
+
+- `<courseId>` must be a 24-character hexadecimal MongoDB ObjectId (e.g., `507f1f77bcf86cd799439011`).
+- `<langCode>` must be a supported language code (e.g., `hi`, `ur`, `en`).
+- Accepted video formats: `.mp4`, `.mov`, `.mkv`.
+
+### Transcription config
+
+Create a `transcription_config.json` file at the `<root>` folder:
+
+```json
+{
+  "default": false,
+  "languages": { "hi": true, "ur": true, "en": false }
+}
+```
+
+- `default`: Whether transcription is enabled for unlisted languages.
+- `languages`: Per-language on/off switch. When `true`, transcription is performed before upload; when `false`, the video is encoded only.
+
+### Processing
+
+When you select a root folder and start auto mode:
+
+- Videos are scanned recursively; files modified within the last 15 seconds are skipped (still downloading).
+- Videos are encoded to fixed qualities: **1080p, 720p, 480p** (not customizable).
+- Transcription is applied per-language according to `transcription_config.json`.
+- Successful uploads are tracked in a per-run CSV file: `upload_tracking_YYYY-MM-DD_HHMMSS.csv` (created in the root folder).
+  - Columns: `timestamp, courseId, language, filename, duration_s, transcribed, s3_master_key`.
+- On successful upload, both the source video and its HLS output folder are deleted.
+- Failed uploads are moved to a `_failed/` folder in the video's parent directory (e.g., `<root>/<courseId>/<langCode>/_failed/`) with an accompanying `.error.txt` file.
+- The scan loops until a complete pass finds no videos (allowing you to drop new files in while processing).
+- Once the queue is empty for one full pass, the run completes and an "Auto Complete" summary is shown.

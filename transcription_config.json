@@ -1,0 +1,4 @@
+{
+  "default": false,
+  "languages": { "hi": true, "ur": true, "en": false }
+}
