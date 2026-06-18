@@ -17,6 +17,10 @@ try:
     from config import Config as S3Config
     from config import fetch_supported_languages
     from s3_uploader import S3UploadManager
+    from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE
+    from tracking_csv import create_tracking_csv, append_tracking_row, build_tracking_row
+    from auto_scanner import scan_root, move_to_failed, VideoCandidate
+    from auto_orchestrator import run_auto_loop
     _S3_AVAILABLE = True
 except ImportError:
     S3Config = None
@@ -1140,6 +1144,38 @@ class RetroHlsApp:
         else:
             self.upload_status_label.config(text="")
 
+    def _auto_move_source_to_failed(self, source_path: str, reason: str):
+        """Move an auto-mode source video into its sibling _failed/ folder."""
+        if not source_path or not os.path.isfile(source_path):
+            return
+        try:
+            ts_str = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+            dest = move_to_failed(source_path, reason, ts_str)
+            self._log(f"  Moved source to _failed: {dest}", is_error=True)
+        except Exception as e:
+            self._log(f"  Could not move source to _failed: {e}", is_error=True)
+
+    def _auto_record_success(self, job: dict, master_key: str):
+        """On successful auto-mode upload: append tracking CSV row and update history."""
+        now = datetime.now()
+        if job.get("tracking_csv"):
+            try:
+                append_tracking_row(job["tracking_csv"], build_tracking_row(job, master_key, now))
+            except Exception as e:
+                self._log(f"  Tracking CSV write failed: {e}", is_error=True)
+        src = job.get("source_path")
+        if src:
+            self.history[src] = {
+                "output": job.get("output_dir"),
+                "ts": now.isoformat(timespec="seconds"),
+                "courseId": job.get("course_id"),
+                "language": job.get("language"),
+                "s3_master_key": master_key,
+                "transcribed": bool(job.get("transcribed")),
+            }
+            save_history(self.history)
+            self.root.after(0, self._refresh_history_ui)
+
     def _upload_worker(self):
         """Background thread: consume upload queue, parallel upload + file record."""
         while True:
@@ -1157,6 +1193,8 @@ class RetroHlsApp:
             duration_s = job["duration_s"]
             qualities = job["qualities"]
             delete_local = job["delete_local"]
+            auto_mode = job.get("auto_mode", False)
+            source_path = job.get("source_path")
 
             def progress_cb(c, t, n):
                 self.root.after(0, lambda: self._update_upload_progress(c, t, n))
@@ -1191,6 +1229,8 @@ class RetroHlsApp:
                         self._log(f"  {key}: {err}", is_error=True)
                     if len(failed) > 5:
                         self._log(f"  ... and {len(failed) - 5} more", is_error=True)
+                    if auto_mode:
+                        self._auto_move_source_to_failed(source_path, f"Upload partial failure: {len(failed)} file(s) failed")
                     continue
                 master_key = None
                 for local_path, s3_key in uploaded:
@@ -1227,20 +1267,32 @@ class RetroHlsApp:
                     uploaded_by="python-encoder",
                 )
                 self._log(f"  File record created for {base_name}.")
+                if auto_mode:
+                    self._auto_record_success(job, master_key)
                 if delete_local:
                     try:
                         shutil.rmtree(output_dir)
                         self._log(f"  Local files deleted for {base_name}.")
                     except OSError:
                         pass
+                    if auto_mode and source_path and os.path.isfile(source_path):
+                        try:
+                            os.remove(source_path)
+                            self._log(f"  Source video deleted: {os.path.basename(source_path)}")
+                        except OSError:
+                            pass
             except PermissionError as e:
                 with self._upload_failures_lock:
                     self.upload_failures.append({"base_name": base_name, "error": f"Auth failed: {e}"})
                 self._log(f"Upload auth failed for {base_name}: {e}", is_error=True)
+                if job.get("auto_mode"):
+                    self._auto_move_source_to_failed(job.get("source_path"), f"Upload auth failed: {e}")
             except Exception as e:
                 with self._upload_failures_lock:
                     self.upload_failures.append({"base_name": base_name, "error": str(e)})
                 self._log(f"Upload error for {base_name}: {e}", is_error=True)
+                if job.get("auto_mode"):
+                    self._auto_move_source_to_failed(job.get("source_path"), f"Upload error: {e}")
             finally:
                 self.root.after(0, lambda: self._update_upload_progress(0, 0, ""))
 
