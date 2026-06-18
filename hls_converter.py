@@ -19,7 +19,7 @@ try:
     from s3_uploader import S3UploadManager
     from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE
     from tracking_csv import create_tracking_csv, append_tracking_row, build_tracking_row
-    from auto_scanner import scan_root, move_to_failed, VideoCandidate
+    from auto_scanner import scan_root, move_to_failed
     from auto_orchestrator import run_auto_loop
     _S3_AVAILABLE = True
 except ImportError:
@@ -1065,7 +1065,7 @@ class RetroHlsApp:
 
         self.auto_status_label = tk.Label(parent, text="Status: idle", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL)
         self.auto_status_label.pack(anchor="w", padx=10, pady=(6, 2))
-        self.auto_counts_label = tk.Label(parent, text="Processed: 0 | Failed: 0 | Passes: 0", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.auto_counts_label = tk.Label(parent, text="Encoded: 0 | Failed: 0 | Passes: 0", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
         self.auto_counts_label.pack(anchor="w", padx=10)
 
     def on_auto_choose_root(self):
@@ -1082,7 +1082,7 @@ class RetroHlsApp:
         self.root.after(0, lambda: self.auto_status_label.config(text=f"Status: {text}"))
 
     def _set_auto_counts(self, processed: int, failed: int, passes: int):
-        self.root.after(0, lambda: self.auto_counts_label.config(text=f"Processed: {processed} | Failed: {failed} | Passes: {passes}"))
+        self.root.after(0, lambda: self.auto_counts_label.config(text=f"Encoded: {processed} | Failed: {failed} | Passes: {passes}"))
 
     def on_auto_start(self):
         if self.is_running or self.auto_is_running:
@@ -1129,9 +1129,13 @@ class RetroHlsApp:
         self._set_auto_counts(summary.get("processed", 0), summary.get("failed", 0), summary.get("passes", 0))
         with self._upload_failures_lock:
             ufails = len(self.upload_failures)
+        encoded = summary.get("processed", 0)
+        uploaded_ok = max(0, encoded - ufails)
         messagebox.showinfo(
             "Auto Complete",
-            f"Auto run finished.\n\nProcessed: {summary.get('processed', 0)}\n"
+            f"Auto run finished.\n\n"
+            f"Encoded & queued: {encoded}\n"
+            f"Uploaded OK: {uploaded_ok}\n"
             f"Invalid/failed (pre-upload): {summary.get('failed', 0)}\n"
             f"Upload failures: {ufails}\n\nTracking: {self.auto_tracking_csv}",
         )
@@ -1171,6 +1175,8 @@ class RetroHlsApp:
             return self.auto_stop_flag
 
         def log_fn(msg):
+            # run_auto_loop calls log_fn exactly once per scan pass, so this tracks
+            # the live pass count; the authoritative total is summary["passes"].
             counts["passes"] += 1
             self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
             self._set_auto_status(msg)
@@ -1200,6 +1206,8 @@ class RetroHlsApp:
     def _auto_process_video(self, c):
         fp = c.source_path
         base_name = sanitize_folder_name(os.path.splitext(os.path.basename(fp))[0])
+        # Safe to reuse the shared render attrs (self.file_path/output_dir/etc.):
+        # the manual/auto mode mutex guarantees no concurrent manual render.
         self.file_path = fp
         safe_mkdir(self.output_base_dir)
         self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
