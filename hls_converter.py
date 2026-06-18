@@ -719,6 +719,15 @@ class RetroHlsApp:
         self._upload_failures_lock = threading.Lock()
         self._uploader_thread = None
 
+        # Auto / Folder mode
+        self.auto_root = ""
+        self.auto_is_running = False
+        self.auto_stop_flag = False
+        self.auto_tracking_csv = None
+        self._auto_config = None
+        self._auto_thread = None
+        self.AUTO_QUALITIES = ["1080p", "720p", "480p"]
+
         # Supported languages from server (display name in UI, code in logic)
         self._supported_languages, self._default_language_code = fetch_supported_languages()
         self._code_to_name = {x["code"]: x["name"] for x in self._supported_languages}
@@ -982,6 +991,9 @@ class RetroHlsApp:
         self.notebook.add(queue_tab, text="Queue")
         self.notebook.add(history_tab, text="History")
         self.notebook.add(logs_tab, text="Logs")
+        auto_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        self.notebook.add(auto_tab, text="Auto / Folder")
+        self._build_auto_tab(auto_tab)
 
         tk.Label(queue_tab, text="RENDER QUEUE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
         list_frame = tk.Frame(queue_tab, bg=RETRO_PANEL)
@@ -1028,6 +1040,252 @@ class RetroHlsApp:
 
         self._refresh_history_ui()
 
+    def _build_auto_tab(self, parent):
+        tk.Label(parent, text="AUTO / FOLDER MODE", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_TITLE).pack(anchor="w", padx=10, pady=(10, 2))
+        tk.Label(parent, text="Structure: <root>/<courseId>/<langCode>/video.mp4", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(anchor="w", padx=10)
+
+        row = tk.Frame(parent, bg=RETRO_PANEL); row.pack(fill="x", padx=10, pady=6)
+        tk.Button(row, text="Choose Root Folder", command=self.on_auto_choose_root, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_FG).pack(side="left")
+        self.auto_root_label = tk.Label(row, text=self.auto_root or "(none)", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=360, justify="left")
+        self.auto_root_label.pack(side="left", padx=8)
+
+        erow = tk.Frame(parent, bg=RETRO_PANEL); erow.pack(fill="x", padx=10, pady=2)
+        tk.Label(erow, text="Encoder:", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left")
+        ttk.Combobox(erow, textvariable=self.encoder_var, values=list(self.encoder_display.values()), state="readonly", width=22).pack(side="left", padx=6)
+        tk.Label(erow, text="Qualities: 1080p, 720p, 480p (fixed)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=12)
+
+        self.auto_transcribe_label = tk.Label(parent, text="Transcribe: (load on start)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.auto_transcribe_label.pack(anchor="w", padx=10, pady=(2, 6))
+
+        brow = tk.Frame(parent, bg=RETRO_PANEL); brow.pack(fill="x", padx=10, pady=4)
+        self.auto_start_btn = tk.Button(brow, text="START AUTO", command=self.on_auto_start, font=FONT_MAIN, bg=RETRO_BG, fg=RETRO_FG)
+        self.auto_start_btn.pack(side="left")
+        self.auto_stop_btn = tk.Button(brow, text="STOP", command=self.on_auto_stop, font=FONT_MAIN, bg=RETRO_BG, fg=RETRO_ACCENT, state="disabled")
+        self.auto_stop_btn.pack(side="left", padx=8)
+
+        self.auto_status_label = tk.Label(parent, text="Status: idle", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.auto_status_label.pack(anchor="w", padx=10, pady=(6, 2))
+        self.auto_counts_label = tk.Label(parent, text="Processed: 0 | Failed: 0 | Passes: 0", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.auto_counts_label.pack(anchor="w", padx=10)
+
+    def on_auto_choose_root(self):
+        if self.auto_is_running:
+            messagebox.showinfo("Busy", "Auto mode is running.")
+            return
+        folder = filedialog.askdirectory(title="Select root folder", initialdir=self.auto_root or os.getcwd())
+        if folder:
+            self.auto_root = folder
+            self.auto_root_label.config(text=folder)
+            self._save_s3_config()
+
+    def _set_auto_status(self, text: str):
+        self.root.after(0, lambda: self.auto_status_label.config(text=f"Status: {text}"))
+
+    def _set_auto_counts(self, processed: int, failed: int, passes: int):
+        self.root.after(0, lambda: self.auto_counts_label.config(text=f"Processed: {processed} | Failed: {failed} | Passes: {passes}"))
+
+    def on_auto_start(self):
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is already in progress.")
+            return
+        if not self.auto_root or not os.path.isdir(self.auto_root):
+            messagebox.showwarning("No folder", "Choose a valid root folder first.")
+            return
+        if not (_S3_AVAILABLE and S3Config and S3Config.is_configured()):
+            messagebox.showerror("S3", "Backend not configured. Set BACKEND_URL and AUTH_TOKEN in .env")
+            return
+        ok, err = check_ffmpeg_available()
+        if not ok:
+            messagebox.showerror("FFmpeg Not Found", err)
+            return
+        self._auto_config = load_transcription_config(TRANSCRIPTION_CONFIG_FILE)
+        self.auto_transcribe_label.config(text=self._auto_config.summary())
+        ts_str = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+        try:
+            self.auto_tracking_csv = create_tracking_csv(self.auto_root, ts_str)
+        except OSError as e:
+            messagebox.showerror("Tracking", f"Could not create tracking file: {e}")
+            return
+        self.auto_stop_flag = False
+        self.auto_is_running = True
+        self.auto_start_btn.config(state="disabled")
+        self.auto_stop_btn.config(state="normal")
+        self._log(f"[AUTO] Started. Root: {self.auto_root}")
+        self._log(f"[AUTO] Tracking: {self.auto_tracking_csv}")
+        self._auto_thread = threading.Thread(target=self._auto_worker, daemon=True)
+        self._auto_thread.start()
+
+    def on_auto_stop(self):
+        if self.auto_is_running:
+            self.auto_stop_flag = True
+            self._set_auto_status("stopping after current video...")
+            self._log("[AUTO] Stop requested.")
+
+    def _auto_finish(self, summary: dict):
+        self.auto_is_running = False
+        self.auto_start_btn.config(state="normal")
+        self.auto_stop_btn.config(state="disabled")
+        self._set_auto_status("done" if not summary.get("stopped") else "stopped")
+        self._set_auto_counts(summary.get("processed", 0), summary.get("failed", 0), summary.get("passes", 0))
+        with self._upload_failures_lock:
+            ufails = len(self.upload_failures)
+        messagebox.showinfo(
+            "Auto Complete",
+            f"Auto run finished.\n\nProcessed: {summary.get('processed', 0)}\n"
+            f"Invalid/failed (pre-upload): {summary.get('failed', 0)}\n"
+            f"Upload failures: {ufails}\n\nTracking: {self.auto_tracking_csv}",
+        )
+        self.root.after(0, self._refresh_history_ui)
+
+    def _auto_worker(self):
+        # Start the background uploader (same worker manual mode uses).
+        self.upload_failures = []
+        self.s3_upload_cancel = False
+        self._uploader_thread = threading.Thread(target=self._upload_worker, daemon=True)
+        self._uploader_thread.start()
+
+        counts = {"processed": 0, "failed": 0, "passes": 0}
+
+        def scan_fn():
+            return scan_root(self.auto_root, self._supported_codes, time.time())
+
+        def process_fn(c):
+            self._auto_process_video(c)
+            counts["processed"] += 1
+            self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
+
+        def move_failed_fn(c):
+            ts_str = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+            try:
+                move_to_failed(c.source_path, c.reason or "Invalid", ts_str)
+                self._log(f"[AUTO] Invalid -> _failed: {os.path.basename(c.source_path)} — {c.reason}", is_error=True)
+            except Exception as e:
+                self._log(f"[AUTO] Could not move invalid file: {e}", is_error=True)
+            counts["failed"] += 1
+            self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
+
+        def stop_fn():
+            return self.auto_stop_flag
+
+        def log_fn(msg):
+            counts["passes"] = counts.get("passes", 0)
+            self._set_auto_status(msg)
+            self._log(f"[AUTO] {msg}")
+
+        try:
+            summary = run_auto_loop(scan_fn, process_fn, move_failed_fn, stop_fn, log_fn)
+        except Exception as e:
+            self._log(f"[AUTO] Orchestrator error: {e}", is_error=True)
+            summary = {"processed": counts["processed"], "failed": counts["failed"], "passes": counts["passes"], "stopped": True}
+        else:
+            summary["processed"] = counts["processed"]
+            summary["failed"] = counts["failed"]
+
+        # Drain uploads: sentinel makes the uploader finish queued jobs then exit.
+        self._log("[AUTO] Waiting for uploads to finish...")
+        self._set_auto_status("finishing uploads...")
+        try:
+            self.upload_queue.put(None)
+            if self._uploader_thread:
+                self._uploader_thread.join()
+        except Exception as e:
+            self._log(f"[AUTO] Upload drain error: {e}", is_error=True)
+
+        self.root.after(0, lambda: self._auto_finish(summary))
+
+    def _auto_process_video(self, c):
+        fp = c.source_path
+        base_name = sanitize_folder_name(os.path.splitext(os.path.basename(fp))[0])
+        self.file_path = fp
+        safe_mkdir(self.output_base_dir)
+        self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
+        if os.path.isdir(self.output_dir):
+            try:
+                shutil.rmtree(self.output_dir)
+            except OSError:
+                pass
+        safe_mkdir(self.output_dir)
+
+        selected = self.AUTO_QUALITIES
+        self.current_selected = selected
+        info = get_video_info(fp)
+        self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
+        self.audio_exists = has_audio_stream(fp)
+        self.jobs_total = 0
+        self.jobs_done = 0
+        self.per_quality_progress = {q: 0.0 for q in selected}
+        self.root.after(0, lambda: self._reset_progress(reset_overall=False))
+        self._set_auto_status(f"encoding {base_name} ({c.course_id}/{c.language})")
+        self._log(f"[AUTO] Encoding {base_name} ({c.course_id}/{c.language}) {selected}")
+
+        total_s = max(float(self.duration_s), 0.001)
+        for q in selected:
+            ok, err = self._render_single_quality(q, total_s, selected)
+            if not ok:
+                self._auto_move_source_to_failed(fp, f"Encode failed ({q}): {err}")
+                self._log(f"[AUTO] Encode failed for {base_name}: {err}", is_error=True)
+                return
+            self._log(f"[AUTO]   {q} done.")
+
+        try:
+            master_path = add_master_playlist(self.output_dir, selected, self.audio_exists)
+        except Exception as e:
+            self._auto_move_source_to_failed(fp, f"Master playlist failed: {e}")
+            self._log(f"[AUTO] Master playlist failed for {base_name}: {e}", is_error=True)
+            return
+
+        transcribed = False
+        if self.audio_exists and self._auto_config and self._auto_config.should_transcribe(c.language):
+            transcribed = self._auto_transcribe(fp, base_name, selected, c.language)
+
+        s3_prefix = f"courses/{c.course_id}/{c.language}/{base_name}"
+        self.upload_queue.put({
+            "output_dir": self.output_dir,
+            "s3_prefix": s3_prefix,
+            "base_name": base_name,
+            "course_id": c.course_id,
+            "language": c.language,
+            "duration_s": self.duration_s,
+            "qualities": selected,
+            "delete_local": True,
+            "auto_mode": True,
+            "source_path": fp,
+            "tracking_csv": self.auto_tracking_csv,
+            "transcribed": transcribed,
+        })
+        self._set_auto_status(f"queued upload: {base_name}")
+        self._log(f"[AUTO] Queued upload for {base_name}.")
+
+    def _auto_transcribe(self, fp, base_name, selected, lang_code):
+        try:
+            self._set_auto_status(f"transcribing {base_name}")
+            self._log(f"[AUTO] Transcription started ({lang_code}).")
+            temp_audio = os.path.join(self.output_dir, f"{base_name}_temp_audio.wav")
+            ok, err = extract_audio_from_video(fp, temp_audio)
+            if not ok:
+                self._log(f"[AUTO]   Audio extraction failed: {err}", is_error=True)
+                return False
+            success, result, terr = transcribe_audio_with_whisper(temp_audio, lang_code, self.output_dir)
+            try:
+                if os.path.exists(temp_audio):
+                    os.remove(temp_audio)
+            except OSError:
+                pass
+            if not (success and result):
+                self._log(f"[AUTO]   Transcription failed: {terr}", is_error=True)
+                return False
+            vtt = result.get("vtt_path") or result.get("srt_path")
+            if not (vtt and os.path.exists(vtt)):
+                self._log("[AUTO]   Subtitle file not found after transcription.", is_error=True)
+                return False
+            sub_playlist = create_subtitle_playlist(self.output_dir, vtt, lang_code)
+            add_master_playlist_with_subtitles(self.output_dir, selected, self.audio_exists, {lang_code: sub_playlist})
+            self._log("[AUTO]   Transcription + subtitle track done.")
+            return True
+        except Exception as e:
+            self._log(f"[AUTO]   Transcription error: {e}", is_error=True)
+            return False
+
     def _log(self, msg: str, is_error: bool = False):
         """Append a line to the Logs tab (thread-safe; schedules on main thread)."""
         tag = "error" if is_error else "success" if "success" in msg.lower() or "done" in msg.lower() or "complete" in msg.lower() else None
@@ -1060,6 +1318,8 @@ class RetroHlsApp:
                 self.s3_language.set(self._code_to_name.get(code, self._code_to_name.get("en", "English (English)")))
             if data.get("delete_local_after_upload") is not None:
                 self.s3_delete_local.set(data["delete_local_after_upload"])
+            if data.get("auto_root") is not None:
+                self.auto_root = data["auto_root"]
         except (json.JSONDecodeError, OSError):
             pass
 
@@ -1070,6 +1330,7 @@ class RetroHlsApp:
                 "last_course_id": self.s3_course_id.get(),
                 "language": self._get_s3_language_code(),
                 "delete_local_after_upload": self.s3_delete_local.get(),
+                "auto_root": getattr(self, "auto_root", ""),
             }
             with open(S3_CONFIG_FILE, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
