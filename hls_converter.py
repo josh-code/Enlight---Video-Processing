@@ -1279,20 +1279,20 @@ class RetroHlsApp:
                         try:
                             os.remove(source_path)
                             self._log(f"  Source video deleted: {os.path.basename(source_path)}")
-                        except OSError:
-                            pass
+                        except OSError as e:
+                            self._log(f"  Could not delete source video {os.path.basename(source_path)}: {e}", is_error=True)
             except PermissionError as e:
                 with self._upload_failures_lock:
                     self.upload_failures.append({"base_name": base_name, "error": f"Auth failed: {e}"})
                 self._log(f"Upload auth failed for {base_name}: {e}", is_error=True)
-                if job.get("auto_mode"):
-                    self._auto_move_source_to_failed(job.get("source_path"), f"Upload auth failed: {e}")
+                if auto_mode:
+                    self._auto_move_source_to_failed(source_path, f"Upload auth failed: {e}")
             except Exception as e:
                 with self._upload_failures_lock:
                     self.upload_failures.append({"base_name": base_name, "error": str(e)})
                 self._log(f"Upload error for {base_name}: {e}", is_error=True)
-                if job.get("auto_mode"):
-                    self._auto_move_source_to_failed(job.get("source_path"), f"Upload error: {e}")
+                if auto_mode:
+                    self._auto_move_source_to_failed(source_path, f"Upload error: {e}")
             finally:
                 self.root.after(0, lambda: self._update_upload_progress(0, 0, ""))
 
