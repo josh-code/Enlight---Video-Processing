@@ -1055,7 +1055,7 @@ class RetroHlsApp:
 
         srow = tk.Frame(parent, bg=RETRO_PANEL); srow.pack(fill="x", padx=10, pady=(0, 4))
         tk.Button(srow, text="Create Folder Structure", command=self.on_auto_build_structure, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT).pack(side="left")
-        tk.Label(srow, text="(makes <courseId>/<langCode> folders for languages ON in transcription_config)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=8)
+        tk.Label(srow, text="(makes <courseId>/<langCode> folders for ALL languages in transcription_config)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=8)
 
         erow = tk.Frame(parent, bg=RETRO_PANEL); erow.pack(fill="x", padx=10, pady=2)
         tk.Label(erow, text="Encoder:", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left")
@@ -1096,7 +1096,8 @@ class RetroHlsApp:
         # Local import keeps the button working even if S3 deps are unavailable.
         from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE
         cfg = load_transcription_config(TRANSCRIPTION_CONFIG_FILE)
-        languages = [code for code, on in cfg.languages.items() if on]
+        # Use every language listed in transcription_config.json, regardless of on/off.
+        languages = list(cfg.languages.keys())
         try:
             result = ensure_folder_structure(self.auto_root, COURSE_IDS, languages)
         except OSError as e:
@@ -1104,7 +1105,7 @@ class RetroHlsApp:
             return
         created = result["created"]
         existing = result["existing"]
-        lang_note = ", ".join(languages) if languages else "(no languages ON — created course folders only)"
+        lang_note = ", ".join(languages) if languages else "(no languages listed — created course folders only)"
         self._log(f"[AUTO] Folder structure under {self.auto_root}: {len(created)} created, {len(existing)} already present. Languages: {lang_note}")
         messagebox.showinfo(
             "Folder Structure",
