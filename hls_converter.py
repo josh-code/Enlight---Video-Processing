@@ -1186,11 +1186,22 @@ class RetroHlsApp:
         self._uploader_thread.start()
 
         counts = {"processed": 0, "failed": 0, "passes": 0}
+        # Track source paths already encoded/queued (or moved to _failed) this run.
+        # Uploads delete the source only on success and run asynchronously, so without
+        # this guard the immediate re-scan would re-encode an in-flight video and wipe
+        # its output dir out from under the uploader. Skipping seen paths lets the loop
+        # reach an empty scan (and stop) once every present video has been handled.
+        seen = set()
+
+        def _seen_key(path):
+            return os.path.normcase(os.path.abspath(path))
 
         def scan_fn():
-            return scan_root(self.auto_root, self._supported_codes, time.time())
+            cands = scan_root(self.auto_root, self._supported_codes, time.time())
+            return [c for c in cands if _seen_key(c.source_path) not in seen]
 
         def process_fn(c):
+            seen.add(_seen_key(c.source_path))
             ok = self._auto_process_video(c)
             if ok:
                 counts["processed"] += 1
@@ -1199,6 +1210,7 @@ class RetroHlsApp:
             self._set_auto_counts(counts["processed"], counts["failed"], counts["passes"])
 
         def move_failed_fn(c):
+            seen.add(_seen_key(c.source_path))
             ts_str = datetime.now().strftime("%Y-%m-%d_%H%M%S")
             try:
                 move_to_failed(c.source_path, c.reason or "Invalid", ts_str)
@@ -1247,7 +1259,9 @@ class RetroHlsApp:
         # the manual/auto mode mutex guarantees no concurrent manual render.
         self.file_path = fp
         safe_mkdir(self.output_base_dir)
-        self.output_dir = os.path.join(self.output_base_dir, base_name + "_hls")
+        # Include course+language so videos that share a filename across different
+        # course/lang folders don't collide on the same local output dir.
+        self.output_dir = os.path.join(self.output_base_dir, f"{c.course_id}_{c.language}_{base_name}_hls")
         if os.path.isdir(self.output_dir):
             try:
                 shutil.rmtree(self.output_dir)
