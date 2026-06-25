@@ -1,4 +1,31 @@
 {
   "default": false,
-  "languages": { "hi": true, "ur": true, "en": false }
+  "languages": {
+    "nl": false,
+    "en": false,
+    "fr": false,
+    "de": false,
+    "hi": false,
+    "mr": false,
+    "pl": false,
+    "pt": false,
+    "es": false,
+    "uk": false,
+    "vi": false,
+    "ur": false,
+    "af": false,
+    "zu": false,
+    "sw": false,
+    "ss": false,
+    "am": false,
+    "ar": false,
+    "et": false,
+    "gu": false,
+    "id": false,
+    "km": false,
+    "ko": false,
+    "lv": false,
+    "ru": false,
+    "si": false
+  }
 }
