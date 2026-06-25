@@ -31,6 +31,10 @@ except ImportError:
         """Fallback when config is not available."""
         return ([{"code": "en", "name": "English (English)"}], "en")
 
+# Pure helpers (no optional deps) for the Auto / Folder structure builder.
+from folder_builder import ensure_folder_structure
+from course_ids import COURSE_IDS
+
 S3_CONFIG_FILE = "s3_config.json"
 
 # ----------------------------
@@ -1049,6 +1053,10 @@ class RetroHlsApp:
         self.auto_root_label = tk.Label(row, text=self.auto_root or "(none)", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=360, justify="left")
         self.auto_root_label.pack(side="left", padx=8)
 
+        srow = tk.Frame(parent, bg=RETRO_PANEL); srow.pack(fill="x", padx=10, pady=(0, 4))
+        tk.Button(srow, text="Create Folder Structure", command=self.on_auto_build_structure, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_ACCENT).pack(side="left")
+        tk.Label(srow, text="(makes <courseId>/<langCode> folders for languages ON in transcription_config)", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=8)
+
         erow = tk.Frame(parent, bg=RETRO_PANEL); erow.pack(fill="x", padx=10, pady=2)
         tk.Label(erow, text="Encoder:", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left")
         ttk.Combobox(erow, textvariable=self.encoder_var, values=list(self.encoder_display.values()), state="readonly", width=22).pack(side="left", padx=6)
@@ -1077,6 +1085,34 @@ class RetroHlsApp:
             self.auto_root = folder
             self.auto_root_label.config(text=folder)
             self._save_s3_config()
+
+    def on_auto_build_structure(self):
+        if self.auto_is_running:
+            messagebox.showinfo("Busy", "Auto mode is running.")
+            return
+        if not self.auto_root or not os.path.isdir(self.auto_root):
+            messagebox.showwarning("No folder", "Choose a valid root folder first.")
+            return
+        # Local import keeps the button working even if S3 deps are unavailable.
+        from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE
+        cfg = load_transcription_config(TRANSCRIPTION_CONFIG_FILE)
+        languages = [code for code, on in cfg.languages.items() if on]
+        try:
+            result = ensure_folder_structure(self.auto_root, COURSE_IDS, languages)
+        except OSError as e:
+            messagebox.showerror("Folder Structure", f"Failed to create folders: {e}")
+            return
+        created = result["created"]
+        existing = result["existing"]
+        lang_note = ", ".join(languages) if languages else "(no languages ON — created course folders only)"
+        self._log(f"[AUTO] Folder structure under {self.auto_root}: {len(created)} created, {len(existing)} already present. Languages: {lang_note}")
+        messagebox.showinfo(
+            "Folder Structure",
+            f"Root: {self.auto_root}\n\n"
+            f"Created: {len(created)}\n"
+            f"Already present: {len(existing)}\n\n"
+            f"Courses: {len(COURSE_IDS)} | Languages: {lang_note}",
+        )
 
     def _set_auto_status(self, text: str):
         self.root.after(0, lambda: self.auto_status_label.config(text=f"Status: {text}"))
