@@ -2,7 +2,7 @@
   "default": false,
   "languages": {
     "nl": false,
-    "en": false,
+    "en": true,
     "fr": false,
     "de": false,
     "hi": false,

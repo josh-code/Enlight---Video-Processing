@@ -1,5 +1,6 @@
 {
   "last_course_id": "699d28a50692dfb70e5c7e65",
   "language": "ur",
-  "delete_local_after_upload": true
+  "delete_local_after_upload": true,
+  "auto_root": "C:/Users/BLUEH/Downloads/CPI - Auto Upload"
 }

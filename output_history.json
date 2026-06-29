@@ -26752,5 +26752,1261 @@
       "json": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS5S9_-_Finances_No_Slides_4k_Master-015-Urdu_(Pakistan)_hls\\DFS5S9_-_Finances_No_Slides_4k_Master-015-Urdu_(Pakistan)_transcript.json"
     },
     "subtitle_playlist": "C:\\Users\\S7\\Bluehnace Code\\Enlight---Video-Processing\\hls_outputs\\DFS5S9_-_Finances_No_Slides_4k_Master-015-Urdu_(Pakistan)_hls\\subtitle_ur.m3u8"
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\en\\DFS3W1S3 - The Service Gifts_Final_English_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_en_DFS3W1S3_-_The_Service_Gifts_Final_English_Part_A_hls",
+    "ts": "2026-06-25T12:51:44",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "en",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/en/DFS3W1S3_-_The_Service_Gifts_Final_English_Part_A/master.m3u8",
+    "transcribed": true
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S1-A - Introduction to Spiritual Gifts_No Slides_LowRes_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S1-A_-_Introduction_to_Spiritual_Gifts_No_Slides_LowRes_Part_A_hls",
+    "ts": "2026-06-25T14:33:30",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S1-A_-_Introduction_to_Spiritual_Gifts_No_Slides_LowRes_Part_A/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-B - The Ministerial Gifts_No Slides_LowRes_Part B.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-B_-_The_Ministerial_Gifts_No_Slides_LowRes_Part_B_hls",
+    "ts": "2026-06-25T14:38:13",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-B_-_The_Ministerial_Gifts_No_Slides_LowRes_Part_B/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-C - The Ministerial Gifts_No Slides_LowRes_Part C.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-C_-_The_Ministerial_Gifts_No_Slides_LowRes_Part_C_hls",
+    "ts": "2026-06-25T14:43:23",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-C_-_The_Ministerial_Gifts_No_Slides_LowRes_Part_C/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-D - The Ministerial Gifts_No Slides_4k Master_Part D.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-D_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_D_hls",
+    "ts": "2026-06-25T14:47:20",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-D_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_D/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-E - The Ministerial Gifts_No Slides_4k Master_Part E.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-E_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_E_hls",
+    "ts": "2026-06-25T14:57:28",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-E_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_E/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-F - The Ministerial Gifts_No Slides_4k Master_Part F.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-F_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_F_hls",
+    "ts": "2026-06-25T15:04:28",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-F_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_F/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S2-G - The Ministerial Gifts_No Slides_4k Master_Part G.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S2-G_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_G_hls",
+    "ts": "2026-06-25T15:15:36",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S2-G_-_The_Ministerial_Gifts_No_Slides_4k_Master_Part_G/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S3-A - The Service Gifts_No Slides_LowRes_Part A (1) (1).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S3-A_-_The_Service_Gifts_No_Slides_LowRes_Part_A_(1)_(1)_hls",
+    "ts": "2026-06-25T15:24:30",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S3-A_-_The_Service_Gifts_No_Slides_LowRes_Part_A_(1)_(1)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S3-B - The Service Gifts_No Slides_4k Master_Part B.mp4.crdownload.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S3-B_-_The_Service_Gifts_No_Slides_4k_Master_Part_B.mp4.crdownload_hls",
+    "ts": "2026-06-25T15:33:57",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S3-B_-_The_Service_Gifts_No_Slides_4k_Master_Part_B.mp4.crdownload/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S3-E - The Service Gifts_No Slides_4k Master_Part E.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S3-E_-_The_Service_Gifts_No_Slides_4k_Master_Part_E_hls",
+    "ts": "2026-06-25T15:37:51",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S3-E_-_The_Service_Gifts_No_Slides_4k_Master_Part_E/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S3-F - The Service Gifts_No Slides_4k Master_Part F.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S3-F_-_The_Service_Gifts_No_Slides_4k_Master_Part_F_hls",
+    "ts": "2026-06-25T15:42:28",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S3-F_-_The_Service_Gifts_No_Slides_4k_Master_Part_F/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S4-A - The Supernatural Gifts_No Slides_4k Master_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S4-A_-_The_Supernatural_Gifts_No_Slides_4k_Master_Part_A_hls",
+    "ts": "2026-06-25T15:46:25",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S4-A_-_The_Supernatural_Gifts_No_Slides_4k_Master_Part_A/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W1S5-C - Discovering your Spiritual gifts_No Slides_4k Master_Part C-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W1S5-C_-_Discovering_your_Spiritual_gifts_No_Slides_4k_Master_Part_C-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T15:47:51",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W1S5-C_-_Discovering_your_Spiritual_gifts_No_Slides_4k_Master_Part_C-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W2S1-A - Introduction to the Bible_No Slides_4k Master_Part A-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W2S1-A_-_Introduction_to_the_Bible_No_Slides_4k_Master_Part_A-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T15:51:43",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W2S1-A_-_Introduction_to_the_Bible_No_Slides_4k_Master_Part_A-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W2S1-B - Introduction to the Bible_No Slides_LowRes_Part B-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W2S1-B_-_Introduction_to_the_Bible_No_Slides_LowRes_Part_B-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T15:57:21",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W2S1-B_-_Introduction_to_the_Bible_No_Slides_LowRes_Part_B-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W2S1-C - Introduction to the Bible_No Slides_4k Master_Part C-098-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W2S1-C_-_Introduction_to_the_Bible_No_Slides_4k_Master_Part_C-098-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T15:58:12",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W2S1-C_-_Introduction_to_the_Bible_No_Slides_4k_Master_Part_C-098-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W3S2-A - Sharing our Faith_No Slides_4k Master_Part A-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W3S2-A_-_Sharing_our_Faith_No_Slides_4k_Master_Part_A-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T15:59:42",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W3S2-A_-_Sharing_our_Faith_No_Slides_4k_Master_Part_A-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W3S2-B - Sharing our Faith_No Slides_4k Master_Part B-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W3S2-B_-_Sharing_our_Faith_No_Slides_4k_Master_Part_B-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:01:09",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W3S2-B_-_Sharing_our_Faith_No_Slides_4k_Master_Part_B-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W3S3 - The practical gospel message_No Slides_LowRes-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W3S3_-_The_practical_gospel_message_No_Slides_LowRes-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:06:09",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W3S3_-_The_practical_gospel_message_No_Slides_LowRes-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S2-B - Cares of the world_No Slides_4k Master_Part B-078-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S2-B_-_Cares_of_the_world_No_Slides_4k_Master_Part_B-078-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:13:02",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S2-B_-_Cares_of_the_world_No_Slides_4k_Master_Part_B-078-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S3-D - Dealing with Fear_No Slides_4k Master_Part D-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S3-D_-_Dealing_with_Fear_No_Slides_4k_Master_Part_D-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:15:48",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S3-D_-_Dealing_with_Fear_No_Slides_4k_Master_Part_D-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S3-E - Dealing with Fear_No Slides_4k Master_Part E-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S3-E_-_Dealing_with_Fear_No_Slides_4k_Master_Part_E-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:18:35",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S3-E_-_Dealing_with_Fear_No_Slides_4k_Master_Part_E-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S3-F - Dealing with Fear_No Slides_4k Master_Part F-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S3-F_-_Dealing_with_Fear_No_Slides_4k_Master_Part_F-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:24:12",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S3-F_-_Dealing_with_Fear_No_Slides_4k_Master_Part_F-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S3-G - Dealing with Fear_No Slides_4k Master_Part G-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S3-G_-_Dealing_with_Fear_No_Slides_4k_Master_Part_G-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:25:57",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S3-G_-_Dealing_with_Fear_No_Slides_4k_Master_Part_G-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S3-H - Dealing with Fear_No Slides_4k Master_Part H-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S3-H_-_Dealing_with_Fear_No_Slides_4k_Master_Part_H-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:27:37",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S3-H_-_Dealing_with_Fear_No_Slides_4k_Master_Part_H-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\sw\\DFS3W4S4-B - Dealing with Unforgiveness_No Slides_4k Master_Part B-Swahili (Kenya).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_sw_DFS3W4S4-B_-_Dealing_with_Unforgiveness_No_Slides_4k_Master_Part_B-Swahili_(Kenya)_hls",
+    "ts": "2026-06-25T16:28:15",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "sw",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/sw/DFS3W4S4-B_-_Dealing_with_Unforgiveness_No_Slides_4k_Master_Part_B-Swahili_(Kenya)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S10 - Conclusion_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S10_-_Conclusion_Arabic_hls",
+    "ts": "2026-06-25T16:32:59",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S10_-_Conclusion_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S3 - Repentance_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S3_-_Repentance_Arabic_hls",
+    "ts": "2026-06-25T16:47:19",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S3_-_Repentance_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S4-A - Faith in God_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S4-A_-_Faith_in_God_Arabic_hls",
+    "ts": "2026-06-25T16:59:28",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S4-A_-_Faith_in_God_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S4-B - Faith in God_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S4-B_-_Faith_in_God_Arabic_hls",
+    "ts": "2026-06-25T17:09:44",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S4-B_-_Faith_in_God_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S5-A - How to be Born Again_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S5-A_-_How_to_be_Born_Again_Arabic_hls",
+    "ts": "2026-06-25T17:21:08",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S5-A_-_How_to_be_Born_Again_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S5-B - How to be Born Again_ Arabic -006.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S5-B_-_How_to_be_Born_Again_Arabic_-006_hls",
+    "ts": "2026-06-25T17:33:24",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S5-B_-_How_to_be_Born_Again_Arabic_-006/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S6-A - Baptism_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S6-A_-_Baptism_Arabic_hls",
+    "ts": "2026-06-25T17:42:33",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S6-A_-_Baptism_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S6-B - Baptism_Final_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S6-B_-_Baptism_Final_Arabic_hls",
+    "ts": "2026-06-25T17:53:28",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S6-B_-_Baptism_Final_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S6-D - Baptism_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S6-D_-_Baptism_Arabic_hls",
+    "ts": "2026-06-25T17:53:45",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S6-D_-_Baptism_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S7 - Laying on of Hands_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S7_-_Laying_on_of_Hands_Arabic_hls",
+    "ts": "2026-06-25T18:03:57",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S7_-_Laying_on_of_Hands_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\ar\\DFS1S9 - Eternal Judgement_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_ar_DFS1S9_-_Eternal_Judgement_Arabic_hls",
+    "ts": "2026-06-25T18:09:03",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "ar",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/ar/DFS1S9_-_Eternal_Judgement_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S1 - Multiplication_Introduction_No Slides_4k Master-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S1_-_Multiplication_Introduction_No_Slides_4k_Master-Arabic_hls",
+    "ts": "2026-06-25T18:09:45",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S1_-_Multiplication_Introduction_No_Slides_4k_Master-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S10-A - Dealing with Setbacks_No Slides_4k Master_Part A-014-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S10-A_-_Dealing_with_Setbacks_No_Slides_4k_Master_Part_A-014-Arabic_hls",
+    "ts": "2026-06-25T18:11:50",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S10-A_-_Dealing_with_Setbacks_No_Slides_4k_Master_Part_A-014-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S10-B - Dealing with Setbacks_No Slides_LowRes_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S10-B_-_Dealing_with_Setbacks_No_Slides_LowRes_Part_B-Arabic_hls",
+    "ts": "2026-06-25T18:14:36",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S10-B_-_Dealing_with_Setbacks_No_Slides_LowRes_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S10-C - Dealing with Setbacks_No Slides_4k Master_Part C-009-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S10-C_-_Dealing_with_Setbacks_No_Slides_4k_Master_Part_C-009-Arabic_hls",
+    "ts": "2026-06-25T18:15:49",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S10-C_-_Dealing_with_Setbacks_No_Slides_4k_Master_Part_C-009-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S11-A - Eternal Rewards_No Slides_4k Master_Part A-024-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S11-A_-_Eternal_Rewards_No_Slides_4k_Master_Part_A-024-Arabic_hls",
+    "ts": "2026-06-25T18:16:54",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S11-A_-_Eternal_Rewards_No_Slides_4k_Master_Part_A-024-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S11-B - Eternal Rewards_No Slides_4k Master_Part B-019-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S11-B_-_Eternal_Rewards_No_Slides_4k_Master_Part_B-019-Arabic_hls",
+    "ts": "2026-06-25T18:18:15",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S11-B_-_Eternal_Rewards_No_Slides_4k_Master_Part_B-019-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S2 - Visions and Dreams_No Slides_LowRes-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S2_-_Visions_and_Dreams_No_Slides_LowRes-Arabic_hls",
+    "ts": "2026-06-25T18:22:18",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S2_-_Visions_and_Dreams_No_Slides_LowRes-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S3 - Set Godly Goals_No Slides_LowRes-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S3_-_Set_Godly_Goals_No_Slides_LowRes-Arabic_hls",
+    "ts": "2026-06-25T18:24:05",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S3_-_Set_Godly_Goals_No_Slides_LowRes-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S4 - Character Development_No Slides_4k Master-016-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S4_-_Character_Development_No_Slides_4k_Master-016-Arabic_hls",
+    "ts": "2026-06-25T18:25:23",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S4_-_Character_Development_No_Slides_4k_Master-016-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S5 - Gift Development_No Slides_LowRes-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S5_-_Gift_Development_No_Slides_LowRes-Arabic_hls",
+    "ts": "2026-06-25T18:27:46",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S5_-_Gift_Development_No_Slides_LowRes-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S6 - Fruitfulness_No Slides_4k Master-007-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S6_-_Fruitfulness_No_Slides_4k_Master-007-Arabic_hls",
+    "ts": "2026-06-25T18:29:48",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S6_-_Fruitfulness_No_Slides_4k_Master-007-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S7-A - Relationships_No Slides_4k Master_Part A-013-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S7-A_-_Relationships_No_Slides_4k_Master_Part_A-013-Arabic_hls",
+    "ts": "2026-06-25T18:32:38",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S7-A_-_Relationships_No_Slides_4k_Master_Part_A-013-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S7-B - Relationships_No Slides_4k Master_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S7-B_-_Relationships_No_Slides_4k_Master_Part_B-Arabic_hls",
+    "ts": "2026-06-25T18:34:10",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S7-B_-_Relationships_No_Slides_4k_Master_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S8 - The Power of Encouragement_No Slides_LowRes-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S8_-_The_Power_of_Encouragement_No_Slides_LowRes-Arabic_hls",
+    "ts": "2026-06-25T19:16:14",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S8_-_The_Power_of_Encouragement_No_Slides_LowRes-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d28a50692dfb70e5c7e65\\ar\\DFS5S9 - Finances_No Slides_4k Master-015-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d28a50692dfb70e5c7e65_ar_DFS5S9_-_Finances_No_Slides_4k_Master-015-Arabic_hls",
+    "ts": "2026-06-25T19:22:32",
+    "courseId": "699d28a50692dfb70e5c7e65",
+    "language": "ar",
+    "s3_master_key": "courses/699d28a50692dfb70e5c7e65/ar/DFS5S9_-_Finances_No_Slides_4k_Master-015-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S1-A - Introduction to Step 4_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S1-A_-_Introduction_to_Step_4_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:23:06",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S1-A_-_Introduction_to_Step_4_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S1-B - Introduction to Step 4_No Slides_4k Master_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S1-B_-_Introduction_to_Step_4_No_Slides_4k_Master_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:23:39",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S1-B_-_Introduction_to_Step_4_No_Slides_4k_Master_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S2-A - Walking with Purpose_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S2-A_-_Walking_with_Purpose_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:23:59",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S2-A_-_Walking_with_Purpose_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S2-B - Walking with Purpose_No Slides_4k Master_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S2-B_-_Walking_with_Purpose_No_Slides_4k_Master_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:29:39",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S2-B_-_Walking_with_Purpose_No_Slides_4k_Master_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S2-C - Walking with Purpose_No Slides_4k Master_Part C-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S2-C_-_Walking_with_Purpose_No_Slides_4k_Master_Part_C-Arabic_hls",
+    "ts": "2026-06-25T19:30:05",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S2-C_-_Walking_with_Purpose_No_Slides_4k_Master_Part_C-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S3-A - Build Purposeful Relationships_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S3-A_-_Build_Purposeful_Relationships_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:30:33",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S3-A_-_Build_Purposeful_Relationships_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S4-A - Priesthood_No Slides_4k Master_Part A-003-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S4-A_-_Priesthood_No_Slides_4k_Master_Part_A-003-Arabic_hls",
+    "ts": "2026-06-25T19:39:48",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S4-A_-_Priesthood_No_Slides_4k_Master_Part_A-003-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S4-B - Priesthood_No Slides_4k Master_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S4-B_-_Priesthood_No_Slides_4k_Master_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:40:37",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S4-B_-_Priesthood_No_Slides_4k_Master_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S5-A - Caring compassionately_No Slides_4k Master_Part A-008-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S5-A_-_Caring_compassionately_No_Slides_4k_Master_Part_A-008-Arabic_hls",
+    "ts": "2026-06-25T19:42:00",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S5-A_-_Caring_compassionately_No_Slides_4k_Master_Part_A-008-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S5-B - Caring compassionately_No Slides_4k Master_Part B-009-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S5-B_-_Caring_compassionately_No_Slides_4k_Master_Part_B-009-Arabic_hls",
+    "ts": "2026-06-25T19:43:01",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S5-B_-_Caring_compassionately_No_Slides_4k_Master_Part_B-009-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S6-A - Walking Worthily_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S6-A_-_Walking_Worthily_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:43:22",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S6-A_-_Walking_Worthily_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S6-B - Walking Worthily_No Slides_LowRes_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S6-B_-_Walking_Worthily_No_Slides_LowRes_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:45:39",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S6-B_-_Walking_Worthily_No_Slides_LowRes_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S7-A - Walking in the Spirit_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S7-A_-_Walking_in_the_Spirit_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:46:02",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S7-A_-_Walking_in_the_Spirit_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S7-B - Walking in the Spirit_No Slides_LowRes_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S7-B_-_Walking_in_the_Spirit_No_Slides_LowRes_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:48:33",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S7-B_-_Walking_in_the_Spirit_No_Slides_LowRes_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S8-A - Practicing Hospitality_No Slides_4k Master_Part A-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S8-A_-_Practicing_Hospitality_No_Slides_4k_Master_Part_A-Arabic_hls",
+    "ts": "2026-06-25T19:49:04",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S8-A_-_Practicing_Hospitality_No_Slides_4k_Master_Part_A-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699c35db0692dfb70e5c7d4e\\ar\\DFS4S8-B - Practicing Hospitality_Final_English_Part B-Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699c35db0692dfb70e5c7d4e_ar_DFS4S8-B_-_Practicing_Hospitality_Final_English_Part_B-Arabic_hls",
+    "ts": "2026-06-25T19:55:02",
+    "courseId": "699c35db0692dfb70e5c7d4e",
+    "language": "ar",
+    "s3_master_key": "courses/699c35db0692dfb70e5c7d4e/ar/DFS4S8-B_-_Practicing_Hospitality_Final_English_Part_B-Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT01_Introduction_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT01_Introduction_Arabic_hls",
+    "ts": "2026-06-25T19:55:39",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT01_Introduction_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT04-A - Phase One - Preparation Phase_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT04-A_-_Phase_One_-_Preparation_Phase_Arabic_hls",
+    "ts": "2026-06-25T20:03:45",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT04-A_-_Phase_One_-_Preparation_Phase_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT04-B - Phase One - Preparation Phase_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT04-B_-_Phase_One_-_Preparation_Phase_Arabic_hls",
+    "ts": "2026-06-25T20:09:39",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT04-B_-_Phase_One_-_Preparation_Phase_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT04-C - Phase One - Preparation Phase_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT04-C_-_Phase_One_-_Preparation_Phase_Arabic_hls",
+    "ts": "2026-06-25T20:14:54",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT04-C_-_Phase_One_-_Preparation_Phase_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-1-A- Phase Two - Team Building - Part 1_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-1-A-_Phase_Two_-_Team_Building_-_Part_1_Arabic_hls",
+    "ts": "2026-06-25T20:21:32",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-1-A-_Phase_Two_-_Team_Building_-_Part_1_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-1-B - Phase Two - Team Building - Part 1_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-1-B_-_Phase_Two_-_Team_Building_-_Part_1_Arabic_hls",
+    "ts": "2026-06-25T20:25:31",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-1-B_-_Phase_Two_-_Team_Building_-_Part_1_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-A - Phase Two - Team Building_Arabic-017.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-A_-_Phase_Two_-_Team_Building_Arabic-017_hls",
+    "ts": "2026-06-25T20:35:21",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-A_-_Phase_Two_-_Team_Building_Arabic-017/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-B - Phase Two - Team Building - Part 2_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-B_-_Phase_Two_-_Team_Building_-_Part_2_Arabic_hls",
+    "ts": "2026-06-25T20:39:53",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-B_-_Phase_Two_-_Team_Building_-_Part_2_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-C - Phase Two - Team Building_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-C_-_Phase_Two_-_Team_Building_Arabic_hls",
+    "ts": "2026-06-25T20:45:38",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-C_-_Phase_Two_-_Team_Building_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-D - Phase Two - Team Building_Arabic-005.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-D_-_Phase_Two_-_Team_Building_Arabic-005_hls",
+    "ts": "2026-06-25T20:56:34",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-D_-_Phase_Two_-_Team_Building_Arabic-005/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-E - Phase Two - Team Building_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-E_-_Phase_Two_-_Team_Building_Arabic_hls",
+    "ts": "2026-06-25T20:59:28",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-E_-_Phase_Two_-_Team_Building_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-F - Phase Two - Team Building_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-F_-_Phase_Two_-_Team_Building_Arabic_hls",
+    "ts": "2026-06-25T21:03:48",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-F_-_Phase_Two_-_Team_Building_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT05-2-G - Phase Two - Team Building -Arabic mp4-020.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT05-2-G_-_Phase_Two_-_Team_Building_-Arabic_mp4-020_hls",
+    "ts": "2026-06-25T21:07:46",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT05-2-G_-_Phase_Two_-_Team_Building_-Arabic_mp4-020/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-A - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-A_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:10:51",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-A_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-B - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-B_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:11:20",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-B_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-C - Church Planting Trials_Arabic-010.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-C_-_Church_Planting_Trials_Arabic-010_hls",
+    "ts": "2026-06-25T21:15:32",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-C_-_Church_Planting_Trials_Arabic-010/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-D - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-D_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:17:25",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-D_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-E - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-E_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:19:46",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-E_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-F - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-F_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:22:48",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-F_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-G - Church Planting Trials_Arabic-007.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-G_-_Church_Planting_Trials_Arabic-007_hls",
+    "ts": "2026-06-25T21:28:16",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-G_-_Church_Planting_Trials_Arabic-007/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-H - Church Planting Trials_Arabic-009.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-H_-_Church_Planting_Trials_Arabic-009_hls",
+    "ts": "2026-06-25T21:33:25",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-H_-_Church_Planting_Trials_Arabic-009/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-I - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-I_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-25T21:36:55",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-I_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S1 - Introduction to Step 1_English-Estonian (Estonia)-007.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S1_-_Introduction_to_Step_1_English-Estonian_(Estonia)-007_hls",
+    "ts": "2026-06-25T21:59:09",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S1_-_Introduction_to_Step_1_English-Estonian_(Estonia)-007/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S10 - Conclusion_English-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S10_-_Conclusion_English-Estonian_(Estonia)_hls",
+    "ts": "2026-06-25T22:02:42",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S10_-_Conclusion_English-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S2 - Introduction to Salvation_No Slides_4k Master-013-009.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S2_-_Introduction_to_Salvation_No_Slides_4k_Master-013-009_hls",
+    "ts": "2026-06-25T22:09:32",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S2_-_Introduction_to_Salvation_No_Slides_4k_Master-013-009/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S3 - Repentance_Final_No Slides_1080p.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S3_-_Repentance_Final_No_Slides_1080p_hls",
+    "ts": "2026-06-25T22:19:47",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S3_-_Repentance_Final_No_Slides_1080p/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S4-A - Faith in God_Final_No Slides_1080p_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S4-A_-_Faith_in_God_Final_No_Slides_1080p_Part_A_hls",
+    "ts": "2026-06-26T10:14:55",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S4-A_-_Faith_in_God_Final_No_Slides_1080p_Part_A/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S4-B - Faith in God_Final_No Slides_1080p_Part B.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S4-B_-_Faith_in_God_Final_No_Slides_1080p_Part_B_hls",
+    "ts": "2026-06-26T10:21:52",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S4-B_-_Faith_in_God_Final_No_Slides_1080p_Part_B/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S5-A - How to be Born Again_Final_No Slides_1080p_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S5-A_-_How_to_be_Born_Again_Final_No_Slides_1080p_Part_A_hls",
+    "ts": "2026-06-26T10:31:19",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S5-A_-_How_to_be_Born_Again_Final_No_Slides_1080p_Part_A/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S5-B - How to be Born Again_Final_No Slides_4k Master_Part B-009-008.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S5-B_-_How_to_be_Born_Again_Final_No_Slides_4k_Master_Part_B-009-008_hls",
+    "ts": "2026-06-26T10:38:48",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S5-B_-_How_to_be_Born_Again_Final_No_Slides_4k_Master_Part_B-009-008/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S6-A - Baptism_Final_No Slides_1080p_Part A.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S6-A_-_Baptism_Final_No_Slides_1080p_Part_A_hls",
+    "ts": "2026-06-26T10:44:34",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S6-A_-_Baptism_Final_No_Slides_1080p_Part_A/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S6-B - Baptism_Final_No Slides_1080p_Part B.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S6-B_-_Baptism_Final_No_Slides_1080p_Part_B_hls",
+    "ts": "2026-06-26T10:51:52",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S6-B_-_Baptism_Final_No_Slides_1080p_Part_B/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S6-C - Baptism_Final_No Slides_4k Master_Part C-006-004.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S6-C_-_Baptism_Final_No_Slides_4k_Master_Part_C-006-004_hls",
+    "ts": "2026-06-26T11:08:57",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S6-C_-_Baptism_Final_No_Slides_4k_Master_Part_C-006-004/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S6-D - Baptism_English-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S6-D_-_Baptism_English-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T11:09:18",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S6-D_-_Baptism_English-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S7 - Laying on of Hands_English-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S7_-_Laying_on_of_Hands_English-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T11:21:53",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S7_-_Laying_on_of_Hands_English-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S8 - Resurrection of the dead_English-Estonian (Estonia)-013.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S8_-_Resurrection_of_the_dead_English-Estonian_(Estonia)-013_hls",
+    "ts": "2026-06-26T11:37:15",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S8_-_Resurrection_of_the_dead_English-Estonian_(Estonia)-013/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\699d44a90692dfb70e5c7ec5\\et\\DFS1S9 - Eternal Judgement_Final_No Slides_1080p.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\699d44a90692dfb70e5c7ec5_et_DFS1S9_-_Eternal_Judgement_Final_No_Slides_1080p_hls",
+    "ts": "2026-06-26T11:47:33",
+    "courseId": "699d44a90692dfb70e5c7ec5",
+    "language": "et",
+    "s3_master_key": "courses/699d44a90692dfb70e5c7ec5/et/DFS1S9_-_Eternal_Judgement_Final_No_Slides_1080p/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-K - Church Planting Trials_Arabic-012.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-K_-_Church_Planting_Trials_Arabic-012_hls",
+    "ts": "2026-06-26T11:51:28",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-K_-_Church_Planting_Trials_Arabic-012/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-L - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-L_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-26T11:55:38",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-L_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-N - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-N_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-26T11:57:46",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-N_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-O - Church Planting Trials_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-O_-_Church_Planting_Trials_Arabic_hls",
+    "ts": "2026-06-26T12:03:48",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-O_-_Church_Planting_Trials_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT09-P - Church Planting Trials_Arabic-015.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT09-P_-_Church_Planting_Trials_Arabic-015_hls",
+    "ts": "2026-06-26T12:10:25",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT09-P_-_Church_Planting_Trials_Arabic-015/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\ar\\CPT10 - Next Steps_Arabic.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_ar_CPT10_-_Next_Steps_Arabic_hls",
+    "ts": "2026-06-26T12:27:00",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "ar",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/ar/CPT10_-_Next_Steps_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT01_Introduction_Final_English_Clean No Titles_4k (2)-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT01_Introduction_Final_English_Clean_No_Titles_4k_(2)-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T12:27:34",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT01_Introduction_Final_English_Clean_No_Titles_4k_(2)-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT02 - Why Church Planting - The Challenge_Final_Full Length_English_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT02_-_Why_Church_Planting_-_The_Challenge_Final_Full_Length_English_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T12:50:48",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT02_-_Why_Church_Planting_-_The_Challenge_Final_Full_Length_English_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT03 - Phases of Church Planting - Overview_Final_Full Length_English_Clean No Titles_4k-Estonian (Estonia)-008.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT03_-_Phases_of_Church_Planting_-_Overview_Final_Full_Length_English_Clean_No_Titles_4k-Estonian_(Estonia)-008_hls",
+    "ts": "2026-06-26T12:58:00",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT03_-_Phases_of_Church_Planting_-_Overview_Final_Full_Length_English_Clean_No_Titles_4k-Estonian_(Estonia)-008/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT04-A - Phase One - Preparation Phase_Final_English_Part A_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT04-A_-_Phase_One_-_Preparation_Phase_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T13:11:27",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT04-A_-_Phase_One_-_Preparation_Phase_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT04-B - Phase One - Preparation Phase_Final_English_Part B_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT04-B_-_Phase_One_-_Preparation_Phase_Final_English_Part_B_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T13:20:23",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT04-B_-_Phase_One_-_Preparation_Phase_Final_English_Part_B_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT04-C - Phase One - Preparation Phase_Final_English_Part C_Clean No Title_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT04-C_-_Phase_One_-_Preparation_Phase_Final_English_Part_C_Clean_No_Title_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T13:27:42",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT04-C_-_Phase_One_-_Preparation_Phase_Final_English_Part_C_Clean_No_Title_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-1-A- Phase Two - Team Building - Part 1_Final_English_Part A_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-1-A-_Phase_Two_-_Team_Building_-_Part_1_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T13:36:21",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-1-A-_Phase_Two_-_Team_Building_-_Part_1_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-1-B - Phase Two - Team Building - Part 1_Final_English_Part B_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-1-B_-_Phase_Two_-_Team_Building_-_Part_1_Final_English_Part_B_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T13:42:01",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-1-B_-_Phase_Two_-_Team_Building_-_Part_1_Final_English_Part_B_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-A - Phase Two - Team Building - Part 2_Final_English_Part A_Clean No Titles_4k-Estonian (Estonia)-011.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-A_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_A_Clean_No_Titles_4k-Estonian_(Estonia)-011_hls",
+    "ts": "2026-06-26T13:55:46",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-A_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_A_Clean_No_Titles_4k-Estonian_(Estonia)-011/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-B - Phase Two - Team Building - Part 2_Final_English_Part B_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-B_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_B_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:01:23",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-B_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_B_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-C - Phase Two - Team Building - Part 2_Final_English_Part C_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-C_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_C_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:08:14",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-C_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_C_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-D - Phase Two - Team Building - Part 2_Final_English_Part D_Clean No Titles_4k-Estonian (Estonia)-028.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-D_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_D_Clean_No_Titles_4k-Estonian_(Estonia)-028_hls",
+    "ts": "2026-06-26T14:20:19",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-D_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_D_Clean_No_Titles_4k-Estonian_(Estonia)-028/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-E - Phase Two - Team Building - Part 2_Final_English_Part E_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-E_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_E_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:24:32",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-E_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_E_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-F - Phase Two - Team Building - Part 2_Final_English_Part F_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-F_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_F_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:29:01",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-F_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_F_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-G - Phase Two - Team Building - Part 2_Final_English_Part G_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-G_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_G_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:33:29",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-G_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_G_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-H - Phase Two - Team Building - Part 2_Final_English_Part H_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-H_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_H_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T14:40:29",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-H_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_H_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-I - Phase Two - Team Building - Part 2_Final_English_Part I_Clean No Titles_4k-Estonian (Estonia)-031.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-I_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_I_Clean_No_Titles_4k-Estonian_(Estonia)-031_hls",
+    "ts": "2026-06-26T14:59:07",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-I_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_I_Clean_No_Titles_4k-Estonian_(Estonia)-031/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-J - Phase Two - Team Building - Part 2_Final_English_Part J_Clean No Titles_4k-Estonian (Estonia)-014.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-J_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_J_Clean_No_Titles_4k-Estonian_(Estonia)-014_hls",
+    "ts": "2026-06-26T15:12:51",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-J_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_J_Clean_No_Titles_4k-Estonian_(Estonia)-014/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-K - Phase Two - Team Building - Part 2_Final_English_Part K_Clean No Titles_4k-Estonian (Estonia)-010.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-K_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_K_Clean_No_Titles_4k-Estonian_(Estonia)-010_hls",
+    "ts": "2026-06-26T15:26:44",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-K_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_K_Clean_No_Titles_4k-Estonian_(Estonia)-010/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT05-2-L - Phase Two - Team Building - Part 2_Final_English_Part L_Clean No Titles_4k-Estonian (Estonia)-024.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT05-2-L_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_L_Clean_No_Titles_4k-Estonian_(Estonia)-024_hls",
+    "ts": "2026-06-26T15:42:08",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT05-2-L_-_Phase_Two_-_Team_Building_-_Part_2_Final_English_Part_L_Clean_No_Titles_4k-Estonian_(Estonia)-024/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT06-A - Phase Three - Pre Launch Phase_Final_English_Part A_Clean No Titles_1080p-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT06-A_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T15:54:05",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT06-A_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_A_Clean_No_Titles_1080p-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT06-B - Phase Three - Pre Launch Phase_Final_English_Part B_Clean No Titles_1080p (1)-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT06-B_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_B_Clean_No_Titles_1080p_(1)-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T16:15:52",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT06-B_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_B_Clean_No_Titles_1080p_(1)-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT06-C - Phase Three - Pre Launch Phase_Final_English_Part C_Clean No Titles_4k-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT06-C_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_C_Clean_No_Titles_4k-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T16:24:42",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT06-C_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_C_Clean_No_Titles_4k-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT06-D - Phase Three - Pre Launch Phase_Final_English_Part D_Clean No Titles_1080p-016.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT06-D_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_D_Clean_No_Titles_1080p-016_hls",
+    "ts": "2026-06-26T16:36:07",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT06-D_-_Phase_Three_-_Pre_Launch_Phase_Final_English_Part_D_Clean_No_Titles_1080p-016/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT07 - Phase Four - Launch Phase_English-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT07_-_Phase_Four_-_Launch_Phase_English-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T16:46:17",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT07_-_Phase_Four_-_Launch_Phase_English-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT08 - Phase Five - Multiplication Phase_Final_Full Length_English_Clean No Titles_1080p-007.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT08_-_Phase_Five_-_Multiplication_Phase_Final_Full_Length_English_Clean_No_Titles_1080p-007_hls",
+    "ts": "2026-06-26T17:00:50",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT08_-_Phase_Five_-_Multiplication_Phase_Final_Full_Length_English_Clean_No_Titles_1080p-007/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-A - Church Planting Trials_Final_English_Part A_Clean No Titles_1080p.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-A_-_Church_Planting_Trials_Final_English_Part_A_Clean_No_Titles_1080p_hls",
+    "ts": "2026-06-26T17:02:03",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-A_-_Church_Planting_Trials_Final_English_Part_A_Clean_No_Titles_1080p/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-B - Church Planting Trials_Final_English_Part B_Clean No Titles_1080p.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-B_-_Church_Planting_Trials_Final_English_Part_B_Clean_No_Titles_1080p_hls",
+    "ts": "2026-06-26T17:02:30",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-B_-_Church_Planting_Trials_Final_English_Part_B_Clean_No_Titles_1080p/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-C - Church Planting Trials_Final_English_Part C_Clean No Titles_4k-034.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-C_-_Church_Planting_Trials_Final_English_Part_C_Clean_No_Titles_4k-034_hls",
+    "ts": "2026-06-26T17:06:56",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-C_-_Church_Planting_Trials_Final_English_Part_C_Clean_No_Titles_4k-034/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-D - Church Planting Trials_Final_English_Part D_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-D_-_Church_Planting_Trials_Final_English_Part_D_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:09:13",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-D_-_Church_Planting_Trials_Final_English_Part_D_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-E - Church Planting Trials_Final_English_Part E_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-E_-_Church_Planting_Trials_Final_English_Part_E_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:11:42",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-E_-_Church_Planting_Trials_Final_English_Part_E_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-F - Church Planting Trials_Final_English_Part F_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-F_-_Church_Planting_Trials_Final_English_Part_F_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:15:00",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-F_-_Church_Planting_Trials_Final_English_Part_F_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-G - Church Planting Trials_Final_English_Part G_Clean No Titles_4k-025.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-G_-_Church_Planting_Trials_Final_English_Part_G_Clean_No_Titles_4k-025_hls",
+    "ts": "2026-06-26T17:21:02",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-G_-_Church_Planting_Trials_Final_English_Part_G_Clean_No_Titles_4k-025/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-H - Church Planting Trials_Final_English_Part H_Clean No Titles_4k-005.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-H_-_Church_Planting_Trials_Final_English_Part_H_Clean_No_Titles_4k-005_hls",
+    "ts": "2026-06-26T17:25:48",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-H_-_Church_Planting_Trials_Final_English_Part_H_Clean_No_Titles_4k-005/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-I - Church Planting Trials_Final_English_Part I_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-I_-_Church_Planting_Trials_Final_English_Part_I_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:28:29",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-I_-_Church_Planting_Trials_Final_English_Part_I_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-J - Church Planting Trials_English-Estonian (Estonia).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-J_-_Church_Planting_Trials_English-Estonian_(Estonia)_hls",
+    "ts": "2026-06-26T17:32:06",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-J_-_Church_Planting_Trials_English-Estonian_(Estonia)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-K - Church Planting Trials_Final_English_Part K_Clean No Titles_4k-017.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-K_-_Church_Planting_Trials_Final_English_Part_K_Clean_No_Titles_4k-017_hls",
+    "ts": "2026-06-26T17:35:55",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-K_-_Church_Planting_Trials_Final_English_Part_K_Clean_No_Titles_4k-017/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-L - Church Planting Trials_Final_English_Part L_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-L_-_Church_Planting_Trials_Final_English_Part_L_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:39:12",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-L_-_Church_Planting_Trials_Final_English_Part_L_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-M - Church Planting Trials_Final_English_Part M_Clean No Titles_4k-022.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-M_-_Church_Planting_Trials_Final_English_Part_M_Clean_No_Titles_4k-022_hls",
+    "ts": "2026-06-26T17:45:29",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-M_-_Church_Planting_Trials_Final_English_Part_M_Clean_No_Titles_4k-022/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-N - Church Planting Trials_Final_English_Part N_Clean No Titles_4k.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-N_-_Church_Planting_Trials_Final_English_Part_N_Clean_No_Titles_4k_hls",
+    "ts": "2026-06-26T17:47:00",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-N_-_Church_Planting_Trials_Final_English_Part_N_Clean_No_Titles_4k/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-O - Church Planting Trials_Final_English_Part O_Clean No Titles_1080p.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-O_-_Church_Planting_Trials_Final_English_Part_O_Clean_No_Titles_1080p_hls",
+    "ts": "2026-06-26T17:51:15",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-O_-_Church_Planting_Trials_Final_English_Part_O_Clean_No_Titles_1080p/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT09-P - Church Planting Trials_Final_English_Part P_Clean No Titles_4k-030.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT09-P_-_Church_Planting_Trials_Final_English_Part_P_Clean_No_Titles_4k-030_hls",
+    "ts": "2026-06-26T17:56:04",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT09-P_-_Church_Planting_Trials_Final_English_Part_P_Clean_No_Titles_4k-030/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\69999fdfe8021e540b7ad59b\\et\\CPT10 - Next Steps_Final_Full Length_English_No Slides_Clean No Titles_1080p (1).mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\69999fdfe8021e540b7ad59b_et_CPT10_-_Next_Steps_Final_Full_Length_English_No_Slides_Clean_No_Titles_1080p_(1)_hls",
+    "ts": "2026-06-26T18:02:58",
+    "courseId": "69999fdfe8021e540b7ad59b",
+    "language": "et",
+    "s3_master_key": "courses/69999fdfe8021e540b7ad59b/et/CPT10_-_Next_Steps_Final_Full_Length_English_No_Slides_Clean_No_Titles_1080p_(1)/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\ar\\DFS3W1S1-A - Introduction to Spiritual Gifts_ Arabic .mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_ar_DFS3W1S1-A_-_Introduction_to_Spiritual_Gifts_Arabic_hls",
+    "ts": "2026-06-26T18:09:23",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "ar",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/ar/DFS3W1S1-A_-_Introduction_to_Spiritual_Gifts_Arabic/master.m3u8",
+    "transcribed": false
+  },
+  "C:\\Users\\BLUEH\\Downloads\\CPI - Auto Upload\\6996bc94e8021e540b7ad21b\\ar\\DFS3W1S1-B - Introduction to Spiritual Gifts_ Arabic -014.mp4": {
+    "output": "C:\\Users\\BLUEH\\Documents\\Enlight---Video-Processing\\hls_outputs\\6996bc94e8021e540b7ad21b_ar_DFS3W1S1-B_-_Introduction_to_Spiritual_Gifts_Arabic_-014_hls",
+    "ts": "2026-06-26T18:16:25",
+    "courseId": "6996bc94e8021e540b7ad21b",
+    "language": "ar",
+    "s3_master_key": "courses/6996bc94e8021e540b7ad21b/ar/DFS3W1S1-B_-_Introduction_to_Spiritual_Gifts_Arabic_-014/master.m3u8",
+    "transcribed": false
   }
 }
