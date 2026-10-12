@@ -1,6 +1,6 @@
 import os
 import pytest
-from bulk_rename import compute_new_name
+from bulk_rename import compute_new_name, plan_renames
 
 
 def test_prefix_and_suffix_before_extension():
@@ -31,3 +31,38 @@ def test_dotfile_ext_is_empty():
 
 def test_empty_affixes_identity():
     assert compute_new_name("video.mp4", "", "") == "video.mp4"
+
+
+def _status_for(plan, old):
+    return next(e["status"] for e in plan if e["old"] == old)
+
+
+def test_plan_skips_subdirectories(tmp_path):
+    (tmp_path / "a.mp4").write_text("x")
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "sub" / "nested.mp4").write_text("x")
+    plan = plan_renames(str(tmp_path), "p_", "")
+    olds = {e["old"] for e in plan}
+    assert olds == {"a.mp4"}  # subdir and its contents excluded
+
+
+def test_plan_marks_unchanged_for_empty_affixes(tmp_path):
+    (tmp_path / "a.mp4").write_text("x")
+    plan = plan_renames(str(tmp_path), "", "")
+    assert _status_for(plan, "a.mp4") == "unchanged"
+
+
+def test_plan_normal_rename(tmp_path):
+    (tmp_path / "a.mp4").write_text("x")
+    plan = plan_renames(str(tmp_path), "p_", "_s")
+    entry = plan[0]
+    assert entry["old"] == "a.mp4"
+    assert entry["new"] == "p_a_s.mp4"
+    assert entry["status"] == "rename"
+
+
+def test_plan_collision_when_target_exists(tmp_path):
+    (tmp_path / "a.mp4").write_text("x")
+    (tmp_path / "p_a.mp4").write_text("y")  # target already present
+    plan = plan_renames(str(tmp_path), "p_", "")
+    assert _status_for(plan, "a.mp4") == "collision"
