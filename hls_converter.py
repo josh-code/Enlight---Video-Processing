@@ -33,6 +33,7 @@ except ImportError:
 
 # Pure helpers (no optional deps) for the Auto / Folder structure builder.
 from folder_builder import ensure_folder_structure
+from bulk_rename import plan_renames, apply_renames
 from course_ids import COURSE_IDS
 
 S3_CONFIG_FILE = "s3_config.json"
@@ -732,6 +733,11 @@ class RetroHlsApp:
         self._auto_thread = None
         self.AUTO_QUALITIES = ["1080p", "720p", "480p"]
 
+        # Bulk rename (prefix/suffix) — transient, not persisted
+        self.bulk_folder = ""
+        self.bulk_prefix = tk.StringVar(value="")
+        self.bulk_suffix = tk.StringVar(value="")
+
         # Supported languages from server (display name in UI, code in logic)
         self._supported_languages, self._default_language_code = fetch_supported_languages()
         self._code_to_name = {x["code"]: x["name"] for x in self._supported_languages}
@@ -999,6 +1005,10 @@ class RetroHlsApp:
         self.notebook.add(auto_tab, text="Auto / Folder")
         self._build_auto_tab(auto_tab)
 
+        bulk_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        self.notebook.add(bulk_tab, text="Bulk Rename")
+        self._build_bulk_rename_tab(bulk_tab)
+
         tk.Label(queue_tab, text="RENDER QUEUE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
         list_frame = tk.Frame(queue_tab, bg=RETRO_PANEL)
         list_frame.pack(fill="both", expand=True, padx=10, pady=(0, 6))
@@ -1120,6 +1130,84 @@ class RetroHlsApp:
 
     def _set_auto_counts(self, processed: int, failed: int, passes: int):
         self.root.after(0, lambda: self.auto_counts_label.config(text=f"Encoded: {processed} | Failed: {failed} | Passes: {passes}"))
+
+    def _build_bulk_rename_tab(self, parent):
+        tk.Label(parent, text="BULK RENAME", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_TITLE).pack(anchor="w", padx=10, pady=(10, 2))
+        tk.Label(parent, text="Add a prefix and/or suffix to ALL top-level files in a folder. Suffix goes before the extension.", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=420, justify="left").pack(anchor="w", padx=10)
+
+        row = tk.Frame(parent, bg=RETRO_PANEL); row.pack(fill="x", padx=10, pady=6)
+        tk.Button(row, text="Choose Folder", command=self.on_bulk_choose_folder, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_FG).pack(side="left")
+        self.bulk_folder_label = tk.Label(row, text=self.bulk_folder or "(none)", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=360, justify="left")
+        self.bulk_folder_label.pack(side="left", padx=8)
+
+        prow = tk.Frame(parent, bg=RETRO_PANEL); prow.pack(fill="x", padx=10, pady=2)
+        tk.Label(prow, text="Prefix:", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left")
+        tk.Entry(prow, textvariable=self.bulk_prefix, width=18, bg=RETRO_BG, fg=RETRO_FG, insertbackground=RETRO_FG, font=FONT_SMALL).pack(side="left", padx=6)
+        tk.Label(prow, text="Suffix:", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_SMALL).pack(side="left", padx=(12, 0))
+        tk.Entry(prow, textvariable=self.bulk_suffix, width=18, bg=RETRO_BG, fg=RETRO_FG, insertbackground=RETRO_FG, font=FONT_SMALL).pack(side="left", padx=6)
+
+        self.bulk_count_label = tk.Label(parent, text="Files in folder: 0", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.bulk_count_label.pack(anchor="w", padx=10, pady=(4, 2))
+
+        brow = tk.Frame(parent, bg=RETRO_PANEL); brow.pack(fill="x", padx=10, pady=6)
+        tk.Button(brow, text="RENAME FILES", command=self.on_bulk_rename, font=FONT_MAIN, bg=RETRO_BG, fg=RETRO_FG).pack(side="left")
+
+        tk.Label(parent, text="Example: video.mp4 + prefix 'intro_' + suffix '_en' -> intro_video_en.mp4", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=420, justify="left").pack(anchor="w", padx=10, pady=(6, 2))
+
+    def _refresh_bulk_count(self):
+        n = 0
+        if self.bulk_folder and os.path.isdir(self.bulk_folder):
+            n = sum(1 for e in os.scandir(self.bulk_folder) if e.is_file())
+        self.bulk_count_label.config(text=f"Files in folder: {n}")
+
+    def on_bulk_choose_folder(self):
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is in progress.")
+            return
+        folder = filedialog.askdirectory(title="Select folder to rename files in", initialdir=self.bulk_folder or os.getcwd())
+        if folder:
+            self.bulk_folder = folder
+            self.bulk_folder_label.config(text=folder)
+            self._refresh_bulk_count()
+
+    def on_bulk_rename(self):
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is in progress.")
+            return
+        if not self.bulk_folder or not os.path.isdir(self.bulk_folder):
+            messagebox.showwarning("No folder", "Choose a valid folder first.")
+            return
+        prefix = self.bulk_prefix.get()
+        suffix = self.bulk_suffix.get()
+        if not prefix and not suffix:
+            messagebox.showwarning("Nothing to do", "Enter a prefix and/or a suffix.")
+            return
+        plan = plan_renames(self.bulk_folder, prefix, suffix)
+        to_rename = [e for e in plan if e["status"] == "rename"]
+        skipped = [e for e in plan if e["status"] != "rename"]
+        if not to_rename:
+            messagebox.showinfo("Bulk Rename", "No files to rename (all unchanged or in collision).")
+            return
+        if not messagebox.askyesno(
+            "Confirm Bulk Rename",
+            f"Rename {len(to_rename)} file(s) in:\n{self.bulk_folder}\n\n"
+            f"{len(skipped)} file(s) will be skipped (no change or name collision).\n\nProceed?",
+        ):
+            return
+        result = apply_renames(self.bulk_folder, plan)
+        self._log(
+            f"[BULK] {self.bulk_folder}: {len(result['renamed'])} renamed, "
+            f"{len(result['skipped'])} skipped, {len(result['errors'])} error(s)."
+        )
+        for old, msg in result["errors"]:
+            self._log(f"[BULK] ERROR renaming {old}: {msg}", is_error=True)
+        self._refresh_bulk_count()
+        messagebox.showinfo(
+            "Bulk Rename",
+            f"Renamed: {len(result['renamed'])}\n"
+            f"Skipped: {len(result['skipped'])}\n"
+            f"Errors: {len(result['errors'])}",
+        )
 
     def on_auto_start(self):
         if self.is_running or self.auto_is_running:
