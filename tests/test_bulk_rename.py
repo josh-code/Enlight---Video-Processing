@@ -1,6 +1,6 @@
 import os
 import pytest
-from bulk_rename import compute_new_name, plan_renames
+from bulk_rename import compute_new_name, plan_renames, apply_renames
 
 
 def test_prefix_and_suffix_before_extension():
@@ -66,3 +66,41 @@ def test_plan_collision_when_target_exists(tmp_path):
     (tmp_path / "p_a.mp4").write_text("y")  # target already present
     plan = plan_renames(str(tmp_path), "p_", "")
     assert _status_for(plan, "a.mp4") == "collision"
+
+
+def test_apply_renames_basic(tmp_path):
+    (tmp_path / "a.mp4").write_text("data")
+    plan = plan_renames(str(tmp_path), "p_", "")
+    result = apply_renames(str(tmp_path), plan)
+    assert ("a.mp4", "p_a.mp4") in result["renamed"]
+    assert (tmp_path / "p_a.mp4").read_text() == "data"
+    assert not (tmp_path / "a.mp4").exists()
+
+
+def test_apply_skips_collision_and_unchanged(tmp_path):
+    (tmp_path / "a.mp4").write_text("x")
+    (tmp_path / "p_a.mp4").write_text("y")  # collision target
+    (tmp_path / "b.mp4").write_text("z")
+    plan = plan_renames(str(tmp_path), "p_", "")
+    result = apply_renames(str(tmp_path), plan)
+    skipped_olds = {old for old, _ in result["skipped"]}
+    assert "a.mp4" in skipped_olds           # collision skipped
+    assert (tmp_path / "p_a.mp4").read_text() == "y"  # not overwritten
+    assert ("b.mp4", "p_b.mp4") in result["renamed"]
+
+
+def test_apply_two_phase_swap(tmp_path):
+    # Simulate a shift where a planned target equals another planned source.
+    # Build the plan manually to force the swap scenario A->B, B->C etc.
+    (tmp_path / "1.txt").write_text("one")
+    (tmp_path / "2.txt").write_text("two")
+    plan = [
+        {"old": "1.txt", "new": "2.txt", "status": "rename", "reason": ""},
+        {"old": "2.txt", "new": "3.txt", "status": "rename", "reason": ""},
+    ]
+    result = apply_renames(str(tmp_path), plan)
+    assert (tmp_path / "2.txt").read_text() == "one"
+    assert (tmp_path / "3.txt").read_text() == "two"
+    assert not (tmp_path / "1.txt").exists()
+    assert len(result["renamed"]) == 2
+    assert result["errors"] == []
