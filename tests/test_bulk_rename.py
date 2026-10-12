@@ -85,7 +85,8 @@ def test_apply_skips_collision_and_unchanged(tmp_path):
     result = apply_renames(str(tmp_path), plan)
     skipped_olds = {old for old, _ in result["skipped"]}
     assert "a.mp4" in skipped_olds           # collision skipped
-    assert (tmp_path / "p_a.mp4").read_text() == "y"  # not overwritten
+    assert ("p_a.mp4", "p_p_a.mp4") in result["renamed"]  # collision target itself can be renamed
+    assert (tmp_path / "p_p_a.mp4").read_text() == "y"  # content preserved in its new location
     assert ("b.mp4", "p_b.mp4") in result["renamed"]
 
 

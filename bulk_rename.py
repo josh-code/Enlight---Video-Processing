@@ -48,20 +48,10 @@ def apply_renames(folder: str, plan: List[Dict]) -> Dict:
     skipped: List[tuple] = []
     errors: List[tuple] = []
 
-    # Build set of collision targets to avoid renaming files involved in collisions.
-    collision_targets = set()
-    for entry in plan:
-        if entry["status"] == "collision":
-            collision_targets.add(entry["new"])
-
     to_do = []
     for entry in plan:
         if entry["status"] == "rename":
-            if entry["old"] in collision_targets:
-                # Don't rename files that are targets of collision attempts.
-                skipped.append((entry["old"], "collision target"))
-            else:
-                to_do.append((entry["old"], entry["new"]))
+            to_do.append((entry["old"], entry["new"]))
         else:
             skipped.append((entry["old"], entry["status"] + (f": {entry['reason']}" if entry["reason"] else "")))
 
