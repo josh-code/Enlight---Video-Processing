@@ -55,22 +55,28 @@ def apply_renames(folder: str, plan: List[Dict]) -> Dict:
         else:
             skipped.append((entry["old"], entry["status"] + (f": {entry['reason']}" if entry["reason"] else "")))
 
-    # Phase 1: move every source to a unique temp name.
+    # Phase 1: move every source to a unique temp name that is free on disk.
     temps = []  # (temp_name, final_name, old_name)
     for i, (old, new) in enumerate(to_do):
         temp = f".__bulk_tmp_{i}__{new}"
+        while os.path.exists(os.path.join(folder, temp)):
+            temp = "_" + temp
         try:
             os.rename(os.path.join(folder, old), os.path.join(folder, temp))
             temps.append((temp, new, old))
         except OSError as e:
             errors.append((old, str(e)))
 
-    # Phase 2: move each temp to its final name.
+    # Phase 2: move each temp to its final name; roll back to old on failure.
     for temp, new, old in temps:
         try:
             os.rename(os.path.join(folder, temp), os.path.join(folder, new))
             renamed.append((old, new))
         except OSError as e:
+            try:
+                os.rename(os.path.join(folder, temp), os.path.join(folder, old))
+            except OSError:
+                pass
             errors.append((old, str(e)))
 
     return {"renamed": renamed, "skipped": skipped, "errors": errors}

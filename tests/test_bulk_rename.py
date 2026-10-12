@@ -105,3 +105,25 @@ def test_apply_two_phase_swap(tmp_path):
     assert not (tmp_path / "1.txt").exists()
     assert len(result["renamed"]) == 2
     assert result["errors"] == []
+
+
+def test_apply_phase2_failure_rolls_back(tmp_path, monkeypatch):
+    (tmp_path / "a.mp4").write_text("data")
+    plan = plan_renames(str(tmp_path), "p_", "")  # a.mp4 -> p_a.mp4
+    import bulk_rename as br
+    real_rename = os.rename
+
+    def flaky_rename(src, dst):
+        # Fail only on the Phase-2 move to the final target name.
+        if os.path.basename(dst) == "p_a.mp4":
+            raise OSError("simulated phase-2 failure")
+        return real_rename(src, dst)
+
+    monkeypatch.setattr(br.os, "rename", flaky_rename)
+    result = br.apply_renames(str(tmp_path), plan)
+    # File restored to original name, not orphaned under a temp name.
+    assert (tmp_path / "a.mp4").read_text() == "data"
+    assert [old for old, _ in result["errors"]] == ["a.mp4"]
+    assert result["renamed"] == []
+    leftovers = [n for n in os.listdir(str(tmp_path)) if n.startswith((".__bulk_tmp_", "_.__bulk_tmp_"))]
+    assert leftovers == []
