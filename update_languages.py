@@ -39,6 +39,30 @@ def load_existing():
     return data
 
 
+def merge_languages(existing_languages, backend_langs):
+    """Merge backend languages into existing toggles.
+
+    Preserve every existing value and code; add backend codes not yet present
+    as False. Returns (merged, added) where added lists the newly added codes.
+    """
+    merged = dict(existing_languages)
+    added = []
+    for l in backend_langs:
+        code = l["code"]
+        if code not in merged:
+            merged[code] = False
+            added.append(code)
+    return merged, added
+
+
+def save_config(default, languages, path=CONFIG_FILE):
+    """Write {"default": bool, "languages": {...}} as UTF-8 JSON + trailing newline."""
+    out = {"default": bool(default), "languages": languages}
+    with io.open(path, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
@@ -46,20 +70,8 @@ def main():
     langs, _default_code = fetch_supported_languages()
     existing = load_existing()
 
-    # Preserve every existing setting (value AND any extra codes), then add
-    # backend languages that aren't present yet as false.
-    merged = dict(existing["languages"])
-    added = []
-    for l in langs:
-        code = l["code"]
-        if code not in merged:
-            merged[code] = False
-            added.append(code)
-
-    out = {"default": existing.get("default", False), "languages": merged}
-    with io.open(CONFIG_FILE, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    merged, added = merge_languages(existing["languages"], langs)
+    save_config(existing.get("default", False), merged)
 
     on = [c for c, v in merged.items() if v]
     print(f"Backend languages: {len(langs)} | total in config: {len(merged)}")
