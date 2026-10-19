@@ -34,6 +34,7 @@ except ImportError:
 # Pure helpers (no optional deps) for the Auto / Folder structure builder.
 from folder_builder import ensure_folder_structure
 from bulk_rename import plan_renames, apply_renames
+from update_languages import load_existing, merge_languages, save_config
 from course_ids import COURSE_IDS
 
 S3_CONFIG_FILE = "s3_config.json"
@@ -738,6 +739,12 @@ class RetroHlsApp:
         self.bulk_prefix = tk.StringVar(value="")
         self.bulk_suffix = tk.StringVar(value="")
 
+        # Languages tab (edit transcription_config.json)
+        self.lang_default_var = tk.BooleanVar(value=False)
+        self.lang_vars = {}       # code -> tk.BooleanVar
+        self.lang_order = []      # display order of codes
+        self.lang_fetching = False
+
         # Supported languages from server (display name in UI, code in logic)
         self._supported_languages, self._default_language_code = fetch_supported_languages()
         self._code_to_name = {x["code"]: x["name"] for x in self._supported_languages}
@@ -1009,6 +1016,10 @@ class RetroHlsApp:
         self.notebook.add(bulk_tab, text="Bulk Rename")
         self._build_bulk_rename_tab(bulk_tab)
 
+        lang_tab = tk.Frame(self.notebook, bg=RETRO_PANEL)
+        self.notebook.add(lang_tab, text="Languages")
+        self._build_languages_tab(lang_tab)
+
         tk.Label(queue_tab, text="RENDER QUEUE", fg=RETRO_FG, bg=RETRO_PANEL, font=FONT_MAIN).pack(anchor="w", padx=10, pady=(8, 2))
         list_frame = tk.Frame(queue_tab, bg=RETRO_PANEL)
         list_frame.pack(fill="both", expand=True, padx=10, pady=(0, 6))
@@ -1208,6 +1219,129 @@ class RetroHlsApp:
             f"Skipped: {len(result['skipped'])}\n"
             f"Errors: {len(result['errors'])}",
         )
+
+    def _build_languages_tab(self, parent):
+        tk.Label(parent, text="LANGUAGES", fg=RETRO_ACCENT, bg=RETRO_PANEL, font=FONT_TITLE).pack(anchor="w", padx=10, pady=(10, 2))
+        tk.Label(parent, text="Toggle which languages get transcribed, then Save. Fetch pulls the backend list (new ones added OFF).", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL, wraplength=420, justify="left").pack(anchor="w", padx=10)
+
+        drow = tk.Frame(parent, bg=RETRO_PANEL); drow.pack(fill="x", padx=10, pady=(6, 2))
+        tk.Checkbutton(
+            drow, text="default (transcribe languages not listed)", variable=self.lang_default_var,
+            fg=RETRO_FG, bg=RETRO_PANEL, selectcolor=RETRO_BG, activebackground=RETRO_PANEL,
+            activeforeground=RETRO_ACCENT, font=FONT_SMALL,
+        ).pack(side="left")
+
+        # Scrollable list of per-language checkboxes.
+        list_wrap = tk.Frame(parent, bg=RETRO_PANEL); list_wrap.pack(fill="both", expand=True, padx=10, pady=4)
+        lang_scrollbar = ttk.Scrollbar(list_wrap)
+        lang_canvas = tk.Canvas(list_wrap, bg=RETRO_PANEL, highlightthickness=0, yscrollcommand=lang_scrollbar.set)
+        lang_scrollbar.config(command=lang_canvas.yview)
+        inner = tk.Frame(lang_canvas, bg=RETRO_PANEL)
+        inner_window = lang_canvas.create_window((0, 0), window=inner, anchor="nw")
+
+        def _on_frame_configure(event):
+            lang_canvas.configure(scrollregion=lang_canvas.bbox("all"))
+
+        def _on_canvas_configure(event):
+            lang_canvas.itemconfig(inner_window, width=event.width)
+
+        def _on_wheel(event):
+            lang_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        inner.bind("<Configure>", _on_frame_configure)
+        lang_canvas.bind("<Configure>", _on_canvas_configure)
+        for w in (lang_canvas, inner):
+            w.bind("<MouseWheel>", _on_wheel)
+            w.bind("<Button-4>", lambda e: lang_canvas.yview_scroll(-1, "units"))
+            w.bind("<Button-5>", lambda e: lang_canvas.yview_scroll(1, "units"))
+        lang_scrollbar.pack(side="right", fill="y")
+        lang_canvas.pack(side="left", fill="both", expand=True)
+        self._lang_list_inner = inner
+
+        brow = tk.Frame(parent, bg=RETRO_PANEL); brow.pack(fill="x", padx=10, pady=6)
+        self.lang_fetch_btn = tk.Button(brow, text="Fetch from Backend", command=self.on_lang_fetch, font=FONT_SMALL, bg=RETRO_BG, fg=RETRO_FG)
+        self.lang_fetch_btn.pack(side="left")
+        tk.Button(brow, text="Save", command=self.on_lang_save, font=FONT_MAIN, bg=RETRO_BG, fg=RETRO_FG).pack(side="left", padx=8)
+        self.lang_status_label = tk.Label(parent, text="", fg=RETRO_MUTED, bg=RETRO_PANEL, font=FONT_SMALL)
+        self.lang_status_label.pack(anchor="w", padx=10, pady=(2, 8))
+
+        self._lang_load_from_disk()
+        self._lang_rebuild_list()
+
+    def _lang_load_from_disk(self):
+        data = load_existing()
+        self.lang_default_var.set(bool(data.get("default", False)))
+        self.lang_vars = {}
+        self.lang_order = []
+        for code, val in (data.get("languages") or {}).items():
+            self.lang_vars[code] = tk.BooleanVar(value=bool(val))
+            self.lang_order.append(code)
+
+    def _lang_rebuild_list(self):
+        for child in list(self._lang_list_inner.children.values()):
+            child.destroy()
+        for code in self.lang_order:
+            name = self._code_to_name.get(code)
+            label = f"{code} — {name}" if name else code
+            tk.Checkbutton(
+                self._lang_list_inner, text=label, variable=self.lang_vars[code],
+                fg=RETRO_FG, bg=RETRO_PANEL, selectcolor=RETRO_BG, activebackground=RETRO_PANEL,
+                activeforeground=RETRO_ACCENT, font=FONT_SMALL, anchor="w",
+            ).pack(fill="x", anchor="w")
+
+    def _set_lang_status(self, text):
+        self.root.after(0, lambda: self.lang_status_label.config(text=text))
+
+    def on_lang_fetch(self):
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is in progress.")
+            return
+        if self.lang_fetching:
+            return
+        self.lang_fetching = True
+        self.lang_fetch_btn.config(state="disabled")
+        self._set_lang_status("Fetching from backend...")
+
+        def worker():
+            try:
+                langs, _default = fetch_supported_languages()
+            except Exception as e:
+                self.root.after(0, lambda: self._lang_fetch_failed(str(e)))
+                return
+            self.root.after(0, lambda: self._lang_apply_fetch(langs))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _lang_fetch_failed(self, msg):
+        self.lang_fetching = False
+        self.lang_fetch_btn.config(state="normal")
+        self._set_lang_status(f"Fetch failed: {msg}")
+
+    def _lang_apply_fetch(self, langs):
+        current = {code: var.get() for code, var in self.lang_vars.items()}
+        merged, added = merge_languages(current, langs)
+        for code in added:
+            self.lang_vars[code] = tk.BooleanVar(value=False)
+            self.lang_order.append(code)
+        self._lang_rebuild_list()
+        self.lang_fetching = False
+        self.lang_fetch_btn.config(state="normal")
+        self._set_lang_status(f"Backend: {len(langs)} | newly added (off): {len(added)}")
+
+    def on_lang_save(self):
+        if self.is_running or self.auto_is_running:
+            messagebox.showinfo("Busy", "A render or auto run is in progress.")
+            return
+        languages = {code: self.lang_vars[code].get() for code in self.lang_order}
+        try:
+            save_config(self.lang_default_var.get(), languages)
+        except OSError as e:
+            messagebox.showerror("Languages", f"Could not save: {e}")
+            return
+        on_count = sum(1 for v in languages.values() if v)
+        self._log(f"[LANG] Saved {len(languages)} languages ({on_count} on), default={self.lang_default_var.get()}.")
+        self._set_lang_status(f"Saved {len(languages)} languages ({on_count} on).")
+        messagebox.showinfo("Languages", f"Saved {len(languages)} languages.\n{on_count} on, default={self.lang_default_var.get()}.")
 
     def on_auto_start(self):
         if self.is_running or self.auto_is_running:
