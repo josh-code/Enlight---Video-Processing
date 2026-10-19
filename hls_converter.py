@@ -1318,6 +1318,13 @@ class RetroHlsApp:
         self._set_lang_status(f"Fetch failed: {msg}")
 
     def _lang_apply_fetch(self, langs):
+        # Refresh friendly names from the fetched list so newly added codes
+        # render as "code — name" (self._code_to_name is built once at startup).
+        for l in langs:
+            code = l.get("code")
+            name = l.get("name")
+            if code and name:
+                self._code_to_name[code] = name
         current = {code: var.get() for code, var in self.lang_vars.items()}
         merged, added = merge_languages(current, langs)
         for code in added:
