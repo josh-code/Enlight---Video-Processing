@@ -35,6 +35,8 @@ except ImportError:
 from folder_builder import ensure_folder_structure
 from bulk_rename import plan_renames, apply_renames
 from update_languages import load_existing, merge_languages, save_config
+from failed_retry import find_failed_videos, restore_failed_video
+from hls_output import has_required_qualities
 from course_ids import COURSE_IDS
 
 S3_CONFIG_FILE = "s3_config.json"
@@ -1425,7 +1427,33 @@ class RetroHlsApp:
         def _seen_key(path):
             return os.path.normcase(os.path.abspath(path))
 
+        # Snapshot _failed videos at run start; restore each at most once this run
+        # (attempted on the first scan and each later pass). A video that fails
+        # again lands back in _failed under a new name, is not in the snapshot,
+        # and waits for the next run -> the scan loop still terminates.
+        failed_snapshot = find_failed_videos(self.auto_root)
+        retried = set()
+        if failed_snapshot:
+            self._log(f"[AUTO] Found {len(failed_snapshot)} failed video(s) to retry this run.")
+
+        def _restore_pending():
+            for fv in failed_snapshot:
+                key = os.path.normcase(os.path.abspath(fv.failed_path))
+                if key in retried:
+                    continue
+                retried.add(key)  # attempt once regardless of outcome
+                try:
+                    dest = restore_failed_video(fv.failed_path)
+                except Exception as e:
+                    self._log(f"[AUTO] Could not restore {os.path.basename(fv.failed_path)}: {e}", is_error=True)
+                    continue
+                if dest:
+                    self._log(f"[AUTO] Restored failed video for retry: {dest}")
+                else:
+                    self._log(f"[AUTO] Skipped restoring {os.path.basename(fv.failed_path)} (missing or name already present).")
+
         def scan_fn():
+            _restore_pending()
             cands = scan_root(self.auto_root, self._supported_codes, time.time())
             return [c for c in cands if _seen_key(c.source_path) not in seen]
 
@@ -1491,6 +1519,36 @@ class RetroHlsApp:
         # Include course+language so videos that share a filename across different
         # course/lang folders don't collide on the same local output dir.
         self.output_dir = os.path.join(self.output_base_dir, f"{c.course_id}_{c.language}_{base_name}_hls")
+
+        # Reuse a complete existing encode -> upload only (cheap retry after an
+        # upload failure, where the local output survives but the source failed).
+        if has_required_qualities(self.output_dir, self.AUTO_QUALITIES):
+            selected = self.AUTO_QUALITIES
+            self.current_selected = selected
+            info = get_video_info(fp)
+            self.duration_s = float(info.get("duration_s", 0.0) or 0.0)
+            transcribed = self._auto_output_has_transcript(self.output_dir)
+            self._set_auto_status(f"reusing encode: {base_name} ({c.course_id}/{c.language})")
+            self._log(f"[AUTO] Reusing existing encoded output for {base_name} — upload only.")
+            s3_prefix = f"courses/{c.course_id}/{c.language}/{base_name}"
+            self.upload_queue.put({
+                "output_dir": self.output_dir,
+                "s3_prefix": s3_prefix,
+                "base_name": base_name,
+                "course_id": c.course_id,
+                "language": c.language,
+                "duration_s": self.duration_s,
+                "qualities": selected,
+                "delete_local": True,
+                "auto_mode": True,
+                "source_path": fp,
+                "tracking_csv": self.auto_tracking_csv,
+                "transcribed": transcribed,
+            })
+            self._set_auto_status(f"queued upload: {base_name}")
+            self._log(f"[AUTO] Queued upload for {base_name}.")
+            return True
+
         if os.path.isdir(self.output_dir):
             try:
                 shutil.rmtree(self.output_dir)
@@ -1548,6 +1606,19 @@ class RetroHlsApp:
         self._set_auto_status(f"queued upload: {base_name}")
         self._log(f"[AUTO] Queued upload for {base_name}.")
         return True
+
+    def _auto_output_has_transcript(self, output_dir: str) -> bool:
+        """True if a transcript/subtitle artifact is present in an existing output dir."""
+        try:
+            for entry in os.scandir(output_dir):
+                n = entry.name.lower()
+                if n.startswith("subtitles") and n.endswith(".m3u8"):
+                    return True
+                if "_transcript." in n:
+                    return True
+        except OSError:
+            return False
+        return False
 
     def _auto_transcribe(self, fp, base_name, selected, lang_code):
         try:
