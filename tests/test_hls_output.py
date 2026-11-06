@@ -1,8 +1,33 @@
 import os
 
-from hls_output import has_required_qualities
+from hls_output import has_required_qualities, auto_output_dirname
 
 REQUIRED = ["1080p", "720p", "480p"]
+
+
+def test_auto_output_dirname_deterministic():
+    name = "a really long video filename " * 10
+    assert auto_output_dirname("cid", "da", name) == auto_output_dirname("cid", "da", name)
+
+
+def test_auto_output_dirname_bounded_length():
+    # A 300-char source name must not produce a path component near MAX_PATH.
+    name = auto_output_dirname("6" * 24, "da", "x" * 300)
+    assert len(name) <= 80
+
+
+def test_auto_output_dirname_distinct_for_distinct_base_same_prefix():
+    # Two names sharing the first 30 chars must still map to different dirs
+    # (the hash of the full name disambiguates them).
+    long1 = "Z" * 40 + "_one"
+    long2 = "Z" * 40 + "_two"
+    assert auto_output_dirname("cid", "en", long1) != auto_output_dirname("cid", "en", long2)
+
+
+def test_auto_output_dirname_shape():
+    name = auto_output_dirname("CID123", "fr", "video")
+    assert name.startswith("CID123_fr_")
+    assert name.endswith("_hls")
 
 
 def _make_output(tmp_path, qualities, with_master=True):

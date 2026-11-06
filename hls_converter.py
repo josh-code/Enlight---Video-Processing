@@ -50,7 +50,7 @@ from folder_builder import ensure_folder_structure
 from bulk_rename import plan_renames, apply_renames
 from update_languages import load_existing, merge_languages, save_config
 from failed_retry import find_failed_videos, restore_failed_video
-from hls_output import has_required_qualities
+from hls_output import has_required_qualities, auto_output_dirname
 from course_ids import COURSE_IDS
 
 S3_CONFIG_FILE = "s3_config.json"
@@ -1489,14 +1489,71 @@ class RetroHlsApp:
                 else:
                     self._log(f"[AUTO] Skipped restoring {os.path.basename(fv.failed_path)} (missing or name already present).")
 
+        self._log(
+            f"[AUTO] Scan config: root={self.auto_root!r} | supported language codes={len(self._supported_codes)} "
+            f"| backend reachable at startup={self._backend_langs_ok}"
+        )
+
         def scan_fn():
             _restore_pending()
             cands = scan_root(self.auto_root, self._supported_codes, time.time())
-            return [c for c in cands if _seen_key(c.source_path) not in seen]
+            fresh = [c for c in cands if _seen_key(c.source_path) not in seen]
+            valid = [c for c in fresh if getattr(c, "valid", False)]
+            if not valid:
+                # Nothing actionable found — report WHY so a misconfigured root,
+                # language set, _failed-skip, or stability wait is visible instead
+                # of a silent "all done".
+                if cands:
+                    reasons = {}
+                    for c in cands:
+                        if getattr(c, "valid", False):
+                            continue
+                        r = (c.reason or "unknown").split(":")[0].strip()
+                        reasons[r] = reasons.get(r, 0) + 1
+                    already = len(cands) - len(fresh)
+                    detail = ", ".join(f"{k} x{v}" for k, v in reasons.items()) or "none"
+                    self._log(
+                        f"[AUTO] Scan found {len(cands)} video(s) but 0 to process "
+                        f"(already handled this run: {already}; invalid: {detail}).",
+                        is_error=True,
+                    )
+                else:
+                    # scan_root returned nothing: files are either absent, inside
+                    # _failed/, or held back by the stability wait. Count on disk.
+                    from auto_scanner import VIDEO_EXTENSIONS, FAILED_DIR_NAME, is_stable
+                    now = time.time()
+                    on_disk = unstable = in_failed = 0
+                    for p in Path(self.auto_root).rglob("*"):
+                        if not p.is_file() or p.suffix.lower() not in VIDEO_EXTENSIONS:
+                            continue
+                        rel = p.relative_to(Path(self.auto_root))
+                        if any(part == FAILED_DIR_NAME for part in rel.parts):
+                            in_failed += 1
+                            continue
+                        on_disk += 1
+                        if not is_stable(str(p), now):
+                            unstable += 1
+                    self._log(
+                        f"[AUTO] Scan found 0 candidates. Video files on disk (outside _failed): "
+                        f"{on_disk} (of which still-writing/too-new: {unstable}); inside _failed: {in_failed}.",
+                        is_error=True,
+                    )
+            return fresh
 
         def process_fn(c):
             seen.add(_seen_key(c.source_path))
-            ok = self._auto_process_video(c)
+            # Isolate per-video failures: an unexpected exception (e.g. a path
+            # issue) must fail ONLY this video and move it to _failed, not abort
+            # the whole batch via the orchestrator-level handler.
+            try:
+                ok = self._auto_process_video(c)
+            except Exception as e:
+                self._log(
+                    f"[AUTO] Unexpected error processing {os.path.basename(c.source_path)}: {e}",
+                    is_error=True,
+                )
+                self._auto_move_source_to_failed(c.source_path, f"Unexpected error: {e}")
+                ok = False
             if ok:
                 counts["processed"] += 1
             else:
@@ -1554,8 +1611,14 @@ class RetroHlsApp:
         self.file_path = fp
         safe_mkdir(self.output_base_dir)
         # Include course+language so videos that share a filename across different
-        # course/lang folders don't collide on the same local output dir.
-        self.output_dir = os.path.join(self.output_base_dir, f"{c.course_id}_{c.language}_{base_name}_hls")
+        # course/lang folders don't collide on the same local output dir. The dir
+        # NAME is kept short + hashed (auto_output_dirname) because the full source
+        # filename can push the output path past Windows MAX_PATH (260) and break
+        # encoding with WinError 206. The full base_name is still used for the S3
+        # key and file record below.
+        self.output_dir = os.path.join(
+            self.output_base_dir, auto_output_dirname(c.course_id, c.language, base_name)
+        )
 
         # Reuse a complete existing encode -> upload only (cheap retry after an
         # upload failure, where the local output survives but the source failed).
