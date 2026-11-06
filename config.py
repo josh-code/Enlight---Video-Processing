@@ -30,29 +30,34 @@ DEFAULT_SUPPORTED_LANGUAGES: List[dict] = [
 ]
 
 
-def fetch_supported_languages() -> Tuple[List[dict], str]:
+def fetch_supported_languages_status() -> Tuple[List[dict], str, bool]:
     """
     Fetch supported languages from backend SUPPORTED_LANGUAGES_ENDPOINT.
-    Returns (languages, default_language_code) where languages is [{"code": "en", "name": "English (English)"}, ...].
-    Falls back to DEFAULT_SUPPORTED_LANGUAGES and "en" if request fails or BACKEND_URL is empty.
+    Returns (languages, default_language_code, ok) where ok is True only when the
+    list came from the backend, and False when it fell back to
+    DEFAULT_SUPPORTED_LANGUAGES (no requests, empty BACKEND_URL, network error,
+    or bad/empty payload). Callers that need to know whether the backend was
+    reachable — e.g. to warn the user — use this; most callers use the
+    two-tuple fetch_supported_languages() wrapper below.
     """
+    fallback = (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en", False)
     try:
         import requests
     except ImportError:
-        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        return fallback
     url = Config.get_full_url(Config.SUPPORTED_LANGUAGES_ENDPOINT)
     if not url:
-        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        return fallback
     try:
         r = requests.get(url, timeout=10)
         r.raise_for_status()
         data = r.json()
         if not data.get("success") or "data" not in data:
-            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+            return fallback
         payload = data["data"]
         languages = list(payload.get("languages") or [])
         if not languages:
-            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+            return fallback
         default = (payload.get("defaultLanguage") or "en").lower()
         # Ensure each item has code and name
         out = []
@@ -62,10 +67,20 @@ def fetch_supported_languages() -> Tuple[List[dict], str]:
             if code:
                 out.append({"code": code, "name": name})
         if not out:
-            return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
-        return (out, default if any(x["code"] == default for x in out) else "en")
+            return fallback
+        return (out, default if any(x["code"] == default for x in out) else "en", True)
     except Exception:
-        return (DEFAULT_SUPPORTED_LANGUAGES.copy(), "en")
+        return fallback
+
+
+def fetch_supported_languages() -> Tuple[List[dict], str]:
+    """
+    Fetch supported languages from backend SUPPORTED_LANGUAGES_ENDPOINT.
+    Returns (languages, default_language_code) where languages is [{"code": "en", "name": "English (English)"}, ...].
+    Falls back to DEFAULT_SUPPORTED_LANGUAGES and "en" if request fails or BACKEND_URL is empty.
+    """
+    languages, default, _ok = fetch_supported_languages_status()
+    return (languages, default)
 
 
 class Config:

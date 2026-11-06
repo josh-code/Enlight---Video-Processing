@@ -15,9 +15,9 @@ from typing import Tuple
 
 try:
     from config import Config as S3Config
-    from config import fetch_supported_languages
+    from config import fetch_supported_languages, fetch_supported_languages_status
     from s3_uploader import S3UploadManager
-    from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE
+    from transcription_config import load_transcription_config, TRANSCRIPTION_CONFIG_FILE, union_supported_codes
     from tracking_csv import create_tracking_csv, append_tracking_row, build_tracking_row
     from auto_scanner import scan_root, move_to_failed
     from auto_orchestrator import run_auto_loop
@@ -30,6 +30,20 @@ except ImportError:
     def fetch_supported_languages():
         """Fallback when config is not available."""
         return ([{"code": "en", "name": "English (English)"}], "en")
+
+    def fetch_supported_languages_status():
+        """Fallback when config is not available (ok=False)."""
+        return ([{"code": "en", "name": "English (English)"}], "en", False)
+
+    def union_supported_codes(fetched_codes, config_codes):
+        """Fallback union when transcription_config is not importable."""
+        out, seen = [], set()
+        for c in list(fetched_codes or []) + list(config_codes or []):
+            k = str(c).strip().lower()
+            if k and k not in seen:
+                seen.add(k)
+                out.append(k)
+        return out
 
 # Pure helpers (no optional deps) for the Auto / Folder structure builder.
 from folder_builder import ensure_folder_structure
@@ -748,10 +762,25 @@ class RetroHlsApp:
         self.lang_fetching = False
 
         # Supported languages from server (display name in UI, code in logic)
-        self._supported_languages, self._default_language_code = fetch_supported_languages()
+        self._supported_languages, self._default_language_code, self._backend_langs_ok = fetch_supported_languages_status()
         self._code_to_name = {x["code"]: x["name"] for x in self._supported_languages}
         self._name_to_code = {x["name"]: x["code"] for x in self._supported_languages}
-        self._supported_codes = [x["code"] for x in self._supported_languages]
+        # Scan validity whitelist = live fetch UNION persisted transcription_config
+        # languages. The backend fetch above silently falls back to ~11 languages
+        # when the server is unreachable at startup; without this union, videos in
+        # any other (configured) language would be mis-scanned and the run would
+        # report "no videos". Unioning with the persisted config can only widen
+        # the set, never shrink it.
+        try:
+            from transcription_config import (
+                load_transcription_config as _ltc,
+                TRANSCRIPTION_CONFIG_FILE as _tcf,
+            )
+            _config_codes = list(_ltc(_tcf).languages.keys())
+        except Exception:
+            _config_codes = []
+        fetched_codes = [x["code"] for x in self._supported_languages]
+        self._supported_codes = union_supported_codes(fetched_codes, _config_codes)
         default_display = self._code_to_name.get(
             self._default_language_code,
             (self._supported_languages[0]["name"] if self._supported_languages else "English (English)"),
@@ -761,6 +790,14 @@ class RetroHlsApp:
         self._load_s3_config()
 
         self._build_ui()
+
+        if not self._backend_langs_ok:
+            self._log(
+                f"[STARTUP] Backend language list unreachable — using persisted "
+                f"transcription_config.json languages ({len(self._supported_codes)} codes). "
+                f"Scanning will still accept all configured languages.",
+                is_error=True,
+            )
 
     def _build_ui(self):
         header = tk.Frame(self.root, bg=RETRO_BG)

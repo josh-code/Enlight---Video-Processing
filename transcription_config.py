@@ -26,6 +26,25 @@ class TranscriptionConfig:
         return "Transcribe: " + ", ".join(parts) + f" (default {default_txt})"
 
 
+def union_supported_codes(fetched_codes, config_codes):
+    """Union live-fetched language codes with persisted config codes.
+
+    Returns a de-duplicated, lowercased, stripped list: fetched codes first (in
+    order), then config-only codes appended. Either argument may be an iterable
+    of codes or a dict keyed by code (``list(dict)`` yields its keys). A transient
+    backend outage can only ADD config codes to the set, never shrink it — so
+    videos in configured languages are never silently dropped from scanning.
+    """
+    out = []
+    seen = set()
+    for c in list(fetched_codes or []) + list(config_codes or []):
+        k = str(c).strip().lower()
+        if k and k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
 def load_transcription_config(path: str = TRANSCRIPTION_CONFIG_FILE) -> "TranscriptionConfig":
     p = Path(path)
     if not p.is_file():
